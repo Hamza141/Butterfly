@@ -22,7 +22,23 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".HomeActivity"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CommunityActivity"
+            android:label="@string/title_activity_community"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DiscoverActivity"
+            android:label="@string/title_activity_discover"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NotificationActivity"
+            android:label="@string/title_activity_notification"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

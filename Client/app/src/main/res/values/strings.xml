@@ -14,4 +14,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_community">CommunityActivity</string>
+    <string name="title_activity_discover">DiscoverActivity</string>
+    <string name="title_activity_notification">NotificationActivity</string>
 </resources>
