@@ -56,15 +56,6 @@ public class LoginActivity extends AppCompatActivity implements
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-
-
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -72,22 +63,17 @@ public class LoginActivity extends AppCompatActivity implements
     private View mLoginFormView;
     private TextView mStatusTextView;
     private static final String TAG = "SignInActivity";
-    GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
 
-    private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
 
 
     // Configure sign-in to request the user's ID, email address, and basic
@@ -141,6 +127,11 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
 
     @Override
     public void onClick(View v) {
