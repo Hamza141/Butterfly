@@ -11,31 +11,40 @@ import static java.util.Calendar.HOUR_OF_DAY;
  */
 
 public class CommunityEvent {
-    private Calendar date;
-    private String startTime;
+    private Calendar time;
     private String name;
     private String place;
     private String description;
 
-    public CommunityEvent(Calendar date, String startTime, String name) {
-        this(date, startTime, name, null, null);
+    public CommunityEvent(Calendar time, String name) {
+        this(time, name, null, null);
     }
 
-    public CommunityEvent(Calendar date, String startTime, String name, String place, String description) {
+    public CommunityEvent(Calendar date, String name, String place, String description) {
         date.set(HOUR_OF_DAY, 0);
         date.set(Calendar.MINUTE, 0);
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MILLISECOND, 0);
-        Log.d("CommunityEvent", String.valueOf(date.get(HOUR_OF_DAY)));
-        this.date = date;
-        this.startTime = startTime;
+        this.time = date;
         this.name = name;
         this.place = place;
         this.description = description;
     }
 
-    public Calendar getDate() {
-        return this.date;
+    public int getStartTime() {
+        return this.time.get(HOUR_OF_DAY);
+    }
+
+    public int getDayOfYear() {
+        return this.time.get(Calendar.DAY_OF_YEAR);
+    }
+
+    public int getYear() {
+        return this.time.get(Calendar.YEAR);
+    }
+
+    public Calendar getTime() {
+        return this.time;
     }
 
     public String getName() {
@@ -48,9 +57,5 @@ public class CommunityEvent {
 
     public String getDescription() {
         return this.description;
-    }
-
-    public String getStartTime() {
-        return  this.startTime;
     }
 }

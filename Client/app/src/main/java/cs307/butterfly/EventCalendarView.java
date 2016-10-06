@@ -44,7 +44,7 @@ public class EventCalendarView extends LinearLayout
     //event handling
     private EventHandler eventHandler = null;
 
-    public static HashMap<Calendar, CommunityEvent> events;
+    private ArrayList<CommunityEvent> events;
 
     // internal components
     private LinearLayout header;
@@ -56,17 +56,20 @@ public class EventCalendarView extends LinearLayout
     public EventCalendarView(Context context)
     {
         super(context);
+        this.events = new ArrayList<>();
     }
 
     public EventCalendarView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        this.events = new ArrayList<>();
         initControl(context, attrs);
     }
 
     public EventCalendarView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
+        this.events = new ArrayList<>();
         initControl(context, attrs);
     }
 
@@ -82,15 +85,14 @@ public class EventCalendarView extends LinearLayout
         assignUiElements();
         assignClickHandlers();
 
-        HashMap<Calendar, CommunityEvent> eventsList = new HashMap<>();
         Calendar date = Calendar.getInstance();
         for (int i = 1; i < 10; i++) {
             Calendar calendarClone = (Calendar) date.clone();
-            CommunityEvent event = new CommunityEvent(calendarClone, String.valueOf(i), "2:00 am");
-            eventsList.put(event.getDate(), event);
+            CommunityEvent event = new CommunityEvent(calendarClone, String.valueOf(i));
+            events.add(event);
             date.add(Calendar.DATE, 5);
         }
-        setEvents(eventsList);
+        updateCalendar(events);
     }
 
     private void loadDateFormat(AttributeSet attrs)
@@ -149,7 +151,7 @@ public class EventCalendarView extends LinearLayout
     /**
      * Display dates correctly in grid
      */
-    public void updateCalendar(HashMap<Calendar, CommunityEvent> events)
+    public void updateCalendar(ArrayList<CommunityEvent> events)
     {
         ArrayList<Date> cells = new ArrayList<>();
         Calendar calendar = (Calendar)currentDate.clone();
@@ -187,22 +189,26 @@ public class EventCalendarView extends LinearLayout
         return this.currentDate;
     }
 
-    public void setEvents(HashMap<Calendar, CommunityEvent> events) {
-        this.events = (HashMap<Calendar, CommunityEvent>) events.clone();
+    public void setEvents(ArrayList<CommunityEvent> events) {
+        this.events = (ArrayList<CommunityEvent>) events.clone();
         updateCalendar(this.events);
+    }
+
+    public ArrayList<CommunityEvent> getEvents() {
+        return this.events;
     }
 
     private class CalendarAdapter extends ArrayAdapter<Date>
     {
         // days with events
-        private HashMap<Calendar, CommunityEvent> eventDays;
+        private ArrayList<CommunityEvent> eventDays;
 
         private EventCalendarView eventCalendarView;
 
         // for view inflation
         private LayoutInflater inflater;
 
-        public CalendarAdapter(Context context, ArrayList<Date> days, HashMap<Calendar, CommunityEvent> eventDays, EventCalendarView eventCalendarView)
+        public CalendarAdapter(Context context, ArrayList<Date> days, ArrayList<CommunityEvent> eventDays, EventCalendarView eventCalendarView)
         {
             super(context, R.layout.content_community_day, days);
             this.eventDays = eventDays;
@@ -243,10 +249,8 @@ public class EventCalendarView extends LinearLayout
 
             // if this day has an event, specify event image
             view.setBackgroundResource(0);
-            if (eventDays != null)
-            {
-                if(eventDays.containsKey(dateCalendar)) {
-                    // mark this day for event
+            for (int i = 0; i < eventDays.size(); i++) {
+                if (eventDays.get(i).getDayOfYear() == dayOfYear && eventDays.get(i).getYear() == year) {
                     view.setBackgroundResource(R.drawable.reminder);
                 }
             }
