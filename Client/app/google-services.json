@@ -13,7 +13,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "608600372502-45uor8c0ibem2c2tssc7og51ojp3okek.apps.googleusercontent.com",
+          "client_id": "608600372502-ag73imqvjh1s1cem2g1q2ijk8puj354v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "cs307.butterfly",
@@ -21,13 +21,13 @@
           }
         },
         {
-          "client_id": "608600372502-iejnb1hmv8d03bsk4mbkkko9md329tc8.apps.googleusercontent.com",
+          "client_id": "608600372502-3n02a45b2j860e34fak46g2rnqfaqv7g.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAl-Yw1Uuml51q7hxVkxhxtdv9upm3p--o"
+          "current_key": "AIzaSyCu2zd7YnuZfZEpYSbVPVyhkNKwF3ZWsoA"
         }
       ],
       "services": {
