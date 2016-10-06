@@ -36,4 +36,13 @@
         android:layout_alignTop="@+id/sign_in_button"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:text="No update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/sign_in_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="61dp"
+        android:id="@+id/status" />
+
 </RelativeLayout>

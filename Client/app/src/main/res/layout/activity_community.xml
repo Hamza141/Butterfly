@@ -21,8 +21,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_community" />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -30,5 +28,50 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_dialog_email" />
+
+    <include layout="@layout/content_community" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent"
+            android:id="@+id/linear">
+
+            <Button
+                android:text="Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button7" />
+
+            <Button
+                android:text="Button"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:id="@+id/button6" />
+
+            <Button
+                android:text="Button"
+                android:layout_width="match_parent"
+                android:id="@+id/button5"
+                android:layout_height="140dp" />
+
+            <Button
+                android:text="Button"
+                android:layout_width="match_parent"
+                android:id="@+id/button4"
+                android:layout_height="140dp" />
+
+            <Button
+                android:text="Button"
+                android:layout_width="match_parent"
+                android:id="@+id/button3"
+                android:layout_height="140dp" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>
