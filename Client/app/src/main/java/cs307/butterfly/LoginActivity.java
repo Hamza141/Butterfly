@@ -15,6 +15,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 /**
  * A login screen that offers login via email/password.
@@ -22,10 +24,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 public class LoginActivity extends AppCompatActivity implements
         View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -45,6 +43,7 @@ public class LoginActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_login);
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.sign_out_button).setOnClickListener(this);
 
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -88,15 +87,7 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
-    private void updateUI(boolean signedIn) {
-        if (signedIn) {
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-        } else {
-            mStatusTextView.setText(R.string.signed_out);
 
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-        }
-    }
 
 
     private void signIn() {
@@ -104,15 +95,36 @@ public class LoginActivity extends AppCompatActivity implements
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
-                break;
-
-        }
+    // [START signOut]
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        updateUI(false);
+                        // [END_EXCLUDE]
+                    }
+                });
     }
+    // [END signOut]
+
+    // [START revokeAccess]
+    private void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        updateUI(false);
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+    // [END revokeAccess]
+
+
+
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -121,6 +133,31 @@ public class LoginActivity extends AppCompatActivity implements
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
+
+    private void updateUI(boolean signedIn) {
+        if (signedIn) {
+            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+        } else {
+            mStatusTextView.setText(R.string.signed_out);
+            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                signIn();
+                break;
+            case R.id.sign_out_button:
+                signOut();
+                break;
+
+        }
+    }
 
 }
 
