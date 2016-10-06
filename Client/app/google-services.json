@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "608600372502",
+    "project_id": "butterfly-2c67c"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608600372502:android:e4986377c472bd89",
+        "android_client_info": {
+          "package_name": "cs307.butterfly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "608600372502-45uor8c0ibem2c2tssc7og51ojp3okek.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cs307.butterfly",
+            "certificate_hash": "617ABC072C15395B0C8621B61F16E09949270965"
+          }
+        },
+        {
+          "client_id": "608600372502-iejnb1hmv8d03bsk4mbkkko9md329tc8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl-Yw1Uuml51q7hxVkxhxtdv9upm3p--o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
