@@ -2,14 +2,11 @@ package cs307.butterfly;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class CommunityActivity extends AppCompatActivity {
@@ -22,9 +19,10 @@ public class CommunityActivity extends AppCompatActivity {
         EventCalendarView ecv = ((EventCalendarView) findViewById(R.id.calendar_view));
         ecv.setEventHandler(new EventCalendarView.EventHandler() {
             @Override
-            public void onDayLongPress(Date date) {
-                DateFormat df = SimpleDateFormat.getDateInstance();
-                Toast.makeText(CommunityActivity.this, df.format(date), Toast.LENGTH_SHORT).show();
+            public void onClick(Date date) {
+                Calendar dateCalendar = Calendar.getInstance();
+                dateCalendar.setTime(date);
+                Toast.makeText(CommunityActivity.this, dateCalendar.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }

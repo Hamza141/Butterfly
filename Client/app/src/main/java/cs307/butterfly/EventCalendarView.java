@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.ListIterator;
+import java.util.HashMap;
 
 /**
  * Created by a7med on 28/06/2015.
@@ -43,7 +44,7 @@ public class EventCalendarView extends LinearLayout
     //event handling
     private EventHandler eventHandler = null;
 
-    private ArrayList<Date> events;
+    public static HashMap<Calendar, CommunityEvent> events;
 
     // internal components
     private LinearLayout header;
@@ -81,13 +82,13 @@ public class EventCalendarView extends LinearLayout
         assignUiElements();
         assignClickHandlers();
 
-        ArrayList<Date> eventsList = new ArrayList<>();
-        Date date = new Date();
-        long time = System.currentTimeMillis();
+        HashMap<Calendar, CommunityEvent> eventsList = new HashMap<>();
+        Calendar date = Calendar.getInstance();
         for (int i = 1; i < 10; i++) {
-            Date dateClone = (Date) date.clone();
-            eventsList.add(dateClone);
-            date.setTime(date.getTime() + (5 * 86400000));
+            Calendar calendarClone = (Calendar) date.clone();
+            CommunityEvent event = new CommunityEvent(calendarClone, String.valueOf(i), "2:00 am");
+            eventsList.put(event.getDate(), event);
+            date.add(Calendar.DATE, 5);
         }
         setEvents(eventsList);
     }
@@ -131,18 +132,16 @@ public class EventCalendarView extends LinearLayout
         });
 
         // long-pressing a day
-        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
 
             @Override
-            public boolean onItemLongClick(AdapterView<?> view, View cell, int position, long id)
+            public void onItemClick(AdapterView<?> view, View cell, int position, long id)
             {
-                // handle long-press
-                if (eventHandler == null)
-                    return false;
-
-                eventHandler.onDayLongPress((Date)view.getItemAtPosition(position));
-                return true;
+                if (eventHandler == null) {
+                    return;
+                }
+                eventHandler.onClick((Date)view.getItemAtPosition(position));
             }
         });
     }
@@ -150,7 +149,7 @@ public class EventCalendarView extends LinearLayout
     /**
      * Display dates correctly in grid
      */
-    public void updateCalendar(ArrayList<Date> events)
+    public void updateCalendar(HashMap<Calendar, CommunityEvent> events)
     {
         ArrayList<Date> cells = new ArrayList<>();
         Calendar calendar = (Calendar)currentDate.clone();
@@ -158,6 +157,11 @@ public class EventCalendarView extends LinearLayout
 
         // determine the cell for current month's beginning
         calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
         int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 1;
 
         // move calendar backwards to the beginning of the week
@@ -179,26 +183,26 @@ public class EventCalendarView extends LinearLayout
 
     }
 
-    public Date getCurrentDate() {
-        return this.currentDate.getTime();
+    public Calendar getCurrentDate() {
+        return this.currentDate;
     }
 
-    public void setEvents(ArrayList<Date> events) {
-        this.events = (ArrayList<Date>)events.clone();
+    public void setEvents(HashMap<Calendar, CommunityEvent> events) {
+        this.events = (HashMap<Calendar, CommunityEvent>) events.clone();
         updateCalendar(this.events);
     }
 
     private class CalendarAdapter extends ArrayAdapter<Date>
     {
         // days with events
-        private ArrayList<Date> eventDays;
+        private HashMap<Calendar, CommunityEvent> eventDays;
 
         private EventCalendarView eventCalendarView;
 
         // for view inflation
         private LayoutInflater inflater;
 
-        public CalendarAdapter(Context context, ArrayList<Date> days, ArrayList<Date> eventDays, EventCalendarView eventCalendarView)
+        public CalendarAdapter(Context context, ArrayList<Date> days, HashMap<Calendar, CommunityEvent> eventDays, EventCalendarView eventCalendarView)
         {
             super(context, R.layout.content_community_day, days);
             this.eventDays = eventDays;
@@ -210,23 +214,28 @@ public class EventCalendarView extends LinearLayout
         public View getView(int position, View view, ViewGroup parent)
         {
             //currently viewed month
-            Date current = eventCalendarView.getCurrentDate();
-            String currentString = current.toString();
-            String[] currentArray = currentString.split(" ");
-            String currentMonth = currentArray[1];
-            int currentYear = Integer.parseInt(currentArray[5]);
+            Calendar current = eventCalendarView.getCurrentDate();
+            int currentMonth = current.get(Calendar.MONTH);
+            int currentYear = current.get(Calendar.YEAR);
 
             // day in question
             Date date = getItem(position);
-            String dateString = date.toString();
-            String[] dateArray = dateString.split(" ");
+            Calendar dateCalendar = Calendar.getInstance();
+            dateCalendar.setTime(date);
+            dateCalendar.set(Calendar.HOUR_OF_DAY, 0);
+            dateCalendar.set(Calendar.MINUTE, 0);
+            dateCalendar.set(Calendar.SECOND, 0);
+            dateCalendar.set(Calendar.MILLISECOND, 0);
+            Log.d(LOGTAG, dateCalendar.toString());
 
-            int day = Integer.parseInt(dateArray[2]);
-            String month = dateArray[1];
-            int year = Integer.parseInt(dateArray[5]);
+            int dayOfYear = dateCalendar.get(Calendar.DAY_OF_YEAR);
+            int month = dateCalendar.get(Calendar.MONTH);
+            int year = dateCalendar.get(Calendar.YEAR);
 
             // today
             Date today = new Date();
+            Calendar todayCalendar = Calendar.getInstance();
+            todayCalendar.setTime(today);
 
             // inflate item if it does not exist yet
             if (view == null)
@@ -236,20 +245,9 @@ public class EventCalendarView extends LinearLayout
             view.setBackgroundResource(0);
             if (eventDays != null)
             {
-                ListIterator<Date> dateIterator = eventDays.listIterator();
-                while(dateIterator.hasNext()) {
-                    Date eventDate = dateIterator.next();
-                    String eventString = eventDate.toString();
-                    String[] eventArray = eventString.split(" ");
-                    int eventDay = Integer.parseInt(eventArray[2]);
-                    String eventMonth = eventArray[1];
-                    int eventYear = Integer.parseInt(eventArray[5]);
-                    if (eventDay == day && eventMonth.equals(month) && eventYear == year)
-                    {
-                        // mark this day for event
-                        view.setBackgroundResource(R.drawable.reminder);
-                        break;
-                    }
+                if(eventDays.containsKey(dateCalendar)) {
+                    // mark this day for event
+                    view.setBackgroundResource(R.drawable.reminder);
                 }
             }
 
@@ -257,18 +255,16 @@ public class EventCalendarView extends LinearLayout
             ((TextView)view).setTypeface(null, Typeface.NORMAL);
             ((TextView)view).setTextColor(Color.BLACK);
 
-            String todayString = today.toString();
-            String[] todayArray = todayString.split(" ");
-            String todayMonth = todayArray[1];
-            int todayYear = Integer.parseInt(todayArray[5]);
-            int todayDate = Integer.parseInt(todayArray[2]);
+            int todayMonth = todayCalendar.get(Calendar.MONTH);
+            int todayYear = todayCalendar.get(Calendar.YEAR);
+            int todayDayOfYear = todayCalendar.get(Calendar.DAY_OF_YEAR);
 
-            if (!month.equals(currentMonth) || year != currentYear)
+            if (month != currentMonth || year != currentYear)
             {
                 // if this day is outside current month, grey it out
                 ((TextView)view).setTextColor(Color.LTGRAY);
             }
-            if (day == todayDate && month.equals(todayMonth) && year == todayYear)
+            if (dayOfYear == todayDayOfYear && month == todayMonth && year == todayYear)
             {
                 // if it is today, set it to blue/bold
                 ((TextView)view).setTypeface(null, Typeface.BOLD);
@@ -276,7 +272,7 @@ public class EventCalendarView extends LinearLayout
             }
 
             // set text
-            ((TextView)view).setText(String.valueOf(day));
+            ((TextView)view).setText(String.valueOf(dateCalendar.get(Calendar.DAY_OF_MONTH)));
 
             return view;
         }
@@ -296,6 +292,6 @@ public class EventCalendarView extends LinearLayout
      */
     public interface EventHandler
     {
-        void onDayLongPress(Date date);
+        void onClick(Date date);
     }
 }
