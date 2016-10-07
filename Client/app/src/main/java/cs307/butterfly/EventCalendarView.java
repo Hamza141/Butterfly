@@ -82,18 +82,6 @@ public class EventCalendarView extends LinearLayout
         loadDateFormat(attrs);
         assignUiElements();
         assignClickHandlers();
-<<<<<<< HEAD
-=======
-
-        Calendar date = Calendar.getInstance();
-        for (int i = 1; i < 10; i++) {
-            Calendar calendarClone = (Calendar) date.clone();
-            CommunityEvent event = new CommunityEvent(calendarClone, String.valueOf(i));
-            events.add(event);
-            date.add(Calendar.DATE, 5);
-        }
-        updateCalendar(events);
->>>>>>> origin/travis
     }
 
     private void loadDateFormat(AttributeSet attrs)
@@ -191,11 +179,7 @@ public class EventCalendarView extends LinearLayout
     }
 
     public void setEvents(ArrayList<CommunityEvent> events) {
-<<<<<<< HEAD
         this.events = (ArrayList<CommunityEvent>)events.clone();
-=======
-        this.events = (ArrayList<CommunityEvent>) events.clone();
->>>>>>> origin/travis
         updateCalendar(this.events);
     }
 
@@ -253,7 +237,6 @@ public class EventCalendarView extends LinearLayout
 
             // if this day has an event, specify event image
             view.setBackgroundResource(0);
-<<<<<<< HEAD
             if (eventDays != null)
             {
                 for (int i = 0; i < eventDays.size(); i++) {
@@ -261,11 +244,6 @@ public class EventCalendarView extends LinearLayout
                             eventDays.get(i).getDate().get(Calendar.YEAR) == year) {
                         view.setBackgroundResource(R.drawable.reminder);
                     }
-=======
-            for (int i = 0; i < eventDays.size(); i++) {
-                if (eventDays.get(i).getDayOfYear() == dayOfYear && eventDays.get(i).getYear() == year) {
-                    view.setBackgroundResource(R.drawable.reminder);
->>>>>>> origin/travis
                 }
             }
 
