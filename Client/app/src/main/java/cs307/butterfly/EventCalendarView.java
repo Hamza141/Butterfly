@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
- * Created by a7med on 28/06/2015.
+ * Created by Travis Kent on 10/6/2016.
  */
 public class EventCalendarView extends LinearLayout
 {
@@ -44,7 +42,7 @@ public class EventCalendarView extends LinearLayout
     //event handling
     private EventHandler eventHandler = null;
 
-    public static HashMap<Calendar, CommunityEvent> events;
+    private ArrayList<CommunityEvent> events;
 
     // internal components
     private LinearLayout header;
@@ -81,16 +79,6 @@ public class EventCalendarView extends LinearLayout
         loadDateFormat(attrs);
         assignUiElements();
         assignClickHandlers();
-
-        HashMap<Calendar, CommunityEvent> eventsList = new HashMap<>();
-        Calendar date = Calendar.getInstance();
-        for (int i = 1; i < 10; i++) {
-            Calendar calendarClone = (Calendar) date.clone();
-            CommunityEvent event = new CommunityEvent(calendarClone, String.valueOf(i), "2:00 am");
-            eventsList.put(event.getDate(), event);
-            date.add(Calendar.DATE, 5);
-        }
-        setEvents(eventsList);
     }
 
     private void loadDateFormat(AttributeSet attrs)
@@ -149,7 +137,7 @@ public class EventCalendarView extends LinearLayout
     /**
      * Display dates correctly in grid
      */
-    public void updateCalendar(HashMap<Calendar, CommunityEvent> events)
+    public void updateCalendar(ArrayList<CommunityEvent> events)
     {
         ArrayList<Date> cells = new ArrayList<>();
         Calendar calendar = (Calendar)currentDate.clone();
@@ -187,22 +175,26 @@ public class EventCalendarView extends LinearLayout
         return this.currentDate;
     }
 
-    public void setEvents(HashMap<Calendar, CommunityEvent> events) {
-        this.events = (HashMap<Calendar, CommunityEvent>) events.clone();
+    public void setEvents(ArrayList<CommunityEvent> events) {
+        this.events = (ArrayList<CommunityEvent>)events.clone();
         updateCalendar(this.events);
+    }
+
+    public ArrayList<CommunityEvent> getEvents() {
+        return this.events;
     }
 
     private class CalendarAdapter extends ArrayAdapter<Date>
     {
         // days with events
-        private HashMap<Calendar, CommunityEvent> eventDays;
+        private ArrayList<CommunityEvent> eventDays;
 
         private EventCalendarView eventCalendarView;
 
         // for view inflation
         private LayoutInflater inflater;
 
-        public CalendarAdapter(Context context, ArrayList<Date> days, HashMap<Calendar, CommunityEvent> eventDays, EventCalendarView eventCalendarView)
+        public CalendarAdapter(Context context, ArrayList<Date> days, ArrayList<CommunityEvent> eventDays, EventCalendarView eventCalendarView)
         {
             super(context, R.layout.content_community_day, days);
             this.eventDays = eventDays;
@@ -226,7 +218,6 @@ public class EventCalendarView extends LinearLayout
             dateCalendar.set(Calendar.MINUTE, 0);
             dateCalendar.set(Calendar.SECOND, 0);
             dateCalendar.set(Calendar.MILLISECOND, 0);
-            Log.d(LOGTAG, dateCalendar.toString());
 
             int dayOfYear = dateCalendar.get(Calendar.DAY_OF_YEAR);
             int month = dateCalendar.get(Calendar.MONTH);
@@ -245,9 +236,11 @@ public class EventCalendarView extends LinearLayout
             view.setBackgroundResource(0);
             if (eventDays != null)
             {
-                if(eventDays.containsKey(dateCalendar)) {
-                    // mark this day for event
-                    view.setBackgroundResource(R.drawable.reminder);
+                for (int i = 0; i < eventDays.size(); i++) {
+                    if (eventDays.get(i).getDate().get(Calendar.DAY_OF_YEAR) == dayOfYear &&
+                            eventDays.get(i).getDate().get(Calendar.YEAR) == year) {
+                        view.setBackgroundResource(R.drawable.reminder);
+                    }
                 }
             }
 

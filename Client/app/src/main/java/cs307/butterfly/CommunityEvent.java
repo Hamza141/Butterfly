@@ -12,23 +12,20 @@ import static java.util.Calendar.HOUR_OF_DAY;
 
 public class CommunityEvent {
     private Calendar date;
-    private String startTime;
     private String name;
     private String place;
     private String description;
 
-    public CommunityEvent(Calendar date, String startTime, String name) {
-        this(date, startTime, name, null, null);
+    public CommunityEvent(Calendar date, int startHour, int startMinute, String name) {
+        this(date, startHour, startMinute, name, null, null);
     }
 
-    public CommunityEvent(Calendar date, String startTime, String name, String place, String description) {
-        date.set(HOUR_OF_DAY, 0);
-        date.set(Calendar.MINUTE, 0);
+    public CommunityEvent(Calendar date, int startHour, int startMinute, String name, String place, String description) {
+        date.set(HOUR_OF_DAY, startHour);
+        date.set(Calendar.MINUTE, startMinute);
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MILLISECOND, 0);
-        Log.d("CommunityEvent", String.valueOf(date.get(HOUR_OF_DAY)));
         this.date = date;
-        this.startTime = startTime;
         this.name = name;
         this.place = place;
         this.description = description;
@@ -50,7 +47,4 @@ public class CommunityEvent {
         return this.description;
     }
 
-    public String getStartTime() {
-        return  this.startTime;
-    }
 }
