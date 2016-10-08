@@ -41,21 +41,47 @@ public class CommunityEvent {
         return this.date.get(Calendar.MINUTE);
     }
 
+    public String getStartTime() {
+        String startTime = "\n";
+        startTime = startTime.concat("Start Time: ");
+        if (date.get(Calendar.HOUR) == 0) {
+            startTime = startTime.concat("12");
+        }
+        else {
+            startTime = startTime.concat(String.valueOf(date.get(Calendar.HOUR)));
+        }
+        startTime = startTime.concat(":");
+        if (date.get(Calendar.MINUTE) / 10 == 0) {
+            startTime = startTime.concat("0");
+        }
+        startTime = startTime.concat(String.valueOf(date.get(Calendar.MINUTE)));
+        int ampm = date.get(Calendar.AM_PM);
+        switch (ampm) {
+            case Calendar.AM:
+                startTime = startTime.concat(" AM");
+                break;
+            case Calendar.PM:
+                startTime = startTime.concat(" PM");
+                break;
+        }
+        return startTime;
+    }
+
     public String getName() {
         return this.name;
     }
 
     public String getPlace() {
-        return this.place;
+        return "\nPlace: " + this.place;
     }
 
     public String getDescription() {
-        return this.description;
+        return "\n" + this.description + "\n\n";
     }
 
     public String toString() {
         String eventString = this.name + "\n";
-        int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
+        /*int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
 
         switch (dayOfWeek) {
             case Calendar.SUNDAY:
@@ -120,9 +146,9 @@ public class CommunityEvent {
                 eventString = eventString.concat("December ");
                 break;
         }
+        eventString = eventString.concat(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));*/
 
-        eventString = eventString.concat(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
-        eventString = eventString.concat("\nTime: ");
+        eventString = eventString.concat("Start Time: ");
         if (date.get(Calendar.HOUR) == 0) {
             eventString = eventString.concat("12");
         }
@@ -151,9 +177,11 @@ public class CommunityEvent {
         }
 
         if (description != null) {
-            eventString = eventString.concat("\n\n");
+            eventString = eventString.concat("\n");
             eventString = eventString.concat(description);
         }
+
+        eventString = eventString.concat("\n\n");
 
         return eventString;
     }

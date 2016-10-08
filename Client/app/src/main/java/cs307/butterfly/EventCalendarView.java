@@ -31,7 +31,7 @@ public class EventCalendarView extends LinearLayout
     private static final int DAYS_COUNT = 42;
 
     // default date format
-    private static final String DATE_FORMAT = "MMM yyyy";
+    private static final String DATE_FORMAT = "MMMM yyyy";
 
     // date format
     private String dateFormat;
@@ -107,6 +107,7 @@ public class EventCalendarView extends LinearLayout
             public void onClick(View v)
             {
                 currentDate.add(Calendar.MONTH, 1);
+                CommunityActivity.currentMonth++;
                 updateCalendar(events);
             }
         });
@@ -118,6 +119,7 @@ public class EventCalendarView extends LinearLayout
             public void onClick(View v)
             {
                 currentDate.add(Calendar.MONTH, -1);
+                CommunityActivity.currentMonth--;
                 updateCalendar(events);
             }
         });
@@ -264,7 +266,7 @@ public class EventCalendarView extends LinearLayout
             {
                 // if it is today, set it to blue/bold
                 ((TextView)view).setTypeface(null, Typeface.BOLD);
-                ((TextView)view).setTextColor(Color.CYAN);
+                ((TextView)view).setTextColor(0xFFFF0000);
             }
 
             // set text
