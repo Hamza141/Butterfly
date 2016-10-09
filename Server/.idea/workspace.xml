@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fbcff506-c00c-4542-b5f0-d23cbf735673" name="Default" comment="" />
+    <list default="true" id="571ed1c6-e4e2-46da-afe7-4c7a6b5fb375" name="Default" comment="" />
     <ignored path="Server.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -71,6 +71,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -109,9 +112,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -305,11 +305,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="fbcff506-c00c-4542-b5f0-d23cbf735673" name="Default" comment="" />
-      <created>1476042124674</created>
+      <changelist id="571ed1c6-e4e2-46da-afe7-4c7a6b5fb375" name="Default" comment="" />
+      <created>1476043812278</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1476042124674</updated>
+      <updated>1476043812278</updated>
     </task>
     <servers />
   </component>
