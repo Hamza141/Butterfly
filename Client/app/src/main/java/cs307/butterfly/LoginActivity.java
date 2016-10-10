@@ -27,10 +27,6 @@ public class LoginActivity extends AppCompatActivity implements
 
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
     private TextView status;
     private static final String TAG = "SignInActivity";
     private GoogleApiClient mGoogleApiClient;
