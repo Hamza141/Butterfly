@@ -136,6 +136,11 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void updateUI(boolean signedIn) {
         if (signedIn) {
+
+            Intent intent = new Intent(this, CommunityActivity.class);
+            startActivity(intent);
+
+
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         } else {
