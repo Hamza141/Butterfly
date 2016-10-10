@@ -1,6 +1,7 @@
 package cs307.butterfly;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,11 +27,7 @@ public class LoginActivity extends AppCompatActivity implements
 
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
-    private TextView mStatusTextView;
+    private TextView status;
     private static final String TAG = "SignInActivity";
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
@@ -44,9 +41,10 @@ public class LoginActivity extends AppCompatActivity implements
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
+        findViewById(R.id.sign_out_button).setVisibility(View.GONE);
 
-        mStatusTextView = (TextView) findViewById(R.id.status);
-
+        status = (TextView) findViewById(R.id.status);
+        status.setText("First time");
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -57,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, (GoogleApiClient.OnConnectionFailedListener) this /* OnConnectionFailedListener */)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -81,16 +79,33 @@ public class LoginActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+
+            //Gather user's info
+            if (acct != null) {
+                String personName = acct.getDisplayName();
+                String personGivenName = acct.getGivenName();
+                String personFamilyName = acct.getFamilyName();
+                String personEmail = acct.getEmail();
+                String personId = acct.getId();
+                Uri personPhoto = acct.getPhotoUrl();
+
+                status.setText(getString(R.string.signed_in_fmt, personName));
+                status.setVisibility(View.VISIBLE);
+
+            } else {
+                status.setText(R.string.login_error);
+            }
+
+            //TODO Send user's info to server
+
+
             updateUI(true);
+
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
         }
     }
-
-
-
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -111,23 +126,6 @@ public class LoginActivity extends AppCompatActivity implements
     }
     // [END signOut]
 
-    // [START revokeAccess]
-    private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        // [START_EXCLUDE]
-                        updateUI(false);
-                        // [END_EXCLUDE]
-                    }
-                });
-    }
-    // [END revokeAccess]
-
-
-
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
@@ -141,10 +139,10 @@ public class LoginActivity extends AppCompatActivity implements
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         } else {
-            mStatusTextView.setText(R.string.signed_out);
+            status.setText(R.string.signed_out);
+            status.setVisibility(View.VISIBLE);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
-
         }
     }
 
