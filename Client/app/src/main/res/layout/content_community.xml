@@ -11,6 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="cs307.butterfly.CommunityActivity"
-    tools:showIn="@layout/activity_community">
+    tools:showIn="@layout/activity_community"
+    tools:ignore="PrivateResource">
 
 </RelativeLayout>
