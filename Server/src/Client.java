@@ -21,7 +21,6 @@ public class Client {
             obj.put("lastName", "Tran");
             obj.put("GoogleID", "Google1");
             obj.put("dateCreated", "2016-10-09");
-            //out.writeUTF("{ \"firstName\": \"Khanh\", \"lastName\": \"Tran\", \"GoogleID\": \"Googly1\", \"dateCreated\": \"2016-10-09\", \"age\": 20 }");
             out.writeUTF(obj.toString());
             InputStream inFromServer = client.getInputStream();
             DataInputStream in = new DataInputStream(inFromServer);

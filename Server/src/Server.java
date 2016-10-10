@@ -76,7 +76,7 @@ public class Server extends Thread {
             //watch for value type format
             //sql = "INSERT INTO Users VALUES(1, 'Khanh', 'Tran', 'Google', '2016-10-09')";
             sql = "%s %s %s ";
-            rs = stmt.executeQuery(sql);
+            stmt.execute(sql);
 
             //READ VALUES FROM TABLE
             //FORMAT sql = "SELECT <listvalues> FROM <TABLENAME>";
@@ -92,7 +92,7 @@ public class Server extends Thread {
             //FORMAT sql = "UPDATE <TABLENAME> SET <COLUMNNAME> = 'NEWVALUE' WHERE 'IDVALUE' = 'ID'";
             //sql = "UPDATE Users SET GoogleID = 'notGoggly' WHERE idUsers='1'";
             //multiple "UPDATE Users SET GoogleID = "notGoggly", firstName = "K" WHERE idUsers = 1";
-            rs = stmt.executeQuery(sql);
+            stmt.execute(sql);
 
             //DELETE ROW FROM TABLE
             //FORMAT sql = "DELETE FROM <TABLENAME> WHERE <ID> = <desiredID>";
