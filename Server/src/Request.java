@@ -4,9 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * Created by nick on 10/11/16.
- */
 public class Request {
     private RequestTypes requestType;
     private String requesterId;

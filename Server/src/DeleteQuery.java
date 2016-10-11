@@ -1,8 +1,5 @@
 import java.util.ArrayList;
 
-/**
- * Created by nick on 10/10/16.
- */
 public class DeleteQuery extends CustomSqlQuery{
 
     public DeleteQuery() {
@@ -18,7 +15,7 @@ public class DeleteQuery extends CustomSqlQuery{
                 whereStr;
     }
 
-    protected String createWhereStr() {
+    private String createWhereStr() {
         return columns.get(0) + "=" + values.get(0);
     }
 }

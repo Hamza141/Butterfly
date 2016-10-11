@@ -1,16 +1,19 @@
+/**
+ * Abstract class for different the different database interactions
+ * Implemented by: DeleteQuery
+ *                 InsertQuery
+ *                 SelectQuery
+ *                 UpdateQuery
+ */
 
 import java.util.Iterator;
 import java.util.List;
 
-
-/**
- * Created by nick on 10/10/16.
- */
 public abstract class CustomSqlQuery {
-    String query;
-    String tableName;
-    List<String> columns;
-    List<String> values;
+    protected String query;
+    protected String tableName;
+    protected List<String> columns;
+    protected List<String> values;
 
     public void setTableName(String tableName) {
         this.tableName = tableName;

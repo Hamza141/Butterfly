@@ -1,10 +1,5 @@
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-/**
- * Created by nick on 10/10/16.
- */
 public class InsertQuery extends CustomSqlQuery {
 
     public InsertQuery() {

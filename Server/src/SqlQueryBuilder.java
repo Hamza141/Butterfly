@@ -1,22 +1,10 @@
 /**
- * Created by nick on 10/10/16.
+ * Class to build sql queries from Requests
  */
-
-import java.sql.*;
-import java.sql.PreparedStatement;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Date;
-
-import com.mysql.jdbc.*;
-import org.json.simple.*;
 
 public class SqlQueryBuilder {
     private Request request;
     private String sql;
-
 
     public SqlQueryBuilder(Request request) {
         this.request = request;
@@ -92,9 +80,4 @@ public class SqlQueryBuilder {
         query.makeQuery();
         return query.getQuery();
     }
-
-
-
-
-
 }
