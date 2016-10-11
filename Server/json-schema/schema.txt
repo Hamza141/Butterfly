@@ -1,0 +1,29 @@
+{
+	"command":"command-type"
+	"requester":"requesterId"
+	"timestamp":"UTC time"
+
+	"passive-arguments": [
+		
+		"passive-arg1": {
+			"object":"object-type"
+			"properties": {
+				
+			}
+		}
+
+	]
+
+	"active-arguments": [
+		
+			"active-arg1": {
+			"object":"object-type"
+			"properties": {
+				
+			}
+		}
+	
+	]
+
+}
+
