@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".CommunityActivity">
+    tools:context=".CalendarActivity">
 
     <cs307.butterfly.EventCalendarView
         android:id="@+id/calendar_view"
