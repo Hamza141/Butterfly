@@ -36,6 +36,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".CommunityActivity"
+            android:label="CommunityActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".DiscoverActivity"
             android:label="@string/title_activity_discover"
             android:theme="@style/AppTheme.NoActionBar" />
