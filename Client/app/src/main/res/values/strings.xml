@@ -11,16 +11,17 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions." </string>
+
     <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="sign_out">Sign Out</string>
     <string name="sign_out_and_disconnect">Signed out and disconnected</string>
     <string name="signed_out">Signed out </string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_community">CommunityActivity</string>
     <string name="title_activity_discover">DiscoverActivity</string>
     <string name="title_activity_notification">NotificationActivity</string>
+<<<<<<< HEAD
     <string name="title_activity_events">EventsActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -112,4 +113,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+=======
+    <string name="status">status</string>
+    <string name="login_error">Error</string>
+>>>>>>> refs/remotes/origin/dev
 </resources>
