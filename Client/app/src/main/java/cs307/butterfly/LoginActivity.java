@@ -3,6 +3,7 @@ package cs307.butterfly;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,19 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.sql.Time;
+import java.util.Calendar;
+
+import static cs307.butterfly.CalendarActivity.date;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -36,6 +50,7 @@ public class LoginActivity extends AppCompatActivity implements
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -48,6 +63,8 @@ public class LoginActivity extends AppCompatActivity implements
 
         status = (TextView) findViewById(R.id.status);
         status.setText("Welcome!");
+
+
 
 
 
@@ -86,17 +103,55 @@ public class LoginActivity extends AppCompatActivity implements
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
 
+
+
+
             //Gather user's info
             if (acct != null) {
-                String personName = acct.getDisplayName();
-                String personGivenName = acct.getGivenName();
-                String personFamilyName = acct.getFamilyName();
-                String personEmail = acct.getEmail();
-                String personId = acct.getId();
-                personPhoto = acct.getPhotoUrl();
-                Picasso.with(this).load(personPhoto).into((ImageView)findViewById(R.id.imageView2));
-                status.setText(getString(R.string.signed_in_fmt, personName));
-                status.setVisibility(View.VISIBLE);
+                try {
+                    Socket socket = new Socket("128.210.106.68", 60660);
+                    OutputStream outputStream = socket.getOutputStream();
+                    DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+                    JSONObject object = new JSONObject();
+
+                    String personName = acct.getDisplayName();
+                    String personGivenName = acct.getGivenName();
+                    String personFamilyName = acct.getFamilyName();
+                    String personEmail = acct.getEmail();
+                    String personId = acct.getId();
+                    personPhoto = acct.getPhotoUrl();
+                    Picasso.with(this).load(personPhoto).into((ImageView)findViewById(R.id.imageView2));
+                    status.setText(getString(R.string.signed_in_fmt, personName));
+                    status.setVisibility(View.VISIBLE);
+
+                    //date
+                    String dateString = "";
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    int month = calendar.get(Calendar.MONTH);
+                    int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                    int year = calendar.get(Calendar.YEAR);
+                    dateString = dateString.concat(String.valueOf(month + 1));
+                    dateString = dateString.concat("/");
+                    dateString = dateString.concat(String.valueOf(dayOfMonth));
+                    dateString = dateString.concat("/");
+                    dateString = dateString.concat(String.valueOf(year));
+
+                    object.put("idUsers", 404);
+                    object.put("firstName", personGivenName);
+                    object.put("lastName", personFamilyName);
+                    object.put("GoogleID", personEmail);
+                    object.put("dateCreated", dateString);
+                    dataOutputStream.writeUTF(object.toString());
+
+                }
+                catch (IOException e) {
+                    System.out.println("IO ERROR");
+                }
+                catch (JSONException e) {
+                    System.out.println("JSON ERROR");
+                }
+
 
             } else {
                 status.setText(R.string.login_error);
