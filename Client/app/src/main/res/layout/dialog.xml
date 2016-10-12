@@ -26,4 +26,10 @@
         android:layout_height="wrap_content"
         android:text="Ok" />
 
+    <CheckBox
+        android:text="Private?"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBox" />
+
 </LinearLayout>

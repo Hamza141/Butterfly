@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -18,6 +19,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.squareup.picasso.Picasso;
 
 /**
  * A login screen that offers login via email/password.
@@ -25,12 +27,13 @@ import com.google.android.gms.common.api.Status;
 public class LoginActivity extends AppCompatActivity implements
         View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
-
+    Uri personPhoto;
     // UI references.
     private TextView status;
     private static final String TAG = "SignInActivity";
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
+
 
 
     @Override
@@ -44,7 +47,10 @@ public class LoginActivity extends AppCompatActivity implements
         findViewById(R.id.sign_out_button).setVisibility(View.GONE);
 
         status = (TextView) findViewById(R.id.status);
-        status.setText("First time");
+        status.setText("Welcome!");
+
+
+
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -87,8 +93,8 @@ public class LoginActivity extends AppCompatActivity implements
                 String personFamilyName = acct.getFamilyName();
                 String personEmail = acct.getEmail();
                 String personId = acct.getId();
-                Uri personPhoto = acct.getPhotoUrl();
-
+                personPhoto = acct.getPhotoUrl();
+                Picasso.with(this).load(personPhoto).into((ImageView)findViewById(R.id.imageView2));
                 status.setText(getString(R.string.signed_in_fmt, personName));
                 status.setVisibility(View.VISIBLE);
 
