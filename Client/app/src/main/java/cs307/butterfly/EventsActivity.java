@@ -1,13 +1,17 @@
 package cs307.butterfly;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import static android.support.design.R.attr.expandedTitleGravity;
+import android.widget.Toast;
 
 public class EventsActivity extends AppCompatActivity {
 
@@ -15,15 +19,57 @@ public class EventsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         String title = CommunityActivity.EXTRA_TITLE;
         CharSequence titleSequence = title.subSequence(0, title.length());
         CollapsingToolbarLayout header = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         header.setTitle(titleSequence);
-        SpannableString events = CommunityActivity.EXTRA_EVENTS;
-        CharSequence eventsSequence = events.subSequence(0, events.length());
-        TextView eventsText = (TextView) findViewById(R.id.events_text);
-        eventsText.setText(eventsSequence);
+
+        LinearLayout linear = (LinearLayout) findViewById(R.id.linear);
+        int i;
+        for (i = 0; i < CommunityActivity.eventsButtons.size(); i++) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            Button btn = new Button(this);
+            btn.setId(i);
+            final int id_ = btn.getId();
+            SpannableString eventButton = CommunityActivity.eventsButtons.get(i);
+            CharSequence eventButtonSequence = eventButton.subSequence(0, eventButton.length());
+            btn.setText(eventButtonSequence);
+            linear.addView(btn, params);
+            Button btn1 = ((Button) findViewById(id_));
+            btn1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(),
+                            "Button clicked index = " + id_, Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
+        }
+        CommunityActivity.eventsButtons.clear();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        Button btn = new Button(this);
+        btn.setId(i);
+        final int id_ = btn.getId();
+        String addString = "Add new event";
+        CharSequence addSequence = addString.subSequence(0, addString.length());
+        btn.setText(addSequence);
+        linear.addView(btn, params);
+        Button btn1 = ((Button) findViewById(id_));
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(),
+                        "Button clicked index = " + id_, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
     }
 }

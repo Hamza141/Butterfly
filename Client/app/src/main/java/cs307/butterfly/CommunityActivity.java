@@ -1,7 +1,6 @@
 package cs307.butterfly;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
@@ -18,6 +17,7 @@ public class CommunityActivity extends AppCompatActivity {
     public static SpannableString EXTRA_EVENTS = new SpannableString("com.cs307.butterfly.EVENTS");
     public static int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
     public static Date date;
+    public static ArrayList<SpannableString> eventsButtons = new ArrayList<>();
     private Community community;
 
     @Override
@@ -61,39 +61,23 @@ public class CommunityActivity extends AppCompatActivity {
         EXTRA_TITLE = dateString;
         Intent intent = new Intent(this, EventsActivity.class);
 
-        ArrayList<Integer> nameLengths = new ArrayList<>();
-        ArrayList<Integer> timeLengths = new ArrayList<>();
-        ArrayList<Integer> placeLengths = new ArrayList<>();
-        ArrayList<Integer> descriptionLengths = new ArrayList<>();
-        int numEvents = 0;
+        int nameLength;
+        int timeLength;
 
-        String eventsString = "";
         for (int i = 0; i < community.getCommunityEvents().size(); i++) {
             CommunityEvent event = community.getCommunityEvents().get(i);
             if (event.getDate().get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR) &&
                     event.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)) {
-                eventsString = eventsString.concat(event.getName());
-                nameLengths.add(event.getName().length());
-                eventsString = eventsString.concat(event.getStartTime());
-                timeLengths.add(event.getStartTime().length());
-                eventsString = eventsString.concat(event.getPlace());
-                placeLengths.add(event.getPlace().length());
-                eventsString = eventsString.concat(event.getDescription());
-                descriptionLengths.add(event.getDescription().length());
-                numEvents++;
+                String eventString = "";
+                eventString = eventString.concat(event.getName());
+                nameLength = event.getName().length();
+                eventString = eventString.concat(event.getStartTime());
+                timeLength = event.getStartTime().length();
+                SpannableString eventSpannable = new SpannableString(eventString);
+                eventSpannable.setSpan(new TextAppearanceSpan(this, android.R.style.TextAppearance_DeviceDefault_Large), 0, nameLength, 0);
+                eventSpannable.setSpan(new TextAppearanceSpan(this, android.R.style.TextAppearance_DeviceDefault_Medium), nameLength, nameLength + timeLength, 0);
+                eventsButtons.add(eventSpannable);
             }
-        }
-        EXTRA_EVENTS = new SpannableString(eventsString);
-        int totalLength = 0;
-        for (int i = 0; i < numEvents; i++) {
-            EXTRA_EVENTS.setSpan(new TextAppearanceSpan(this, android.R.style.TextAppearance_DeviceDefault_Large), totalLength, totalLength + nameLengths.get(i), 0);
-            totalLength += nameLengths.get(i);
-            EXTRA_EVENTS.setSpan(new TextAppearanceSpan(this, android.R.style.TextAppearance_DeviceDefault_Medium), totalLength, totalLength + timeLengths.get(i), 0);
-            totalLength += timeLengths.get(i);
-            EXTRA_EVENTS.setSpan(new TextAppearanceSpan(this, android.R.style.TextAppearance_DeviceDefault_Medium), totalLength, totalLength + placeLengths.get(i), 0);
-            totalLength += placeLengths.get(i);
-            EXTRA_EVENTS.setSpan(new TextAppearanceSpan(this, android.R.style.TextAppearance_DeviceDefault_Medium), totalLength, totalLength + descriptionLengths.get(i), 0);
-            totalLength += descriptionLengths.get(i);
         }
         startActivity(intent);
     }
