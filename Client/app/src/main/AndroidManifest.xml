@@ -30,8 +30,8 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CommunityActivity"
-            android:label="@string/title_activity_community"
+            android:name=".CalendarActivity"
+            android:label="CalendarActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

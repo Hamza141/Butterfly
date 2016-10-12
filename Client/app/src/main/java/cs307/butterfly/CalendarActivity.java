@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CommunityActivity extends AppCompatActivity {
+public class CalendarActivity extends AppCompatActivity {
     public static String EXTRA_TITLE = "com.cs307.butterfly.TITLE";
     public static SpannableString EXTRA_EVENTS = new SpannableString("com.cs307.butterfly.EVENTS");
     public static int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
@@ -23,7 +23,7 @@ public class CommunityActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_community);
+        setContentView(R.layout.activity_calendar);
 
         this.community = new Community();
         Calendar date = Calendar.getInstance();
@@ -38,7 +38,7 @@ public class CommunityActivity extends AppCompatActivity {
         ecv.setEventHandler(new EventCalendarView.EventHandler() {
             @Override
             public void onClick(Date date) {
-                CommunityActivity.date = date;
+                CalendarActivity.date = date;
                 openEvent(ecv);
             }
         });

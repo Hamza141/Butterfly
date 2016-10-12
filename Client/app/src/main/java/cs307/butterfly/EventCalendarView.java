@@ -77,7 +77,7 @@ public class EventCalendarView extends LinearLayout
     private void initControl(Context context, AttributeSet attrs)
     {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.content_community, this);
+        inflater.inflate(R.layout.content_calendar, this);
 
         loadDateFormat(attrs);
         assignUiElements();
@@ -107,7 +107,7 @@ public class EventCalendarView extends LinearLayout
             public void onClick(View v)
             {
                 currentDate.add(Calendar.MONTH, 1);
-                CommunityActivity.currentMonth++;
+                CalendarActivity.currentMonth++;
                 updateCalendar(events);
             }
         });
@@ -119,7 +119,7 @@ public class EventCalendarView extends LinearLayout
             public void onClick(View v)
             {
                 currentDate.add(Calendar.MONTH, -1);
-                CommunityActivity.currentMonth--;
+                CalendarActivity.currentMonth--;
                 updateCalendar(events);
             }
         });
