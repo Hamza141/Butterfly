@@ -1,5 +1,7 @@
 package cs307.butterfly;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +19,7 @@ public class GroupActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Group Page");
+        final Context context = this;
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -26,8 +29,8 @@ public class GroupActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(context, CalendarActivity.class);
+                startActivity(intent);
             }
         });
     }
