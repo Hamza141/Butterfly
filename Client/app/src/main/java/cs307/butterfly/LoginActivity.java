@@ -145,13 +145,13 @@ public class LoginActivity extends AppCompatActivity implements
 
             Intent intent = new Intent(this, CommunityActivity.class);
             startActivity(intent);
-
-
+            findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         } else {
             status.setText(R.string.signed_out);
             status.setVisibility(View.VISIBLE);
+            findViewById(R.id.imageView2).setVisibility(View.GONE);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
