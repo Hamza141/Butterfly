@@ -2,6 +2,11 @@ package cs307.butterfly;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,18 +18,34 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 
+
+
 public class CommunityActivity extends AppCompatActivity {
     final Context context = this;
+
     private String result;
     Button b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
+
+
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("My Groups");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageBitmap(textAsBitmap("+", 40, Color.WHITE));
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,6 +77,20 @@ public void addGroup(){
     dialog.show();
 }
 
+    public static Bitmap textAsBitmap(String text, float textSize, int textColor) {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setTextSize(textSize);
+        paint.setColor(textColor);
+        paint.setTextAlign(Paint.Align.LEFT);
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) (paint.measureText(text) + 0.0f); // round
+        int height = (int) (baseline + paint.descent() + 0.0f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(text, 0, baseline, paint);
+        return image;
+    }
 
     public void addButton()
     {
@@ -65,6 +100,17 @@ public void addGroup(){
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,320); // 60 is height you can set it as u need
         b.setLayoutParams(lp);
         ll.addView(b);
+       final Intent intent = new Intent(this, GroupActivity.class);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(intent);
+
+
+            }
+        });
+
     }
 
 }
