@@ -3,12 +3,9 @@ package cs307.butterfly;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,21 +17,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.server.response.FastJsonResponse;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.sql.Time;
 import java.util.Calendar;
-
-import static cs307.butterfly.CalendarActivity.date;
 
 /**
  * A login screen that offers login via email/password.
@@ -48,10 +40,7 @@ public class LoginActivity extends AppCompatActivity implements
     private static final String TAG = "SignInActivity";
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
-
-
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -65,11 +54,6 @@ public class LoginActivity extends AppCompatActivity implements
         status = (TextView) findViewById(R.id.status);
         status.setText("Welcome!");
 
-
-
-
-
-
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -82,8 +66,6 @@ public class LoginActivity extends AppCompatActivity implements
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-
     }
 
     @Override
@@ -103,8 +85,6 @@ public class LoginActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-
-
 
 
             //Gather user's info
@@ -128,8 +108,6 @@ public class LoginActivity extends AppCompatActivity implements
                             }
                         }
                     }).start();
-
-
 
                     String personName = acct.getDisplayName();
                     String personGivenName = acct.getGivenName();
@@ -174,9 +152,7 @@ public class LoginActivity extends AppCompatActivity implements
                 status.setText(R.string.login_error);
             }
 
-            //TODO Send user's info to server
-
-
+                //TODO Send user's info to server
             updateUI(true);
 
         } else {
