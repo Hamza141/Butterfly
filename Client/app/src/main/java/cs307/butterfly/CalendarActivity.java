@@ -18,22 +18,16 @@ public class CalendarActivity extends AppCompatActivity {
     public static int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
     public static Date date;
     public static ArrayList<SpannableString> eventsButtons = new ArrayList<>();
-    private Community community;
+    public static Community community;
+    public static EventCalendarView ecv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+        Log.d("calendarCreate", community.getName());
 
-        this.community = new Community();
-        Calendar date = Calendar.getInstance();
-        for (int i = 0; i < 24; i++) {
-            Calendar calendarClone = (Calendar) date.clone();
-            CommunityEvent event = new CommunityEvent(calendarClone, i, 15, String.valueOf(i));
-            community.addEvent(event);
-        }
-
-        final EventCalendarView ecv = ((EventCalendarView) findViewById(R.id.calendar_view));
+        ecv = ((EventCalendarView) findViewById(R.id.calendar_view));
         ecv.setEvents(community.getCommunityEvents());
         ecv.setEventHandler(new EventCalendarView.EventHandler() {
             @Override

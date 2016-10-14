@@ -14,6 +14,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,7 +46,16 @@ public class EventsActivity extends AppCompatActivity {
         dateString = dateString.concat("/");
         dateString = dateString.concat(String.valueOf(year));
 
-
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(CalendarActivity.date);
+        for(int i = 0; i < CalendarActivity.community.getCommunityEvents().size(); i++) {
+            if (CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.DAY_OF_YEAR) == calendar1.get(Calendar.DAY_OF_YEAR) &&
+                    CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.YEAR) == calendar1.get(Calendar.YEAR)) {
+                addButton(CalendarActivity.community.getCommunityEvents().get(i).getName());
+                Log.d("addButton", CalendarActivity.community.getCommunityEvents().get(i).getName());
+            }
+        }
+        CalendarActivity.ecv.setEvents(CalendarActivity.community.getCommunityEvents());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,11 +84,22 @@ public class EventsActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText edit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput);
-                String text=edit.getText().toString();
+                EditText nameEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput);
+                String name=nameEdit.getText().toString();
+                EditText timeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInputTime);
+                String time=timeEdit.getText().toString();
+                EditText placeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput11);
+                String place=placeEdit.getText().toString();
+                EditText descriptionEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput222);
+                String description=descriptionEdit.getText().toString();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(CalendarActivity.date);
+                CommunityEvent event = new CommunityEvent(calendar, name, time, place, description);
+                CalendarActivity.community.addEvent(event);
                 dialog.dismiss();
-                result=text;
+                result=name;
                 addButton();
+                CalendarActivity.ecv.setEvents(CalendarActivity.community.getCommunityEvents());
 
             }
         });
@@ -112,7 +133,24 @@ public class EventsActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(intent);
+            }
+        });
 
+    }
+
+    public void addButton(String name)
+    {
+        LinearLayout ll = (LinearLayout)findViewById(R.id.ll2);
+        b = new Button(this);
+        b.setText(name);
+        android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,320); // 60 is height you can set it as u need
+        b.setLayoutParams(lp);
+        ll.addView(b);
+        final Intent intent = new Intent(this, GroupActivity.class);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 startActivity(intent);
             }
         });
