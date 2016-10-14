@@ -132,6 +132,9 @@ public class CommunityEvent {
 
     public static void parseTime(String time, CommunityEvent event) {
         String[] split = time.split(":");
+        if (split[0].equals("12")) {
+            split[0] = "0";
+        }
         event.date.set(Calendar.HOUR, Integer.parseInt(split[0]));
         String[] split2 = split[1].split(" ");
         event.date.set(Calendar.MINUTE, Integer.parseInt(split2[0]));
@@ -142,6 +145,21 @@ public class CommunityEvent {
         }
         else {
             event.date.set(Calendar.AM_PM, Calendar.PM);
+        }
+    }
+
+    public void editInfo(String name, String place, String description, String time) {
+        if (!name.equals("")) {
+            this.name = name;
+        }
+        if (!place.equals("")) {
+            this.place = place;
+        }
+        if (!description.equals("")) {
+            this.description = description;
+        }
+        if (!time.equals("")) {
+            parseTime(time, this);
         }
     }
 

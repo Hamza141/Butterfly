@@ -70,12 +70,12 @@ public class EventsActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                addGroup();
+                addEvent();
             }
         });
     }
 
-    public void addGroup(){
+    public void addEvent(){
         final Dialog dialog = new Dialog(EventsActivity.this);
         dialog.setContentView(R.layout.dialog2);
         dialog.setTitle("Title");
@@ -124,7 +124,7 @@ public class EventsActivity extends AppCompatActivity {
     public void addButton()
     {
         LinearLayout ll = (LinearLayout)findViewById(R.id.ll2);
-        b = new Button(this);
+        final Button b = new Button(this);
         b.setText(result);
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,320); // 60 is height you can set it as u need
         b.setLayoutParams(lp);
@@ -144,7 +144,7 @@ public class EventsActivity extends AppCompatActivity {
     public void addButton(String name)
     {
         LinearLayout ll = (LinearLayout)findViewById(R.id.ll2);
-        b = new Button(this);
+        final Button b = new Button(this);
         b.setText(name);
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,320); // 60 is height you can set it as u need
         b.setLayoutParams(lp);
