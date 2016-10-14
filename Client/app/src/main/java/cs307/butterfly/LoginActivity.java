@@ -108,35 +108,35 @@ public class LoginActivity extends AppCompatActivity implements
 
             //Gather user's info
             if (acct != null) {
-                try {
+ /*               try {
                     Socket socket = new Socket("128.210.106.68", 60660);
                     OutputStream outputStream = socket.getOutputStream();
                     DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
                     JSONObject object = new JSONObject();
+*/
+                String personName = acct.getDisplayName();
+                String personGivenName = acct.getGivenName();
+                String personFamilyName = acct.getFamilyName();
+                String personEmail = acct.getEmail();
+                String personId = acct.getId();
+                personPhoto = acct.getPhotoUrl();
+                Picasso.with(this).load(personPhoto).into((ImageView) findViewById(R.id.imageView2));
+                status.setText(getString(R.string.signed_in_fmt, personName));
+                status.setVisibility(View.VISIBLE);
 
-                    String personName = acct.getDisplayName();
-                    String personGivenName = acct.getGivenName();
-                    String personFamilyName = acct.getFamilyName();
-                    String personEmail = acct.getEmail();
-                    String personId = acct.getId();
-                    personPhoto = acct.getPhotoUrl();
-                    Picasso.with(this).load(personPhoto).into((ImageView)findViewById(R.id.imageView2));
-                    status.setText(getString(R.string.signed_in_fmt, personName));
-                    status.setVisibility(View.VISIBLE);
-
-                    //date
-                    String dateString = "";
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
-                    int month = calendar.get(Calendar.MONTH);
-                    int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                    int year = calendar.get(Calendar.YEAR);
-                    dateString = dateString.concat(String.valueOf(month + 1));
-                    dateString = dateString.concat("/");
-                    dateString = dateString.concat(String.valueOf(dayOfMonth));
-                    dateString = dateString.concat("/");
-                    dateString = dateString.concat(String.valueOf(year));
-
+                //date
+                String dateString = "";
+                Calendar calendar = Calendar.getInstance();
+                //calendar.setTime(date);
+                int month = calendar.get(Calendar.MONTH);
+                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                int year = calendar.get(Calendar.YEAR);
+                dateString = dateString.concat(String.valueOf(month + 1));
+                dateString = dateString.concat("/");
+                dateString = dateString.concat(String.valueOf(dayOfMonth));
+                dateString = dateString.concat("/");
+                dateString = dateString.concat(String.valueOf(year));
+/*
                     object.put("idUsers", 404);
                     object.put("firstName", personGivenName);
                     object.put("lastName", personFamilyName);
@@ -156,10 +156,10 @@ public class LoginActivity extends AppCompatActivity implements
             } else {
                 status.setText(R.string.login_error);
             }
+*/
+                //TODO Send user's info to server
 
-            //TODO Send user's info to server
-
-
+            }
             updateUI(true);
 
         } else {

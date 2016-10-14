@@ -29,13 +29,8 @@ public class CommunityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
 
-
-
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
-
 
 
 
@@ -106,8 +101,6 @@ public void addGroup(){
             public void onClick(View v) {
 
                 startActivity(intent);
-
-
             }
         });
 
