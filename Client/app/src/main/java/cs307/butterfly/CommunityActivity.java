@@ -98,8 +98,10 @@ public void addGroup(){
             addButton();
 
             try {
+                object.put("function", "addCommunity");
                 object.put("communityName", text);
-            } catch (JSONException e) {
+                dataOutputStream[0].writeUTF(object.toString());
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
 

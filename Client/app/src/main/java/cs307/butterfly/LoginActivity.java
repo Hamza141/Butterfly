@@ -126,17 +126,20 @@ public class LoginActivity extends AppCompatActivity implements
                     int month = calendar.get(Calendar.MONTH);
                     int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
                     int year = calendar.get(Calendar.YEAR);
-                    dateString = dateString.concat(String.valueOf(month + 1));
-                    dateString = dateString.concat("/");
-                    dateString = dateString.concat(String.valueOf(dayOfMonth));
-                    dateString = dateString.concat("/");
-                    dateString = dateString.concat(String.valueOf(year));
 
+                    dateString = dateString.concat(String.valueOf(year));
+                    dateString = dateString.concat("-");
+                    dateString = dateString.concat(String.valueOf(month + 1));
+                    dateString = dateString.concat("-");
+                    dateString = dateString.concat(String.valueOf(dayOfMonth));
+
+
+                    object.put("function", "addUser");
                     object.put("idUsers", 404);
                     object.put("firstName", personGivenName);
                     object.put("lastName", personFamilyName);
                     object.put("GoogleID", personEmail);
-                    object.put("dateCreated", "2016-10-13");
+                    object.put("dateCreated", dateString);
                     dataOutputStream[0].writeUTF(object.toString());
 
                 }

@@ -21,6 +21,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.Calendar;
 
 public class EventsActivity extends AppCompatActivity {
@@ -84,6 +91,26 @@ public class EventsActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                final Socket[] socket = new Socket[1];
+                final OutputStream[] outputStream = new OutputStream[1];
+                final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
+                JSONObject object = new JSONObject();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //10.186.111.165
+                        try {
+                            socket[0] = new Socket("10.0.2.2", 3300);
+                            outputStream[0] = socket[0].getOutputStream();
+                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
                 EditText nameEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput);
                 String name=nameEdit.getText().toString();
                 EditText timeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInputTime);
@@ -100,6 +127,18 @@ public class EventsActivity extends AppCompatActivity {
                 result=name;
                 addButton();
                 CalendarActivity.ecv.setEvents(CalendarActivity.community.getCommunityEvents());
+
+
+                try {
+                    object.put("function", "addEvent");
+                    object.put("eventName", name);
+                    object.put("eventTime", time);
+                    object.put("description", description);
+                    object.put("locationName", place);
+                    dataOutputStream[0].writeUTF(object.toString());
+                } catch (JSONException | IOException e) {
+                    e.printStackTrace();
+                }
 
             }
         });
