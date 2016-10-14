@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements
     private static final String TAG = "SignInActivity";
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
