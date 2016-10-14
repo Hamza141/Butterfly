@@ -20,6 +20,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.server.response.FastJsonResponse;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -109,10 +110,26 @@ public class LoginActivity extends AppCompatActivity implements
             //Gather user's info
             if (acct != null) {
                 try {
-                    Socket socket = new Socket("128.210.106.68", 60660);
-                    OutputStream outputStream = socket.getOutputStream();
-                    DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+                    final Socket[] socket = new Socket[1];
+                    final OutputStream[] outputStream = new OutputStream[1];
+                    final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
                     JSONObject object = new JSONObject();
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //10.186.111.165
+                            try {
+                                socket[0] = new Socket("10.0.2.2", 3300);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
+
 
                     String personName = acct.getDisplayName();
                     String personGivenName = acct.getGivenName();
@@ -127,7 +144,7 @@ public class LoginActivity extends AppCompatActivity implements
                     //date
                     String dateString = "";
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
+//                    calendar.setTime(date);
                     int month = calendar.get(Calendar.MONTH);
                     int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
                     int year = calendar.get(Calendar.YEAR);
@@ -141,8 +158,8 @@ public class LoginActivity extends AppCompatActivity implements
                     object.put("firstName", personGivenName);
                     object.put("lastName", personFamilyName);
                     object.put("GoogleID", personEmail);
-                    object.put("dateCreated", dateString);
-                    dataOutputStream.writeUTF(object.toString());
+                    object.put("dateCreated", "2016-10-13");
+                    dataOutputStream[0].writeUTF(object.toString());
 
                 }
                 catch (IOException e) {
