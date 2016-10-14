@@ -89,7 +89,7 @@ public class CommunityEvent {
     }
 
     public String toString() {
-        String eventString = this.name + "\n";
+        String eventString = "Name: " + this.name + "\n";
 
         eventString = eventString.concat("Start Time: ");
         if (date.get(Calendar.HOUR) == 0) {
@@ -121,6 +121,7 @@ public class CommunityEvent {
 
         if (description != null) {
             eventString = eventString.concat("\n");
+            eventString = eventString.concat("Description: ");
             eventString = eventString.concat(description);
         }
 

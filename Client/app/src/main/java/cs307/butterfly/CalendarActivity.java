@@ -25,7 +25,6 @@ public class CalendarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-        Log.d("calendarCreate", community.getName());
 
         ecv = ((EventCalendarView) findViewById(R.id.calendar_view));
         ecv.setEvents(community.getCommunityEvents());

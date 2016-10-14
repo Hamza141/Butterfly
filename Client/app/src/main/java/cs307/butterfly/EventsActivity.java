@@ -133,7 +133,9 @@ public class EventsActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(intent);
+                EventViewerActivity.name = b.getText().toString();
+                Intent intent1 = new Intent(context, EventViewerActivity.class);
+                startActivity(intent1);
             }
         });
 
@@ -151,7 +153,9 @@ public class EventsActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(intent);
+                EventViewerActivity.name = b.getText().toString();
+                Intent intent1 = new Intent(context, EventViewerActivity.class);
+                startActivity(intent1);
             }
         });
 
