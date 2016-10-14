@@ -80,6 +80,7 @@ public void addGroup(){
                 public void run() {
                     //10.186.111.165
                     try {
+                        //10.0.2.2
                         socket[0] = new Socket("10.0.2.2", 3300);
                         outputStream[0] = socket[0].getOutputStream();
                         dataOutputStream[0] = new DataOutputStream(outputStream[0]);
