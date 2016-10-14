@@ -18,7 +18,7 @@ public class GroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Group Page");
+        getSupportActionBar().setTitle(CalendarActivity.community.getName());
         final Context context = this;
 
 

@@ -126,19 +126,18 @@ public void addGroup(){
     public void addButton()
     {
         LinearLayout ll = (LinearLayout)findViewById(R.id.linear);
-        b = new Button(this);
-        b.setText(result);
+        final Button b1 = new Button(this);
+        b1.setText(new String(result));
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,320); // 60 is height you can set it as u need
-        b.setLayoutParams(lp);
-        ll.addView(b);
+        b1.setLayoutParams(lp);
+        ll.addView(b1);
        final Intent intent = new Intent(this, GroupActivity.class);
-        b.setOnClickListener(new View.OnClickListener() {
+        b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for(int i = 0; i < communities.size(); i++) {
-                    if (communities.get(i).getName().equals(b.getText())) {
+                    if (communities.get(i).getName().equals(b1.getText().toString())) {
                         CalendarActivity.community = communities.get(i);
-                        Log.d("setCommunity", CalendarActivity.community.getName());
                     }
                 }
                 startActivity(intent);
