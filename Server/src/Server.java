@@ -11,23 +11,37 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+
 public class Server extends Thread {
     private ServerSocket serverSocket;
     static final private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final private String DB_URL = "jdbc:mysql://localhost/Butterfly";
     static final private String USER = "root";
     static final private String PASS = "Ghost999";
+    static private Connection conn = null;
+    static private Statement stmt = null;
+    static private ResultSet rs;
+    static private String sql;
+    static private long id;
 
     private Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
     }
 
     public void run() {
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs;
-        String sql;
+
         while (true) {
+            try {
+                URL whatismyip;
+                whatismyip = new URL("http://checkip.amazonaws.com");
+                BufferedReader in;
+                in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+                String ip = in.readLine();
+                System.out.println(ip);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+
             System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -40,15 +54,23 @@ public class Server extends Thread {
                 DataInputStream is = new DataInputStream(server.getInputStream());
                 Object obj = parser.parse(is.readUTF());
                 JSONObject obj2 = (JSONObject) obj;
-                String first = (String) obj2.get("firstName");
-                String last = (String) obj2.get("lastName");
-                String google = (String) obj2.get("GoogleID");
-                String dateCreated = (String) obj2.get("dateCreated");
-                sql = "INSERT INTO Users VALUES('5', '" + first + "', '" + last + "', '" + google + "', '" + dateCreated + "')";
-                System.out.println(sql);
-                stmt.execute(sql);
-                sql = "INSERT INTO Users VALUES('" + first + "', '" + last + "', '" + google + "', '" + dateCreated + "')";
-                stmt.execute(sql);
+                String function = (String) obj2.get("function");
+                if (function.equals("addUser")) {
+                    addUser(obj2);
+                } else if (function.equals("addCommunity")) {
+                    String name = (String) obj2.get("communityName");
+                    sql = "insert into Communities (name) values('" + name + "')";
+                    stmt.execute(sql);
+                } else if (function.equals("addEvent")) {
+                    String eventName = (String) obj2.get("eventName");
+                    String eventTime = (String) obj2.get("eventTime");
+                    String desc = (String) obj2.get("description");
+                    String location = (String) obj2.get("locationName");
+                    sql = "INSERT INTO Events (Name, eventTime, description, location) values('" + eventName + "', '" + eventTime + "', '" + desc + "', '" + location +"')";
+                } else if (function.equals("leaveCommunity")) {
+
+                }
+
             } catch (SocketTimeoutException s) {
                 System.out.println("Socket timed out!");
                 break;
@@ -66,55 +88,61 @@ public class Server extends Thread {
         }
     }
 
+    private void addUser(JSONObject obj) {
+        String first = addWcomma((String) obj.get("firstName"));
+        String last = addWcomma((String) obj.get("lastName"));
+        String google = addWcomma((String) obj.get("GoogleID"));
+        String dateCreated = addEnd((String) obj.get("dateCreated"));
+        try {
+            String queryCheck = "SELECT count(*) from Users WHERE GoogleID = '" + obj.get("GoogleID") + "'";
+            System.out.println(queryCheck);
+            rs = stmt.executeQuery(queryCheck);
+            if(rs.next()) {
+                if (rs.getInt(1) == 0) {
+                    String sql = "INSERT INTO Users VALUES('7', " + first + last + google + dateCreated + ")";
+                    System.out.println(sql);
+                    stmt.execute(sql);
+                } else {
+                    
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String addFirst(String value) {
+        String formatted = "'";
+        formatted += value;
+        formatted += "' ";
+        return formatted;
+    }
+
+    private String addWcomma(String value) {
+        String formatted = "'";
+        formatted += value;
+        formatted += "', ";
+        return formatted;
+    }
+
+    private String addEnd(String value) {
+        String formatted = "'";
+        formatted += value;
+        formatted += "'";
+        return formatted;
+    }
+
     public static void main(String[] args) {
         int port = 60660;
-
         try {
-
-            /*//INSERT VALUES INTO TABLE
-            //FORMAT sql = "INSERT INTO <TABLENAME> VALUES (<listvalues>)";
-            //watch for value type format
-            //sql = "INSERT INTO Users VALUES(1, 'Khanh', 'Tran', 'Google', '2016-10-09')";
-            sql = "%s %s %s ";
-            stmt.execute(sql);
-
-            //READ VALUES FROM TABLE
-            //FORMAT sql = "SELECT <listvalues> FROM <TABLENAME>";
-            //sql = "SELECT * FROM Users";
-            rs = stmt.executeQuery(sql);
-            while(rs.next()) {
-                //retrieve data by column name
-                //some var = rs.getType(<listvalue>);
-                //if multiple values, read into arraylist, obj.put("fieldname", arraylist);
-            }
-
-            //UPDATE VALUES IN TABLE
-            //FORMAT sql = "UPDATE <TABLENAME> SET <COLUMNNAME> = 'NEWVALUE' WHERE 'IDVALUE' = 'ID'";
-            //sql = "UPDATE Users SET GoogleID = 'notGoggly' WHERE idUsers='1'";
-            //multiple "UPDATE Users SET GoogleID = "notGoggly", firstName = "K" WHERE idUsers = 1";
-            stmt.execute(sql);
-
-            //DELETE ROW FROM TABLE
-            //FORMAT sql = "DELETE FROM <TABLENAME> WHERE <ID> = <desiredID>";
-            */Thread t = new Server(port);
+            Thread t = new Server(port);
             t.start();
         } catch (IOException e) {
             e.printStackTrace();
         } catch(Exception e) {
-            //Handle errors for Class.forName
             e.printStackTrace();
-        //} finally {
-            /*try {
-                if (stmt!=null)
-                    stmt.close();
-            } catch(SQLException se2) {
-            }// nothing we can do
-            try {
-                if (conn!=null)
-                    conn.close();
-            } catch(SQLException se) {
-                se.printStackTrace();
-            }*/
+        } finally {
+
         }
     }
 }

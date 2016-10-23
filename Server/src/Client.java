@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
 
 public class Client {
     public static void main(String[] args) {
-        String serverName = "localhost";
+        String serverName = "10.186.80.161";
         int port = 60660;
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
@@ -17,6 +17,7 @@ public class Client {
             OutputStream outToServer = client.getOutputStream();
             DataOutputStream out = new DataOutputStream(outToServer);
             JSONObject obj = new JSONObject();
+            obj.put("function", "addUser");
             obj.put("firstName", "Khanh");
             obj.put("lastName", "Tran");
             obj.put("GoogleID", "Google1");
