@@ -86,82 +86,71 @@ public class LoginActivity extends AppCompatActivity implements
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
 
-
             //Gather user's info
             if (acct != null) {
-                try {
-                    final Socket[] socket = new Socket[1];
-                    final OutputStream[] outputStream = new OutputStream[1];
-                    final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
-                    JSONObject object = new JSONObject();
+                final Socket[] socket = new Socket[1];
+                final OutputStream[] outputStream = new OutputStream[1];
+                final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
+                final JSONObject object = new JSONObject();
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //10.186.111.165
-                            try {
-                                socket[0] = new Socket("10.0.2.2", 3300);
-                                outputStream[0] = socket[0].getOutputStream();
-                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                final String personName = acct.getDisplayName();
+                final String personGivenName = acct.getGivenName();
+                final String personFamilyName = acct.getFamilyName();
+                final String personEmail = acct.getEmail();
+                final String personId = acct.getId();
+                personPhoto = acct.getPhotoUrl();
+                Picasso.with(this).load(personPhoto).into((ImageView) findViewById(R.id.imageView2));
+                status.setText(getString(R.string.signed_in_fmt, personName));
+                status.setVisibility(View.VISIBLE);
+
+                //date
+                String dateString = "";
+                Calendar calendar = Calendar.getInstance();
+                int month = calendar.get(Calendar.MONTH);
+                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                int year = calendar.get(Calendar.YEAR);
+
+                dateString = dateString.concat(String.valueOf(year));
+                dateString = dateString.concat("-");
+                dateString = dateString.concat(String.valueOf(month + 1));
+                dateString = dateString.concat("-");
+                dateString = dateString.concat(String.valueOf(dayOfMonth));
+
+                final String finalDateString = dateString;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            socket[0] = new Socket(MainActivity.ip, 3300);
+                            outputStream[0] = socket[0].getOutputStream();
+                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                            object.put("function", "addUser");
+                            object.put("idUsers", 404);
+                            object.put("firstName", personGivenName);
+                            object.put("lastName", personFamilyName);
+                            object.put("GoogleID", personEmail);
+                            object.put("dateCreated", finalDateString);
+                            dataOutputStream[0].writeUTF(object.toString());
+                        } catch (IOException | JSONException e) {
+                            e.printStackTrace();
                         }
-                    }).start();
-
-                    String personName = acct.getDisplayName();
-                    String personGivenName = acct.getGivenName();
-                    String personFamilyName = acct.getFamilyName();
-                    String personEmail = acct.getEmail();
-                    String personId = acct.getId();
-                    personPhoto = acct.getPhotoUrl();
-                    Picasso.with(this).load(personPhoto).into((ImageView)findViewById(R.id.imageView2));
-                    status.setText(getString(R.string.signed_in_fmt, personName));
-                    status.setVisibility(View.VISIBLE);
-
-                    //date
-                    String dateString = "";
-                    Calendar calendar = Calendar.getInstance();
-//                    calendar.setTime(date);
-                    int month = calendar.get(Calendar.MONTH);
-                    int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                    int year = calendar.get(Calendar.YEAR);
-
-                    dateString = dateString.concat(String.valueOf(year));
-                    dateString = dateString.concat("-");
-                    dateString = dateString.concat(String.valueOf(month + 1));
-                    dateString = dateString.concat("-");
-                    dateString = dateString.concat(String.valueOf(dayOfMonth));
-
-
-                    object.put("function", "addUser");
-                    object.put("idUsers", 404);
-                    object.put("firstName", personGivenName);
-                    object.put("lastName", personFamilyName);
-                    object.put("GoogleID", personEmail);
-                    object.put("dateCreated", dateString);
-                    dataOutputStream[0].writeUTF(object.toString());
-
-                }
-                catch (IOException e) {
-                    System.out.println("IO ERROR");
-                }
-                catch (JSONException e) {
-                    System.out.println("JSON ERROR");
-                }
+                    }
+                }).start();
 
 
             } else {
                 status.setText(R.string.login_error);
             }
 
-                //TODO Send user's info to server
             updateUI(true);
 
-        } else {
+        } else
+
+        {
             // Signed out, show unauthenticated UI.
             updateUI(false);
         }
+
     }
 
     private void signIn() {

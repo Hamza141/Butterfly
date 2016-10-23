@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +33,7 @@ public class CommunityActivity extends AppCompatActivity {
 
     private String result;
     Button b;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -61,55 +61,48 @@ public class CommunityActivity extends AppCompatActivity {
         });
     }
 
-public void addGroup(){
-    final Dialog dialog = new Dialog(CommunityActivity.this);
-    dialog.setContentView(R.layout.dialog);
-    dialog.setTitle("Title");
+    public void addGroup() {
+        final Dialog dialog = new Dialog(CommunityActivity.this);
+        dialog.setContentView(R.layout.dialog);
+        dialog.setTitle("Title");
 
-    b = (Button) dialog.findViewById(R.id.ok);
-    b.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            final Socket[] socket = new Socket[1];
-            final OutputStream[] outputStream = new OutputStream[1];
-            final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
-            JSONObject object = new JSONObject();
+        b = (Button) dialog.findViewById(R.id.ok);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Socket[] socket = new Socket[1];
+                final OutputStream[] outputStream = new OutputStream[1];
+                final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
+                final JSONObject object = new JSONObject();
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    //10.186.111.165
-                    try {
-                        //10.0.2.2
-                        socket[0] = new Socket("10.0.2.2", 3300);
-                        outputStream[0] = socket[0].getOutputStream();
-                        dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+
+                EditText edit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput);
+                final String text = edit.getText().toString();
+                dialog.dismiss();
+                result = text;
+                Community community = new Community(text);
+                communities.add(community);
+                addButton();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            socket[0] = new Socket(MainActivity.ip, 3300);
+                            outputStream[0] = socket[0].getOutputStream();
+                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                            object.put("function", "addCommunity");
+                            object.put("communityName", text);
+                            dataOutputStream[0].writeUTF(object.toString());
+                        } catch (IOException | JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            }).start();
-
-            EditText edit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput);
-            String text=edit.getText().toString();
-            dialog.dismiss();
-            result=text;
-            Community community = new Community(text);
-            communities.add(community);
-            addButton();
-
-            try {
-                object.put("function", "addCommunity");
-                object.put("communityName", text);
-                dataOutputStream[0].writeUTF(object.toString());
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
+                }).start();
             }
-
-        }
-    });
-    dialog.show();
-}
+        });
+        dialog.show();
+    }
 
     public static Bitmap textAsBitmap(String text, float textSize, int textColor) {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -126,19 +119,18 @@ public void addGroup(){
         return image;
     }
 
-    public void addButton()
-    {
-        LinearLayout ll = (LinearLayout)findViewById(R.id.linear);
+    public void addButton() {
+        LinearLayout ll = (LinearLayout) findViewById(R.id.linear);
         final Button b1 = new Button(this);
         b1.setText(new String(result));
-        android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,320); // 60 is height you can set it as u need
+        android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
         b1.setLayoutParams(lp);
         ll.addView(b1);
-       final Intent intent = new Intent(this, GroupActivity.class);
+        final Intent intent = new Intent(this, GroupActivity.class);
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(int i = 0; i < communities.size(); i++) {
+                for (int i = 0; i < communities.size(); i++) {
                     if (communities.get(i).getName().equals(b1.getText().toString())) {
                         CalendarActivity.community = communities.get(i);
                     }
