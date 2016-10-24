@@ -1,8 +1,10 @@
 package cs307.butterfly;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +30,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Calendar;
 
+import android.Manifest;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -41,8 +45,26 @@ public class LoginActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
 
+    private static final int REQUEST = 1;
+    private static String[] PERMISSIONS = {
+            Manifest.permission.GET_ACCOUNTS,
+           // Manifest.permission.READ_CONTACTS,
+            Manifest.permission.INTERNET};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        for (String PERMISSION : PERMISSIONS) {
+            int permission = ActivityCompat.checkSelfPermission(this, PERMISSION);
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // We don't have permission so prompt the user
+                ActivityCompat.requestPermissions(
+                        this,
+                        PERMISSIONS,
+                        REQUEST
+                );
+            }
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
