@@ -42,7 +42,7 @@ public class Server extends Thread {
         while (true) {
             System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
             try {
-                Class.forName("com.mysql.jdbc.Driver");
+                Class.forName(JDBC_DRIVER);
                 conn = DriverManager.getConnection(DB_URL, USER, PASS);
                 rs = conn.getMetaData().getCatalogs();
                 stmt = conn.createStatement();
@@ -68,7 +68,6 @@ public class Server extends Thread {
                 } else if (function.equals("leaveCommunity")) {
                     leaveCommunity(obj2);
                 }
-
             } catch (SocketTimeoutException s) {
                 System.out.println("Socket timed out!");
                 break;
@@ -150,6 +149,7 @@ public class Server extends Thread {
                     ps.setString(10, Private);
                     System.out.println(ps);
                     ps.executeUpdate();
+                    createCommunityEventTable(name);
                 } else {
                     out.writeUTF("1");
                 }
@@ -158,6 +158,20 @@ public class Server extends Thread {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createCommunityEventTable(String communityName) {
+        // DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
+        String newTable = "CREATE TABLE `" + communityName + "Calendar` ("
+            + "idEvents INT(4), " + "name VARCHAR(255), " + "description VARCHAR(255), "
+            + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), " + "address VARCHAR(255), "
+            + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), " + "numAttendees INT(4))";
+        System.out.println(newTable);
+        try {
+            stmt.executeUpdate(newTable);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
