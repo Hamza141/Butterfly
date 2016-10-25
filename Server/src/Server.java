@@ -5,12 +5,9 @@
 import java.net.*;
 import java.io.*;
 import java.sql.*;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-
 
 public class Server extends Thread {
     private ServerSocket serverSocket;
@@ -59,11 +56,6 @@ public class Server extends Thread {
                 } else if (function.equals("addCommunity")) {
                     addCommunity(obj2);
                 } else if (function.equals("addEvent")) {
-                    String eventName = (String) obj2.get("eventName");
-                    String eventTime = (String) obj2.get("eventTime");
-                    String desc = (String) obj2.get("description");
-                    String location = (String) obj2.get("locationName");
-                    //sql = "INSERT INTO Events (Name, eventTime, description, location) values('" + eventName + "', '" + eventTime + "', '" + desc + "', '" + location +"')";
                     addEvent(obj2);
                 } else if (function.equals("leaveCommunity")) {
                     leaveCommunity(obj2);
@@ -90,8 +82,9 @@ public class Server extends Thread {
     }
 
     private void addEvent(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        communityName += " Calendar";
         String idEvents = "0";
-        String communityID = "0";
         String name = (String) obj.get("name");
         String description = (String) obj.get("description");
         String date = (String) obj.get("date");
@@ -103,9 +96,12 @@ public class Server extends Thread {
         String locationName = (String) obj.get("locationName");
         String numAttendees = (String) obj.get("numAttendees");
         try {
-            String sql = "INSERT INTO Communities VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO `" + communityName + "` VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
-            ps.setString(10, idEvents);
+            ps.setString(1, idEvents); ps.setString(2, name);
+            ps.setString(3, description); ps.setString(4, date); ps.setString(5, city);
+            ps.setString(6, state); ps.setString(7, address); ps.setString(8, zipcode);
+            ps.setString(9, locationName); ps.setString(10, numAttendees);
             System.out.println(ps);
             ps.executeUpdate();
             out.writeUTF("0");
@@ -137,15 +133,10 @@ public class Server extends Thread {
                 if (rs.getInt(1) == 0) {
                     String sql = "INSERT INTO Communities VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
-                    ps.setString(1, idCommunities);
-                    ps.setString(2, neighboorhoodID);
-                    ps.setString(3, category);
-                    ps.setString(4, subCategory);
-                    ps.setString(5, name);
-                    ps.setString(6, description);
-                    ps.setString(7, numMembers);
-                    ps.setString(8, numUpcomgEvents);
-                    ps.setString(9, dateCreated);
+                    ps.setString(1, idCommunities); ps.setString(2, neighboorhoodID);
+                    ps.setString(3, category); ps.setString(4, subCategory); ps.setString(5, name);
+                    ps.setString(6, description); ps.setString(7, numMembers);
+                    ps.setString(8, numUpcomgEvents); ps.setString(9, dateCreated);
                     ps.setString(10, Private);
                     System.out.println(ps);
                     ps.executeUpdate();
@@ -164,7 +155,7 @@ public class Server extends Thread {
 
     private void createCommunityEventTable(String communityName) {
         // DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
-        String newTable = "CREATE TABLE `" + communityName + "Calendar` ("
+        String newTable = "CREATE TABLE `" + communityName + " Calendar` ("
             + "idEvents INT(4), " + "name VARCHAR(255), " + "description VARCHAR(255), "
             + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), " + "address VARCHAR(255), "
             + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), " + "numAttendees INT(4))";
