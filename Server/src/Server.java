@@ -2,13 +2,12 @@
  * Created by nick on 10/9/16.
  */
 
-import java.util.*;
 import java.net.*;
+import java.util.*;
 import java.io.*;
 import java.sql.*;
-/*import javax.mail.*;
+import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;*/
 import org.json.simple.parser.*;
 import org.json.simple.JSONObject;
 
@@ -67,6 +66,9 @@ public class Server extends Thread {
                     getEvents((String) obj2.get("communityName"));
                 } else if (function.equals("getNeighborhoodEvents")) {
                     getNeighborhoodEvents();
+                } else if (function.equals("emailInvite")) {
+                    sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
+                            (String) obj2.get("to"));
                 } else if (function.equals("leaveCommunity")) {
                     leaveCommunity(obj2);
                 }
@@ -76,7 +78,7 @@ public class Server extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
                 break;
-            } catch (ParseException p) {
+            } catch (org.json.simple.parser.ParseException p) {
 
                 break;
             } catch (ClassNotFoundException e) {
@@ -89,6 +91,32 @@ public class Server extends Thread {
 
     private void leaveCommunity(JSONObject obj) {
 
+    }
+
+    private void sendInvite(String from, String fromName, String to) {
+        final String password = "gmktgecmvmrtdgia";
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                        return new javax.mail.PasswordAuthentication(from, password);
+                    }
+                });
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject("Butterfly Invite");
+            message.setText(fromName + " wants you to use Butterfly");
+            Transport.send(message);
+            System.out.println("Invite Sent from: " + from + " to: " + to);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void getNeighborhoodEvents() {
