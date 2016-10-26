@@ -18,19 +18,24 @@ public class Client {
             DataOutputStream out = new DataOutputStream(outToServer);
             JSONObject obj = new JSONObject();
             /*obj.put("function", "addUser"); obj.put("firstName", "Khanh"); obj.put("lastName", "Tran");
-            obj.put("GoogleID", "Google1"); obj.put("dateCreated", "2016-10-09");*/
+            obj.put("GoogleID", "newcdragon@gmail.com"); obj.put("dateCreated", "2016-10-09");*/
             /*obj.put("function", "addCommunity"); obj.put("category", "sports");
             obj.put("subCategory", "hockey"); obj.put("name", "Red Wings");
             obj.put("description", "Best Original 6"); obj.put("dateCreated", "2016-10-23");
             obj.put("private", "0");*/
-            obj.put("function", "addEvent"); obj.put("name", "Tonight's Game");
-            obj.put("description", "Hurricanes at Red Wings"); obj.put("city", "Detroit");
-            obj.put("state", "MI"); obj.put("address", "19 Steve Yzerman Dr");
-            obj.put("zipcode", "48226"); obj.put("locationName", "Joe Louis Arena");
+            /*obj.put("function", "addEvent"); obj.put("name", "Next Game");
+            obj.put("description", "Red Wings at Blues"); obj.put("city", "St. Louis");
+            obj.put("state", "MO"); obj.put("address", "1401 Clark Ave");
+            obj.put("zipcode", "63103"); obj.put("locationName", "Scottrade Center");
             obj.put("numAttendees", "0"); obj.put("communityName", "Red Wings");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
+            JSONObject obj2 = new JSONObject();
+            obj2.put("function", "getEvents"); obj2.put("communityName", "Red Wings");
+            out.writeUTF(obj2.toString());
             InputStream inFromServer = client.getInputStream();
             DataInputStream in = new DataInputStream(inFromServer);
+            System.out.println("Server says " + in.readUTF());
+            System.out.println("Server says " + in.readUTF());
             System.out.println("Server says " + in.readUTF());
             client.close();
         } catch (IOException e) {

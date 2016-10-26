@@ -57,6 +57,8 @@ public class Server extends Thread {
                     addCommunity(obj2);
                 } else if (function.equals("addEvent")) {
                     addEvent(obj2);
+                } else if (function.equals("getEvents")) {
+                    getEvents((String) obj2.get("communityName"));
                 } else if (function.equals("leaveCommunity")) {
                     leaveCommunity(obj2);
                 }
@@ -79,6 +81,31 @@ public class Server extends Thread {
 
     private void leaveCommunity(JSONObject obj) {
 
+    }
+
+    private void getEvents(String communityName) {
+        try {
+            String sql = "SELECT * FROM `" + communityName + " Calendar`";
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            JSONObject obj;
+            while (rs.next()) {
+                obj = new JSONObject();
+                obj.put("name", rs.getString("name"));
+                obj.put("description", rs.getString("description"));
+                obj.put("date", rs.getString("date")); obj.put("city", rs.getString("city"));
+                obj.put("state", rs.getString("state")); obj.put("address", rs.getString("address"));
+                obj.put("zipcode", rs.getString("zipcode"));
+                obj.put("locationName", rs.getString("locationName"));
+                obj.put("numAttendees", rs.getString("numAttendees"));
+                System.out.println(obj.toString());
+                out.writeUTF(obj.toString());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addEvent(JSONObject obj) {
@@ -157,8 +184,9 @@ public class Server extends Thread {
         // DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
         String newTable = "CREATE TABLE `" + communityName + " Calendar` ("
             + "idEvents INT(4), " + "name VARCHAR(255), " + "description VARCHAR(255), "
-            + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), " + "address VARCHAR(255), "
-            + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), " + "numAttendees INT(4))";
+            + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), "
+            + "address VARCHAR(255), " + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), "
+            + "numAttendees INT(4))";
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
@@ -178,7 +206,7 @@ public class Server extends Thread {
             ps.setString(1, google);
             System.out.println(ps);
             rs = ps.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 if (rs.getInt(1) == 0) {
                     String sql = "INSERT INTO Users VALUES('7', ?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
