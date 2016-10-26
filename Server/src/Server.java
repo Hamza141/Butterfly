@@ -2,12 +2,16 @@
  * Created by nick on 10/9/16.
  */
 
+import java.util.*;
 import java.net.*;
 import java.io.*;
 import java.sql.*;
+/*import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;*/
+import org.json.simple.parser.*;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
 
 public class Server extends Thread {
     private ServerSocket serverSocket;
@@ -53,12 +57,16 @@ public class Server extends Thread {
                 String function = (String) obj2.get("function");
                 if (function.equals("addUser")) {
                     addUser(obj2);
+                } else if (function.equals("addCommunityUser")) {
+                    addCommunityUser((String) obj2.get("communityName"));
                 } else if (function.equals("addCommunity")) {
                     addCommunity(obj2);
                 } else if (function.equals("addEvent")) {
                     addEvent(obj2);
                 } else if (function.equals("getEvents")) {
                     getEvents((String) obj2.get("communityName"));
+                } else if (function.equals("getNeighborhoodEvents")) {
+                    getNeighborhoodEvents();
                 } else if (function.equals("leaveCommunity")) {
                     leaveCommunity(obj2);
                 }
@@ -81,6 +89,24 @@ public class Server extends Thread {
 
     private void leaveCommunity(JSONObject obj) {
 
+    }
+
+    private void getNeighborhoodEvents() {
+        String sql = "SELECT name FROM Communities";
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            ArrayList<String> communities = new ArrayList<String>();
+            while (rs.next()) {
+                communities.add(rs.getString("name"));
+            }
+            for (String name : communities) {
+                System.out.println("Community " + name);
+                getEvents(name);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getEvents(String communityName) {
@@ -139,6 +165,34 @@ public class Server extends Thread {
         }
     }
 
+    private void createCommunityUserTable(String communityName) {
+        //DATE: YYYY-MM-DD
+        String newTable = "CREATE TABLE `" + communityName + " Users` ("
+            + "idUsers INT(4), " + "firstName VARCHAR(255), " + "lastName VARCHAR(255), "
+            + "googleID VARCHAR(255), " + "dateCreated DATE)";
+        System.out.println(newTable);
+        try {
+            stmt.executeUpdate(newTable);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createCommunityEventTable(String communityName) {
+        // DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
+        String newTable = "CREATE TABLE `" + communityName + " Calendar` ("
+            + "idEvents INT(4), " + "name VARCHAR(255), " + "description VARCHAR(255), "
+            + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), "
+            + "address VARCHAR(255), " + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), "
+            + "numAttendees INT(4))";
+        System.out.println(newTable);
+        try {
+            stmt.executeUpdate(newTable);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void addCommunity(JSONObject obj) {
         String idCommunities = "0";
         String neighboorhoodID = "0";
@@ -167,6 +221,7 @@ public class Server extends Thread {
                     ps.setString(10, Private);
                     System.out.println(ps);
                     ps.executeUpdate();
+                    createCommunityUserTable(name);
                     createCommunityEventTable(name);
                 } else {
                     out.writeUTF("1");
@@ -180,19 +235,8 @@ public class Server extends Thread {
         }
     }
 
-    private void createCommunityEventTable(String communityName) {
-        // DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
-        String newTable = "CREATE TABLE `" + communityName + " Calendar` ("
-            + "idEvents INT(4), " + "name VARCHAR(255), " + "description VARCHAR(255), "
-            + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), "
-            + "address VARCHAR(255), " + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), "
-            + "numAttendees INT(4))";
-        System.out.println(newTable);
-        try {
-            stmt.executeUpdate(newTable);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private void addCommunityUser(String communityName) {
+
     }
 
     private void addUser(JSONObject obj) {

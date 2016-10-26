@@ -17,20 +17,22 @@ public class Client {
             OutputStream outToServer = client.getOutputStream();
             DataOutputStream out = new DataOutputStream(outToServer);
             JSONObject obj = new JSONObject();
+            JSONObject obj2 = new JSONObject();
             /*obj.put("function", "addUser"); obj.put("firstName", "Khanh"); obj.put("lastName", "Tran");
             obj.put("GoogleID", "newcdragon@gmail.com"); obj.put("dateCreated", "2016-10-09");*/
             /*obj.put("function", "addCommunity"); obj.put("category", "sports");
-            obj.put("subCategory", "hockey"); obj.put("name", "Red Wings");
-            obj.put("description", "Best Original 6"); obj.put("dateCreated", "2016-10-23");
+            obj.put("subCategory", "soccer"); obj.put("name", "Chelsea FC");
+            obj.put("description", "London is Blue"); obj.put("dateCreated", "2016-10-25");
             obj.put("private", "0");*/
-            /*obj.put("function", "addEvent"); obj.put("name", "Next Game");
-            obj.put("description", "Red Wings at Blues"); obj.put("city", "St. Louis");
-            obj.put("state", "MO"); obj.put("address", "1401 Clark Ave");
-            obj.put("zipcode", "63103"); obj.put("locationName", "Scottrade Center");
-            obj.put("numAttendees", "0"); obj.put("communityName", "Red Wings");
-            out.writeUTF(obj.toString());*/
-            JSONObject obj2 = new JSONObject();
-            obj2.put("function", "getEvents"); obj2.put("communityName", "Red Wings");
+            /*obj.put("function", "addEvent"); obj.put("name", "West Ham vs Chelsea");
+            obj.put("description", "Football League Cup Round of 16"); obj.put("city", "London");
+            //obj.put("state", "MO"); obj.put("zipcode", "63103");
+            obj.put("address", "Queen Elizabeth Olympic Park, London E20 2ST, United Kingdom");
+            obj.put("locationName", "London Stadium");
+            obj.put("numAttendees", "0"); obj.put("communityName", "Chelsea FC");*/
+            //obj2.put("function", "getEvents"); obj2.put("communityName", "Red Wings");
+            obj2.put("function", "getNeighborhoodEvents");
+            //out.writeUTF(obj.toString());
             out.writeUTF(obj2.toString());
             InputStream inFromServer = client.getInputStream();
             DataInputStream in = new DataInputStream(inFromServer);
