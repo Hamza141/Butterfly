@@ -3,70 +3,87 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@android:color/white"
     tools:context="cs307.butterfly.LoginActivity">
 
     <!-- Login progress -->
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="1">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        app:srcCompat="@drawable/logo" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/status"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="23dp"
-            app:srcCompat="@drawable/logo" />
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/imageView" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView2"
-            android:layout_above="@+id/imageView"
-            android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@+id/status"
-            android:layout_alignTop="@+id/status"
-            android:layout_weight="0.22" />
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/imageView2"
+        android:layout_marginTop="17dp"
+        android:gravity="center"
+        android:text="@string/status" />
 
-        <TextView
-            android:id="@+id/status"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
-            android:text="@string/status" />
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/status"
+        android:layout_marginTop="47dp" />
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
+    <Button
+        android:id="@+id/sign_out_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sign_in_button"
+        android:layout_marginTop="47dp"
+        android:background="@color/wallet_dim_foreground_disabled_holo_dark"
+        android:text="@string/sign_out"
+        android:textColor="@color/common_google_signin_btn_text_light_focused" />
 
-        <Button
-            android:id="@+id/sign_out_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="74dp"
-            android:text="@string/sign_out"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:background="@color/wallet_dim_foreground_disabled_holo_dark"
-            android:textColor="@color/common_google_signin_btn_text_light_focused"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
-    </LinearLayout>
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ip"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="192.168.1.1"
+        android:ems="10"
+        android:id="@+id/setIP"
+        android:layout_marginBottom="25dp"
+        android:layout_above="@+id/ip"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ipButton"
+        android:layout_alignTop="@+id/setIP"
+        android:layout_alignParentEnd="true" />
+
 
 </RelativeLayout>

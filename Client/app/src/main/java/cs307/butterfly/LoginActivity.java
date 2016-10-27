@@ -1,5 +1,6 @@
 package cs307.butterfly;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -8,6 +9,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +22,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.vision.text.Text;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -29,8 +33,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Calendar;
-
-import android.Manifest;
 
 /**
  * A login screen that offers login via email/password.
@@ -44,6 +46,9 @@ public class LoginActivity extends AppCompatActivity implements
     private static final String TAG = "SignInActivity";
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
+    boolean failed = true;
+
+
 
     private static final int REQUEST = 1;
     private static String[] PERMISSIONS = {
@@ -73,8 +78,22 @@ public class LoginActivity extends AppCompatActivity implements
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setVisibility(View.GONE);
 
+        final TextView ip = (TextView) findViewById(R.id.ip);
+        final EditText setIP = (EditText) findViewById(R.id.setIP);
+
         status = (TextView) findViewById(R.id.status);
         status.setText("Welcome!");
+
+        ip.setText(MainActivity.ip);
+        Button ipButton = (Button) findViewById(R.id.ipButton);
+        ipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.ip = setIP.getText().toString();
+                ip.setText(MainActivity.ip);
+            }
+        });
+
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -137,8 +156,8 @@ public class LoginActivity extends AppCompatActivity implements
                 dateString = dateString.concat(String.valueOf(month + 1));
                 dateString = dateString.concat("-");
                 dateString = dateString.concat(String.valueOf(dayOfMonth));
-
                 final String finalDateString = dateString;
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -153,12 +172,12 @@ public class LoginActivity extends AppCompatActivity implements
                             object.put("GoogleID", personEmail);
                             object.put("dateCreated", finalDateString);
                             dataOutputStream[0].writeUTF(object.toString());
+                            failed = false;
                         } catch (IOException | JSONException e) {
-                            e.printStackTrace();
+                            failed = true;
                         }
                     }
                 }).start();
-
 
             } else {
                 status.setText(R.string.login_error);
@@ -205,8 +224,13 @@ public class LoginActivity extends AppCompatActivity implements
     private void updateUI(boolean signedIn) {
         if (signedIn) {
 
-            Intent intent = new Intent(this, CommunityActivity.class);
-            startActivity(intent);
+            if (!failed) {
+                Intent intent = new Intent(this, CommunityActivity.class);
+                startActivity(intent);
+            }
+            else {
+                status.setText("Server not found");
+            }
             findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
