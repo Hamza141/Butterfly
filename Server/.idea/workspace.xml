@@ -27,8 +27,8 @@
       <file leaf-file-name="Server.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="546">
-              <caret line="314" column="38" selection-start-line="314" selection-start-column="38" selection-end-line="314" selection-end-column="38" />
+            <state relative-caret-position="-72">
+              <caret line="20" column="35" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
               <folding>
                 <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
                 <element signature="e#4319#4571#0" expanded="true" />
@@ -36,6 +36,11 @@
                 <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
                 <element signature="method#getEvents#0;class#Server#0" expanded="false" />
                 <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+                <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+                <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+                <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+                <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+                <element signature="method#addUser#0;class#Server#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -44,8 +49,8 @@
       <file leaf-file-name="Client.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+            <state relative-caret-position="358">
+              <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -64,8 +69,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/Server.java" />
         <option value="$PROJECT_DIR$/src/Client.java" />
+        <option value="$PROJECT_DIR$/src/Server.java" />
       </list>
     </option>
   </component>
@@ -450,7 +455,9 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="2" />
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="antWorkspaceConfiguration">
@@ -469,6 +476,11 @@
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+            <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -492,6 +504,11 @@
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+            <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -523,6 +540,11 @@
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+            <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -546,6 +568,11 @@
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+            <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -569,6 +596,11 @@
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+            <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -592,6 +624,11 @@
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+            <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -623,6 +660,11 @@
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+            <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -646,22 +688,27 @@
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+            <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+        <state relative-caret-position="358">
+          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="314" column="38" selection-start-line="314" selection-start-column="38" selection-end-line="314" selection-end-column="38" />
+        <state relative-caret-position="-72">
+          <caret line="20" column="35" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
           <folding>
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
             <element signature="e#4319#4571#0" expanded="true" />
@@ -669,6 +716,11 @@
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
+            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
+            <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
+            <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>

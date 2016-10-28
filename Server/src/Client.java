@@ -18,13 +18,14 @@ public class Client {
             DataOutputStream out = new DataOutputStream(outToServer);
             JSONObject obj = new JSONObject();
             JSONObject obj2 = new JSONObject();
-            obj.put("function", "addUser"); obj.put("firstName", "Khanh"); obj.put("lastName", "Tran");
-            obj.put("GoogleID", "newcdragon@gmail.com"); obj.put("isLeader", "1");
-            out.writeUTF(obj.toString());
 
-            obj2.put("function", "addUser"); obj2.put("firstName", "Larry"); obj2.put("lastName", "Bird");
-            obj2.put("GoogleID", "LarryB@gmail.com"); obj.put("isLeader", "0");
-            out.writeUTF(obj2.toString());
+            /*obj.put("function", "addUser"); obj.put("firstName", "Khanh"); obj.put("lastName", "Tran");
+            obj.put("googleID", "newcdragon@gmail.com");
+            out.writeUTF(obj.toString());*/
+
+            /*obj2.put("function", "addUser"); obj2.put("firstName", "Larry"); obj2.put("lastName", "Bird");
+            obj2.put("googleID", "LarryB@gmail.com");
+            out.writeUTF(obj2.toString());*/
 
             /*obj = new JSONObject();
             obj.put("function", "addCommunity"); obj.put("category", "Academic");
@@ -33,12 +34,14 @@ public class Client {
             obj.put("private", "0");
             out.writeUTF(obj.toString());*/
 
-            /*obj = new JSONObject();
+            obj = new JSONObject();
             obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "1");
-            out.writeUTF(obj.toString());*/
-            /*obj = new JSONObject();
+            obj.put("isLeader", "1");
+            out.writeUTF(obj.toString());
+            obj = new JSONObject();
             obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "2");
-            out.writeUTF(obj.toString());/*
+            obj.put("isLeader", "0");
+            out.writeUTF(obj.toString());
 
 
 

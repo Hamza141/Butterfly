@@ -142,8 +142,9 @@ public class Server extends Thread {
     }
 
     private void getEvents(String communityName) {
+        communityName += "_Calendar";
         try {
-            String sql = "SELECT * FROM `" + communityName + " Calendar`";
+            String sql = "SELECT * FROM " + communityName;
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
             JSONObject obj;
@@ -168,12 +169,11 @@ public class Server extends Thread {
 
     private void addEvent(JSONObject obj) {
         String communityName = (String) obj.get("communityName");
-        communityName += " Calendar";
+        communityName += "_Calendar";
         String idEvents = "0";
         String name = (String) obj.get("name");
         String description = (String) obj.get("description");
         String date = (String) obj.get("date");
-        String time = (String) obj.get("time");
         String city = (String) obj.get("city");
         String state = (String) obj.get("state");
         String address = (String) obj.get("address");
@@ -181,7 +181,7 @@ public class Server extends Thread {
         String locationName = (String) obj.get("locationName");
         String numAttendees = (String) obj.get("numAttendees");
         try {
-            String sql = "INSERT INTO `" + communityName + "` VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO " + communityName + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, idEvents); ps.setString(2, name);
             ps.setString(3, description); ps.setString(4, date); ps.setString(5, city);
@@ -189,7 +189,7 @@ public class Server extends Thread {
             ps.setString(9, locationName); ps.setString(10, numAttendees);
             System.out.println(ps);
             ps.executeUpdate();
-            out.writeUTF("0");
+            out.writeUTF("1");
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -206,7 +206,10 @@ public class Server extends Thread {
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
+            out.writeUTF("1");
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -222,7 +225,10 @@ public class Server extends Thread {
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
+            out.writeUTF("1");
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -258,11 +264,11 @@ public class Server extends Thread {
                     name = name.replaceAll("\\s", "_");
                     createCommunityUserTable(name);
                     createCommunityEventTable(name);
-                } else {
                     out.writeUTF("1");
                 }
+            } else {
+                out.writeUTF("0");
             }
-            out.writeUTF("0");
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -275,29 +281,40 @@ public class Server extends Thread {
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Users";
         String idUsers = (String) obj.get("idUsers");
+        String isLeader = (String) obj.get("isLeader");
         try {
-            String sql = "INSERT INTO " + communityName + " SELECT * FROM Users where idUsers = " + idUsers;
+            String sql = "INSERT INTO " + communityName + " SELECT * FROM Users WHERE idUsers = " + idUsers;
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
             ps.executeUpdate();
+            sql = "UPDATE " + communityName + " SET isLeader = ? WHERE idUsers = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, isLeader);
+            ps.setString(2, idUsers);
+            System.out.println(ps);
+            ps.executeUpdate();
+            out.writeUTF("1");
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
     private void addUser(JSONObject obj) {
         String first = (String) obj.get("firstName");
         String last = (String) obj.get("lastName");
-        String google = (String) obj.get("GoogleID");
+        String google = (String) obj.get("googleID");
         try {
-            queryCheck = "SELECT count(*) from Users WHERE GoogleID = ?";
+            queryCheck = "SELECT count(*) from Users WHERE googleID = ?";
             ps = conn.prepareStatement(queryCheck);
             ps.setString(1, google);
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
-                    String sql = "INSERT INTO Users (firstName, lastName, GoogleID) VALUES (?, ?, ?)";
+                    String sql = "INSERT INTO Users (firstName, lastName, googleID) VALUES (?, ?, ?)";
                     ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, first);
                     ps.setString(2, last);
@@ -311,9 +328,9 @@ public class Server extends Thread {
                     }
                     String id = Integer.toString(key);
                     out.writeUTF(id);
-                } else {
-                    out.writeUTF("1");
                 }
+            } else {
+                out.writeUTF("0");
             }
         } catch (SQLException e) {
             e.printStackTrace();
