@@ -25,19 +25,20 @@ public class Client {
             obj2.put("function", "addUser"); obj2.put("firstName", "Larry"); obj2.put("lastName", "Bird");
             obj2.put("GoogleID", "LarryB@gmail.com"); obj.put("isLeader", "0");
             out.writeUTF(obj2.toString());
-            obj = new JSONObject();
+
+            /*obj = new JSONObject();
             obj.put("function", "addCommunity"); obj.put("category", "Academic");
             obj.put("subCategory", "CS"); obj.put("name", "CS307");
             obj.put("description", "project class"); obj.put("dateCreated", "2016-10-28");
             obj.put("private", "0");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
 
-            obj = new JSONObject();
+            /*obj = new JSONObject();
             obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "1");
-            out.writeUTF(obj.toString());
-            obj = new JSONObject();
+            out.writeUTF(obj.toString());*/
+            /*obj = new JSONObject();
             obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "2");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());/*
 
 
 
@@ -70,7 +71,7 @@ public class Client {
             DataInputStream in = new DataInputStream(inFromServer);
             System.out.println("Server says " + in.readUTF());
             System.out.println("Server says " + in.readUTF());
-            System.out.println("Server says " + in.readUTF());
+            //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());
             client.close();

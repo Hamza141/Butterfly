@@ -298,17 +298,23 @@ public class Server extends Thread {
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
                     String sql = "INSERT INTO Users (firstName, lastName, GoogleID) VALUES (?, ?, ?)";
-                    ps = conn.prepareStatement(sql);
+                    ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, first);
                     ps.setString(2, last);
                     ps.setString(3, google);
                     System.out.println(ps);
                     ps.executeUpdate();
+                    rs = ps.getGeneratedKeys();
+                    int key = 0;
+                    if (rs.next()) {
+                        key = rs.getInt(1);
+                    }
+                    String id = Integer.toString(key);
+                    out.writeUTF(id);
                 } else {
                     out.writeUTF("1");
                 }
             }
-            out.writeUTF("0");
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
