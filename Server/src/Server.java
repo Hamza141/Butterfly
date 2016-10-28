@@ -63,6 +63,8 @@ public class Server extends Thread {
                     String function = (String) obj2.get("function");
                     if (function.equals("addUser")) {
                         addUser(obj2);
+                    } else if (function.equals("getCommunityUsers")) {
+                        getCommunityUsers((String) obj2.get("communityName"));
                     } else if (function.equals("addCommunityUser")) {
                         addCommunityUser(obj2);
                     } else if (function.equals("addCommunity")) {
@@ -76,8 +78,8 @@ public class Server extends Thread {
                     } else if (function.equals("emailInvite")) {
                         sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
                                 (String) obj2.get("to"));
-                    } else if (function.equals("leaveCommunity")) {
-                        leaveCommunity(obj2);
+                    } else if (function.equals("leaveCommunityUser")) {
+                        leaveCommunityUser(obj2);
                     }
                 }
             } catch (IOException e) {
@@ -92,9 +94,43 @@ public class Server extends Thread {
         }
     }
 
+    private void getCommunityUsers(String communityName) {
+        communityName += "_Users";
+        try {
+            String sql = "SELECT * FROM " + communityName;
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            JSONObject obj;
+            while (rs.next()) {
+                obj = new JSONObject();
+                obj.put("idUsers", rs.getString("idUsers")); obj.put("firstName", rs.getString("firstName"));
+                obj.put("lastName", rs.getString("lastName")); obj.put("googleID", rs.getString("googleID"));
+                System.out.println(obj.toString());
+                out.writeUTF(obj.toString());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    private void leaveCommunity(JSONObject obj) {
-
+    private void leaveCommunityUser(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Users";
+        String idUsers = (String) obj.get("idUsers");
+        try {
+            String sql = "DELETE FROM " + communityName + " WHERE idUsers = " + idUsers;
+            ps = conn.prepareStatement(sql);
+            System.out.println(ps);
+            ps.executeUpdate();
+            out.writeUTF("1");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendInvite(String from, String fromName, String to) {
@@ -128,14 +164,12 @@ public class Server extends Thread {
         try {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
-            ArrayList<String> communities = new ArrayList<String>();
+            ArrayList<String> communities = new ArrayList<>();
             while (rs.next()) {
                 communities.add(rs.getString("name"));
             }
-            for (String name : communities) {
-                System.out.println("Community " + name);
-                getEvents(name);
-            }
+            System.out.println("call");
+            communities.forEach((name) -> getEvents(name));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -233,6 +267,22 @@ public class Server extends Thread {
         }
     }
 
+    private void createCommunityBoardTable(String communityName) {
+        //TODO: figure out what variables needed for a board table.
+        communityName += "_Board";
+        String newTable = "CREATE TABLE " + communityName + " ("
+                + "";
+        System.out.println(newTable);
+        try {
+            stmt.executeUpdate(newTable);
+            out.writeUTF("1");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void addCommunity(JSONObject obj) {
         String idCommunities = "0";
         String neighboorhoodID = "0";
@@ -264,6 +314,7 @@ public class Server extends Thread {
                     name = name.replaceAll("\\s", "_");
                     createCommunityUserTable(name);
                     createCommunityEventTable(name);
+                    createCommunityBoardTable(name);
                     out.writeUTF("1");
                 }
             } else {
@@ -299,7 +350,6 @@ public class Server extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private void addUser(JSONObject obj) {

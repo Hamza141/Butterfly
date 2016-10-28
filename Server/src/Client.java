@@ -34,16 +34,18 @@ public class Client {
             obj.put("private", "0");
             out.writeUTF(obj.toString());*/
 
-            obj = new JSONObject();
+            /*obj = new JSONObject();
             obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "1");
             obj.put("isLeader", "1");
-            out.writeUTF(obj.toString());
-            obj = new JSONObject();
+            out.writeUTF(obj.toString());*/
+            /*obj = new JSONObject();
             obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "2");
             obj.put("isLeader", "0");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
 
-
+            /*obj = new JSONObject();
+            obj.put("function", "leaveCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "2");
+            out.writeUTF(obj.toString());*/
 
             /*obj.put("function", "addCommunity"); obj.put("category", "sports");
             obj.put("subCategory", "soccer"); obj.put("name", "Chelsea FC");
@@ -60,11 +62,12 @@ public class Client {
             //obj.put("state", "MO"); obj.put("zipcode", "63103");
             obj.put("address", "Queen Elizabeth Olympic Park, London E20 2ST, United Kingdom");
             obj.put("locationName", "London Stadium");
-            obj.put("numAttendees", "0"); obj.put("communityName", "Chelsea FC");*/
+            obj.put("numAttendees", "0"); obj.put("communityName", "CS307");
+            out.writeUTF(obj.toString());*/
 
             //obj2.put("function", "getEvents"); obj2.put("communityName", "Red Wings");
             //obj2.put("function", "getNeighborhoodEvents");
-
+            //out.writeUTF(obj2.toString());
             /*obj.put("function", "emailInvite"); obj.put("from", "newcdragon@gmail.com");
             obj.put("to", "newcdragon@hotmail.com"); obj.put("fromName", "Khanh");*/
 

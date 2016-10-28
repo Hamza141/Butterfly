@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="35864e79-f7e7-461f-acec-22d647763bea" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client.java" afterPath="$PROJECT_DIR$/src/Client.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server.java" afterPath="$PROJECT_DIR$/src/Server.java" />
     </list>
@@ -27,18 +28,18 @@
       <file leaf-file-name="Server.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-72">
-              <caret line="20" column="35" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
+            <state relative-caret-position="1086">
+              <caret line="278" column="34" selection-start-line="278" selection-start-column="34" selection-end-line="278" selection-end-column="34" />
               <folding>
+                <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+                <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
                 <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-                <element signature="e#4319#4571#0" expanded="true" />
-                <element signature="e#4570#4571#0" expanded="true" />
+                <element signature="e#5923#6175#0" expanded="true" />
+                <element signature="e#6174#6175#0" expanded="true" />
                 <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
                 <element signature="method#getEvents#0;class#Server#0" expanded="false" />
                 <element signature="method#addEvent#0;class#Server#0" expanded="false" />
                 <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-                <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-                <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
                 <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
                 <element signature="method#addUser#0;class#Server#0" expanded="false" />
               </folding>
@@ -49,8 +50,8 @@
       <file leaf-file-name="Client.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+            <state relative-caret-position="196">
+              <caret line="59" column="14" selection-start-line="59" selection-start-column="14" selection-end-line="59" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -456,7 +457,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="4" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -470,15 +471,15 @@
         <state relative-caret-position="2430">
           <caret line="135" column="32" selection-start-line="135" selection-start-column="32" selection-end-line="135" selection-end-column="32" />
           <folding>
+            <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+            <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-            <element signature="e#4319#4571#0" expanded="true" />
-            <element signature="e#4570#4571#0" expanded="true" />
+            <element signature="e#5923#6175#0" expanded="true" />
+            <element signature="e#6174#6175#0" expanded="true" />
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
             <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
             <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
@@ -498,15 +499,15 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+            <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-            <element signature="e#4319#4571#0" expanded="true" />
-            <element signature="e#4570#4571#0" expanded="true" />
+            <element signature="e#5923#6175#0" expanded="true" />
+            <element signature="e#6174#6175#0" expanded="true" />
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
             <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
             <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
@@ -534,15 +535,15 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+            <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-            <element signature="e#4319#4571#0" expanded="true" />
-            <element signature="e#4570#4571#0" expanded="true" />
+            <element signature="e#5923#6175#0" expanded="true" />
+            <element signature="e#6174#6175#0" expanded="true" />
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
             <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
             <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
@@ -562,15 +563,15 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+            <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-            <element signature="e#4319#4571#0" expanded="true" />
-            <element signature="e#4570#4571#0" expanded="true" />
+            <element signature="e#5923#6175#0" expanded="true" />
+            <element signature="e#6174#6175#0" expanded="true" />
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
             <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
             <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
@@ -590,15 +591,15 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+            <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-            <element signature="e#4319#4571#0" expanded="true" />
-            <element signature="e#4570#4571#0" expanded="true" />
+            <element signature="e#5923#6175#0" expanded="true" />
+            <element signature="e#6174#6175#0" expanded="true" />
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
             <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
             <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
@@ -618,15 +619,15 @@
         <state relative-caret-position="504">
           <caret line="123" column="13" selection-start-line="123" selection-start-column="13" selection-end-line="123" selection-end-column="13" />
           <folding>
+            <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+            <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-            <element signature="e#4319#4571#0" expanded="true" />
-            <element signature="e#4570#4571#0" expanded="true" />
+            <element signature="e#5923#6175#0" expanded="true" />
+            <element signature="e#6174#6175#0" expanded="true" />
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
             <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
             <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
@@ -654,15 +655,15 @@
         <state relative-caret-position="180">
           <caret line="105" column="40" selection-start-line="105" selection-start-column="40" selection-end-line="105" selection-end-column="40" />
           <folding>
+            <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+            <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-            <element signature="e#4319#4571#0" expanded="true" />
-            <element signature="e#4570#4571#0" expanded="true" />
+            <element signature="e#5923#6175#0" expanded="true" />
+            <element signature="e#6174#6175#0" expanded="true" />
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
             <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
             <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
@@ -682,43 +683,51 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+            <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-            <element signature="e#4319#4571#0" expanded="true" />
-            <element signature="e#4570#4571#0" expanded="true" />
+            <element signature="e#5923#6175#0" expanded="true" />
+            <element signature="e#6174#6175#0" expanded="true" />
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
             <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
             <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="jar:///usr/lib/jvm/java-8-oracle/src.zip!/java/util/function/Consumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="48" column="9" selection-start-line="48" selection-start-column="9" selection-end-line="48" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+        <state relative-caret-position="196">
+          <caret line="59" column="14" selection-start-line="59" selection-start-column="14" selection-end-line="59" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-72">
-          <caret line="20" column="35" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
+        <state relative-caret-position="1086">
+          <caret line="278" column="34" selection-start-line="278" selection-start-column="34" selection-end-line="278" selection-end-column="34" />
           <folding>
+            <element signature="method#getCommunityUsers#0;class#Server#0" expanded="false" />
+            <element signature="method#leaveCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#sendInvite#0;class#Server#0" expanded="false" />
-            <element signature="e#4319#4571#0" expanded="true" />
-            <element signature="e#4570#4571#0" expanded="true" />
+            <element signature="e#5923#6175#0" expanded="true" />
+            <element signature="e#6174#6175#0" expanded="true" />
             <element signature="method#getNeighborhoodEvents#0;class#Server#0" expanded="false" />
             <element signature="method#getEvents#0;class#Server#0" expanded="false" />
             <element signature="method#addEvent#0;class#Server#0" expanded="false" />
             <element signature="method#createCommunityUserTable#0;class#Server#0" expanded="false" />
-            <element signature="method#createCommunityEventTable#0;class#Server#0" expanded="false" />
-            <element signature="method#addCommunity#0;class#Server#0" expanded="false" />
             <element signature="method#addCommunityUser#0;class#Server#0" expanded="false" />
             <element signature="method#addUser#0;class#Server#0" expanded="false" />
           </folding>
