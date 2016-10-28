@@ -19,29 +19,27 @@ public class Client {
             JSONObject obj = new JSONObject();
             JSONObject obj2 = new JSONObject();
             obj.put("function", "addUser"); obj.put("firstName", "Khanh"); obj.put("lastName", "Tran");
-            obj.put("GoogleID", "newcdragon@gmail.com"); obj.put("dateCreated", "2016-10-09");
+            obj.put("GoogleID", "newcdragon@gmail.com"); obj.put("isLeader", "1");
             out.writeUTF(obj.toString());
 
             obj2.put("function", "addUser"); obj2.put("firstName", "Larry"); obj2.put("lastName", "Bird");
-            obj2.put("GoogleID", "LarryB@gmail.com"); obj2.put("dateCreated", "2016-10-28");
+            obj2.put("GoogleID", "LarryB@gmail.com"); obj.put("isLeader", "0");
             out.writeUTF(obj2.toString());
-            /*obj = new JSONObject();
+            obj = new JSONObject();
             obj.put("function", "addCommunity"); obj.put("category", "Academic");
             obj.put("subCategory", "CS"); obj.put("name", "CS307");
             obj.put("description", "project class"); obj.put("dateCreated", "2016-10-28");
             obj.put("private", "0");
-            out.writeUTF(obj.toString());*/
+            out.writeUTF(obj.toString());
 
-            //obj = new JSONObject();
-            /*obj.put("function", "addCommunityUser"); obj.put("category", "sports");
-            obj.put("subCategory", "hockey"); obj.put("name", "Red Wings");
-            obj.put("description", "Best Original 6"); obj.put("dateCreated", "2016-10-28");
-            obj.put("private", "0");*/
+            obj = new JSONObject();
+            obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "1");
+            out.writeUTF(obj.toString());
+            obj = new JSONObject();
+            obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "2");
+            out.writeUTF(obj.toString());
 
-            /*obj.put("function", "addCommunity"); obj.put("category", "sports");
-            obj.put("subCategory", "hockey"); obj.put("name", "Red Wings");
-            obj.put("description", "Best Original 6"); obj.put("dateCreated", "2016-10-28");
-            obj.put("private", "0");*/
+
 
             /*obj.put("function", "addCommunity"); obj.put("category", "sports");
             obj.put("subCategory", "soccer"); obj.put("name", "Chelsea FC");
@@ -71,9 +69,10 @@ public class Client {
             InputStream inFromServer = client.getInputStream();
             DataInputStream in = new DataInputStream(inFromServer);
             System.out.println("Server says " + in.readUTF());
-
             System.out.println("Server says " + in.readUTF());
             System.out.println("Server says " + in.readUTF());
+            //System.out.println("Server says " + in.readUTF());
+            //System.out.println("Server says " + in.readUTF());
             client.close();
         } catch (IOException e) {
             e.printStackTrace();

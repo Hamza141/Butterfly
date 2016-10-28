@@ -60,7 +60,6 @@ public class Server extends Thread {
                 while (in.available() > 0) {
                     Object obj = parser.parse(in.readUTF());
                     JSONObject obj2 = (JSONObject) obj;
-                    System.out.println(obj2.toString());
                     String function = (String) obj2.get("function");
                     if (function.equals("addUser")) {
                         addUser(obj2);
@@ -275,44 +274,21 @@ public class Server extends Thread {
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Users";
-        String first = (String) obj.get("firstName");
-        String last = (String) obj.get("lastName");
-        String google = (String) obj.get("GoogleID");
-        String isLeader = (String) obj.get("isLeader");
+        String idUsers = (String) obj.get("idUsers");
         try {
-            queryCheck = "SELECT count(*) from Users " + communityName + " GoogleID = ?";
-            ps = conn.prepareStatement(queryCheck);
-            ps.setString(1, google);
+            String sql = "INSERT INTO " + communityName + " SELECT * FROM Users where idUsers = " + idUsers;
+            ps = conn.prepareStatement(sql);
             System.out.println(ps);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                if (rs.getInt(1) == 0) {
-                    String sql = "INSERT INTO " + communityName + " VALUES(?, ?, ?, ?)";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, first);
-                    ps.setString(2, last);
-                    ps.setString(3, google);
-                    ps.setString(4, isLeader);
-                    System.out.println(ps);
-                    ps.executeUpdate();
-                } else {
-                    out.writeUTF("1");
-                }
-            }
-            out.writeUTF("0");
+            ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
     }
 
     private void addUser(JSONObject obj) {
         String first = (String) obj.get("firstName");
         String last = (String) obj.get("lastName");
         String google = (String) obj.get("GoogleID");
-        String dateCreated = (String) obj.get("dateCreated");
         try {
             queryCheck = "SELECT count(*) from Users WHERE GoogleID = ?";
             ps = conn.prepareStatement(queryCheck);
@@ -321,19 +297,17 @@ public class Server extends Thread {
             rs = ps.executeQuery();
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
-                    String sql = "INSERT INTO Users (firstName, lastName, GoogleID, dateCreated) VALUES (?, ?, ?, ?)";
+                    String sql = "INSERT INTO Users (firstName, lastName, GoogleID) VALUES (?, ?, ?)";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, first);
                     ps.setString(2, last);
                     ps.setString(3, google);
-                    ps.setString(4, dateCreated);
                     System.out.println(ps);
                     ps.executeUpdate();
                 } else {
                     out.writeUTF("1");
                 }
             }
-            System.out.println("write 0");
             out.writeUTF("0");
         } catch (SQLException e) {
             e.printStackTrace();
