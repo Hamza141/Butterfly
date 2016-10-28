@@ -23,64 +23,68 @@ public class Server extends Thread {
     private ResultSet rs;
     private String queryCheck;
     private PreparedStatement ps;
-    static private long id;
-    static private DataOutputStream out;
+    private DataOutputStream out;
+    private DataInputStream in;
+    private JSONParser parser;
 
     private Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
     }
-
     public void run() {
-        try {
-            URL myip = new URL("http://checkip.amazonaws.com");
-            BufferedReader buffIn = new BufferedReader(new InputStreamReader(myip.openStream()));
-            String ip = buffIn.readLine();
-            System.out.println(ip);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
         while (true) {
+            try {
+                URL myip = new URL("http://checkip.amazonaws.com");
+                BufferedReader buffIn = new BufferedReader(new InputStreamReader(myip.openStream()));
+                String ip = buffIn.readLine();
+                System.out.println(ip);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                Socket server = serverSocket.accept();
+                System.out.println("Just connected to " + server.getRemoteSocketAddress());
+                parser = new JSONParser();
+                in = new DataInputStream(server.getInputStream());
+                out = new DataOutputStream(server.getOutputStream());
+            } catch (SocketTimeoutException s) {
+                System.out.println("Socket timed out!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
             try {
                 Class.forName(JDBC_DRIVER);
                 conn = DriverManager.getConnection(DB_URL, USER, PASS);
                 rs = conn.getMetaData().getCatalogs();
                 stmt = conn.createStatement();
-                Socket server = serverSocket.accept();
-                System.out.println("Just connected to " + server.getRemoteSocketAddress());
-                JSONParser parser = new JSONParser();
-                DataInputStream in = new DataInputStream(server.getInputStream());
-                out = new DataOutputStream(server.getOutputStream());
-                Object obj = parser.parse(in.readUTF());
-                JSONObject obj2 = (JSONObject) obj;
-                String function = (String) obj2.get("function");
-                if (function.equals("addUser")) {
-                    addUser(obj2);
-                } else if (function.equals("addCommunityUser")) {
-                    addCommunityUser((String) obj2.get("communityName"));
-                } else if (function.equals("addCommunity")) {
-                    addCommunity(obj2);
-                } else if (function.equals("addEvent")) {
-                    addEvent(obj2);
-                } else if (function.equals("getEvents")) {
-                    getEvents((String) obj2.get("communityName"));
-                } else if (function.equals("getNeighborhoodEvents")) {
-                    getNeighborhoodEvents();
-                } else if (function.equals("emailInvite")) {
-                    sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
-                            (String) obj2.get("to"));
-                } else if (function.equals("leaveCommunity")) {
-                    leaveCommunity(obj2);
+                while (in.available() > 0) {
+                    Object obj = parser.parse(in.readUTF());
+                    JSONObject obj2 = (JSONObject) obj;
+                    System.out.println(obj2.toString());
+                    String function = (String) obj2.get("function");
+                    if (function.equals("addUser")) {
+                        addUser(obj2);
+                    } else if (function.equals("addCommunityUser")) {
+                        addCommunityUser(obj2);
+                    } else if (function.equals("addCommunity")) {
+                        addCommunity(obj2);
+                    } else if (function.equals("addEvent")) {
+                        addEvent(obj2);
+                    } else if (function.equals("getEvents")) {
+                        getEvents((String) obj2.get("communityName"));
+                    } else if (function.equals("getNeighborhoodEvents")) {
+                        getNeighborhoodEvents();
+                    } else if (function.equals("emailInvite")) {
+                        sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
+                                (String) obj2.get("to"));
+                    } else if (function.equals("leaveCommunity")) {
+                        leaveCommunity(obj2);
+                    }
                 }
-            } catch (SocketTimeoutException s) {
-                System.out.println("Socket timed out!");
-                break;
             } catch (IOException e) {
                 e.printStackTrace();
-                break;
             } catch (org.json.simple.parser.ParseException p) {
 
-                break;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
@@ -88,6 +92,7 @@ public class Server extends Thread {
             }
         }
     }
+
 
     private void leaveCommunity(JSONObject obj) {
 
@@ -195,9 +200,10 @@ public class Server extends Thread {
 
     private void createCommunityUserTable(String communityName) {
         //DATE: YYYY-MM-DD
-        String newTable = "CREATE TABLE `" + communityName + " Users` ("
-            + "idUsers INT(4), " + "firstName VARCHAR(255), " + "lastName VARCHAR(255), "
-            + "googleID VARCHAR(255), " + "dateCreated DATE)";
+        communityName += "_Users";
+        String newTable = "CREATE TABLE " + communityName + " ("
+            + "idUsers INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, " + "firstName VARCHAR(255), " + "lastName VARCHAR(255), "
+            + "googleID VARCHAR(255), " + "isLeader TINYINT(1))";
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
@@ -208,7 +214,8 @@ public class Server extends Thread {
 
     private void createCommunityEventTable(String communityName) {
         // DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
-        String newTable = "CREATE TABLE `" + communityName + " Calendar` ("
+        communityName += "_Calendar";
+        String newTable = "CREATE TABLE " + communityName + " ("
             + "idEvents INT(4), " + "name VARCHAR(255), " + "description VARCHAR(255), "
             + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), "
             + "address VARCHAR(255), " + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), "
@@ -249,6 +256,7 @@ public class Server extends Thread {
                     ps.setString(10, Private);
                     System.out.println(ps);
                     ps.executeUpdate();
+                    name = name.replaceAll("\\s", "_");
                     createCommunityUserTable(name);
                     createCommunityEventTable(name);
                 } else {
@@ -263,7 +271,40 @@ public class Server extends Thread {
         }
     }
 
-    private void addCommunityUser(String communityName) {
+    private void addCommunityUser(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Users";
+        String first = (String) obj.get("firstName");
+        String last = (String) obj.get("lastName");
+        String google = (String) obj.get("GoogleID");
+        String isLeader = (String) obj.get("isLeader");
+        try {
+            queryCheck = "SELECT count(*) from Users " + communityName + " GoogleID = ?";
+            ps = conn.prepareStatement(queryCheck);
+            ps.setString(1, google);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) == 0) {
+                    String sql = "INSERT INTO " + communityName + " VALUES(?, ?, ?, ?)";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, first);
+                    ps.setString(2, last);
+                    ps.setString(3, google);
+                    ps.setString(4, isLeader);
+                    System.out.println(ps);
+                    ps.executeUpdate();
+                } else {
+                    out.writeUTF("1");
+                }
+            }
+            out.writeUTF("0");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -280,7 +321,7 @@ public class Server extends Thread {
             rs = ps.executeQuery();
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
-                    String sql = "INSERT INTO Users VALUES('7', ?, ?, ?, ?)";
+                    String sql = "INSERT INTO Users (firstName, lastName, GoogleID, dateCreated) VALUES (?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, first);
                     ps.setString(2, last);
@@ -292,6 +333,7 @@ public class Server extends Thread {
                     out.writeUTF("1");
                 }
             }
+            System.out.println("write 0");
             out.writeUTF("0");
         } catch (SQLException e) {
             e.printStackTrace();
