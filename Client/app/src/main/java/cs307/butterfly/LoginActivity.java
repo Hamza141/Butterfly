@@ -162,7 +162,8 @@ public class LoginActivity extends AppCompatActivity implements
                     @Override
                     public void run() {
                         try {
-                            socket[0] = new Socket(MainActivity.ip, 3300);
+                            failed = true;
+                            socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                             outputStream[0] = socket[0].getOutputStream();
                             dataOutputStream[0] = new DataOutputStream(outputStream[0]);
                             object.put("function", "addUser");
@@ -170,7 +171,7 @@ public class LoginActivity extends AppCompatActivity implements
                             object.put("firstName", personGivenName);
                             object.put("lastName", personFamilyName);
                             object.put("GoogleID", personEmail);
-                            object.put("dateCreated", finalDateString);
+                            //object.put("dateCreated", finalDateString);
                             dataOutputStream[0].writeUTF(object.toString());
                             failed = false;
                         } catch (IOException | JSONException e) {

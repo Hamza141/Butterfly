@@ -26,4 +26,5 @@
     <string name="status">status</string>
     <string name="login_error">Error</string>
     <string name="title_activity_group">GroupActivity</string>
+    <string name="title_activity_community_list">CommunityListActivity</string>
 </resources>

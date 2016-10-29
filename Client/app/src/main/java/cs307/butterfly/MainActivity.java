@@ -8,7 +8,8 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity {
 
     //10.0.2.2
-    static String ip = "128.211.225.79";
+    static String ip = "10.186.95.204";
+    static int port = 3300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
