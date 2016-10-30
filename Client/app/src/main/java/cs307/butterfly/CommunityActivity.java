@@ -31,7 +31,7 @@ public class CommunityActivity extends AppCompatActivity {
     final Context context = this;
     static ArrayList<Community> communities;
 
-    private String result;
+    String result;
     Button b;
 
     @Override
@@ -42,6 +42,8 @@ public class CommunityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_community);
 
         communities = new ArrayList<>();
+
+        //read a file to see which communities the user is already a part of
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -122,7 +124,7 @@ public class CommunityActivity extends AppCompatActivity {
     public void addButton() {
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear);
         final Button b1 = new Button(this);
-        b1.setText(new String(result));
+        b1.setText(result);
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
         b1.setLayoutParams(lp);
         ll.addView(b1);
@@ -138,7 +140,5 @@ public class CommunityActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
-
 }
