@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -21,6 +20,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -31,7 +33,7 @@ public class CommunityActivity extends AppCompatActivity {
     final Context context = this;
     static ArrayList<Community> communities;
 
-    String result;
+    private String result;
     Button b;
 
     @Override
@@ -41,9 +43,47 @@ public class CommunityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
 
+        Button view_all = (Button) findViewById(R.id.view_all);
+        view_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CommunityActivity.this, CommunityListActivity.class);
+                startActivity(intent);
+            }
+        });
+
         communities = new ArrayList<>();
 
         //read a file to see which communities the user is already a part of
+        File file = new File(context.getFilesDir(), "user_communities");
+        FileInputStream fileInputStream = null;
+        int length = (int) file.length();
+        byte[] bytes = new byte[length];
+
+        try {
+                fileInputStream = new FileInputStream(file);
+                fileInputStream.read(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fileInputStream != null)
+                    fileInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String content = new String(bytes);
+        String [] contents = content.split("\n");
+        for (int i = 0; i < contents.length; i ++) {
+            result = contents[i];
+            if (!result.equals("")) {
+                Community community = new Community(result);
+                communities.add(community);
+                addButton(community);
+            }
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,9 +95,6 @@ public class CommunityActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
                 addGroup();
             }
         });
@@ -84,7 +121,16 @@ public class CommunityActivity extends AppCompatActivity {
                 result = text;
                 Community community = new Community(text);
                 communities.add(community);
-                addButton();
+                addButton(community);
+
+                try {
+                    result = text + '\n';
+                    FileOutputStream fileOutputStream = openFileOutput("user_communities", MODE_APPEND);
+                    fileOutputStream.write(result.getBytes());
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 new Thread(new Runnable() {
                     @Override
@@ -94,7 +140,7 @@ public class CommunityActivity extends AppCompatActivity {
                             outputStream[0] = socket[0].getOutputStream();
                             dataOutputStream[0] = new DataOutputStream(outputStream[0]);
                             object.put("function", "addCommunity");
-                            object.put("communityName", text);
+                            object.put("name", text);
                             dataOutputStream[0].writeUTF(object.toString());
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
@@ -121,10 +167,10 @@ public class CommunityActivity extends AppCompatActivity {
         return image;
     }
 
-    public void addButton() {
+    public void addButton(final Community community) {
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear);
         final Button b1 = new Button(this);
-        b1.setText(result);
+        b1.setText(community.getName());
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
         b1.setLayoutParams(lp);
         ll.addView(b1);
@@ -132,11 +178,12 @@ public class CommunityActivity extends AppCompatActivity {
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < communities.size(); i++) {
+                /*for (int i = 0; i < communities.size(); i++) {
                     if (communities.get(i).getName().equals(b1.getText().toString())) {
                         CalendarActivity.community = communities.get(i);
                     }
-                }
+                }*/
+                CalendarActivity.community = community;
                 startActivity(intent);
             }
         });

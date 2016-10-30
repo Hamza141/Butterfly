@@ -22,17 +22,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.vision.text.Text;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Calendar;
 
 /**
  * A login screen that offers login via email/password.
@@ -49,11 +49,10 @@ public class LoginActivity extends AppCompatActivity implements
     boolean failed = true;
 
 
-
     private static final int REQUEST = 1;
     private static String[] PERMISSIONS = {
             Manifest.permission.GET_ACCOUNTS,
-           // Manifest.permission.READ_CONTACTS,
+            // Manifest.permission.READ_CONTACTS,
             Manifest.permission.INTERNET};
 
     @Override
@@ -131,20 +130,22 @@ public class LoginActivity extends AppCompatActivity implements
             if (acct != null) {
                 final Socket[] socket = new Socket[1];
                 final OutputStream[] outputStream = new OutputStream[1];
+                final InputStream[] inputStream = new InputStream[1];
                 final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
+                final DataInputStream[] dataInputStream = new DataInputStream[1];
                 final JSONObject object = new JSONObject();
 
                 final String personName = acct.getDisplayName();
                 final String personGivenName = acct.getGivenName();
                 final String personFamilyName = acct.getFamilyName();
-                final String personEmail = acct.getEmail();
-                final String personId = acct.getId();
+                final String googleID = acct.getEmail();
+                //final String personId = acct.getId();
                 personPhoto = acct.getPhotoUrl();
                 Picasso.with(this).load(personPhoto).into((ImageView) findViewById(R.id.imageView2));
                 status.setText(getString(R.string.signed_in_fmt, personName));
                 status.setVisibility(View.VISIBLE);
 
-                //date
+/*                //date
                 String dateString = "";
                 Calendar calendar = Calendar.getInstance();
                 int month = calendar.get(Calendar.MONTH);
@@ -157,6 +158,7 @@ public class LoginActivity extends AppCompatActivity implements
                 dateString = dateString.concat("-");
                 dateString = dateString.concat(String.valueOf(dayOfMonth));
                 final String finalDateString = dateString;
+ */
 
                 new Thread(new Runnable() {
                     @Override
@@ -166,29 +168,37 @@ public class LoginActivity extends AppCompatActivity implements
                             socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                             outputStream[0] = socket[0].getOutputStream();
                             dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                            failed = false;
                             object.put("function", "addUser");
-                            object.put("idUsers", 404);
                             object.put("firstName", personGivenName);
                             object.put("lastName", personFamilyName);
-                            object.put("GoogleID", personEmail);
+                            object.put("googleID", googleID);
                             //object.put("dateCreated", finalDateString);
                             dataOutputStream[0].writeUTF(object.toString());
-                            failed = false;
+//                            inputStream[0] = socket[0].getInputStream();
+//                            dataInputStream[0] = new DataInputStream(inputStream[0]);
+                            //                          String s = dataInputStream[0].readUTF();
+//                            int id = Integer.parseInt(dataInputStream[0].readUTF());
+                            outputStream[0].close();
+                            dataOutputStream[0].close();
+//                            inputStream[0].close();
+//                            dataInputStream[0].close();
+                            socket[0].close();
                         } catch (IOException | JSONException e) {
-                            failed = true;
+                            e.printStackTrace();
                         }
                     }
                 }).start();
-
             } else {
                 status.setText(R.string.login_error);
             }
 
-            updateUI(true);
+            android.os.SystemClock.sleep(150);
 
-        } else
-
-        {
+            if (!failed) {
+                updateUI(true);
+            }
+        } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
         }
@@ -228,8 +238,7 @@ public class LoginActivity extends AppCompatActivity implements
             if (!failed) {
                 Intent intent = new Intent(this, CommunityActivity.class);
                 startActivity(intent);
-            }
-            else {
+            } else {
                 status.setText("Server not found");
             }
             findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
