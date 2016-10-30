@@ -1,5 +1,5 @@
-/**
- * Created by nick on 10/9/16.
+/*
+ * Created by Khanh Tran on 10/9/16.
  */
 
 import java.net.*;
@@ -11,7 +11,7 @@ import javax.mail.internet.*;
 import org.json.simple.parser.*;
 import org.json.simple.JSONObject;
 
-
+@SuppressWarnings("unchecked")
 public class Server extends Thread {
     private ServerSocket serverSocket;
     static final private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
@@ -32,14 +32,6 @@ public class Server extends Thread {
     }
     public void run() {
         while (true) {
-            try {
-                URL myip = new URL("http://checkip.amazonaws.com");
-                BufferedReader buffIn = new BufferedReader(new InputStreamReader(myip.openStream()));
-                String ip = buffIn.readLine();
-                System.out.println(ip);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             try {
                 Socket server = serverSocket.accept();
                 System.out.println("Just connected to " + server.getRemoteSocketAddress());
@@ -63,6 +55,9 @@ public class Server extends Thread {
                     String function = (String) obj2.get("function");
                     if (function.equals("addUser")) {
                         addUser(obj2);
+                    } else if (function.equals("getCommunities")) {
+                        //TODO: list all communities
+                        getCommunities();
                     } else if (function.equals("getCommunityUsers")) {
                         getCommunityUsers((String) obj2.get("communityName"));
                     } else if (function.equals("addCommunityUser")) {
@@ -82,15 +77,30 @@ public class Server extends Thread {
                         leaveCommunityUser(obj2);
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (org.json.simple.parser.ParseException p) {
-
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
+            } catch (org.json.simple.parser.ParseException | IOException
+                    | SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void getCommunities() {
+        String comma = ", ";
+        StringBuilder communities = new StringBuilder();
+        try {
+            String sql = "SELECT * FROM Communities";
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            JSONObject obj = new JSONObject();
+            while (rs.next()) {
+                communities.append(rs.getString("name"));
+                communities.append(comma);
+            }
+            obj.put("string", communities);
+            System.out.println(obj.toString());
+            out.writeUTF(obj.toString());
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -108,9 +118,7 @@ public class Server extends Thread {
                 System.out.println(obj.toString());
                 out.writeUTF(obj.toString());
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -126,9 +134,7 @@ public class Server extends Thread {
             System.out.println(ps);
             ps.executeUpdate();
             out.writeUTF("1");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -194,9 +200,7 @@ public class Server extends Thread {
                 System.out.println(obj.toString());
                 out.writeUTF(obj.toString());
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -224,9 +228,7 @@ public class Server extends Thread {
             System.out.println(ps);
             ps.executeUpdate();
             out.writeUTF("1");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -235,15 +237,13 @@ public class Server extends Thread {
         //DATE: YYYY-MM-DD
         communityName += "_Users";
         String newTable = "CREATE TABLE " + communityName + " ("
-            + "idUsers INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, " + "firstName VARCHAR(255), " + "lastName VARCHAR(255), "
-            + "googleID VARCHAR(255), " + "isLeader TINYINT(1))";
+                + "idUsers INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, " + "firstName VARCHAR(255), " + "lastName VARCHAR(255), "
+                + "googleID VARCHAR(255), " + "isLeader TINYINT(1))";
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
             out.writeUTF("1");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -252,17 +252,15 @@ public class Server extends Thread {
         // DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
         communityName += "_Calendar";
         String newTable = "CREATE TABLE " + communityName + " ("
-            + "idEvents INT(4), " + "name VARCHAR(255), " + "description VARCHAR(255), "
-            + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), "
-            + "address VARCHAR(255), " + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), "
-            + "numAttendees INT(4))";
+                + "idEvents INT(4), " + "name VARCHAR(255), " + "description VARCHAR(255), "
+                + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), "
+                + "address VARCHAR(255), " + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), "
+                + "numAttendees INT(4))";
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
             out.writeUTF("1");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -276,9 +274,7 @@ public class Server extends Thread {
         try {
             stmt.executeUpdate(newTable);
             out.writeUTF("1");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -300,29 +296,32 @@ public class Server extends Thread {
             ps.setString(1, name);
             System.out.println(ps);
             rs = ps.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 if (rs.getInt(1) == 0) {
                     String sql = "INSERT INTO Communities VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
-                    ps.setString(1, idCommunities); ps.setString(2, neighboorhoodID);
-                    ps.setString(3, category); ps.setString(4, subCategory); ps.setString(5, name);
-                    ps.setString(6, description); ps.setString(7, numMembers);
-                    ps.setString(8, numUpcomgEvents); ps.setString(9, dateCreated);
+                    ps.setString(1, idCommunities);
+                    ps.setString(2, neighboorhoodID);
+                    ps.setString(3, category);
+                    ps.setString(4, subCategory);
+                    ps.setString(5, name);
+                    ps.setString(6, description);
+                    ps.setString(7, numMembers);
+                    ps.setString(8, numUpcomgEvents);
+                    ps.setString(9, dateCreated);
                     ps.setString(10, Private);
                     System.out.println(ps);
                     ps.executeUpdate();
                     name = name.replaceAll("\\s", "_");
                     createCommunityUserTable(name);
                     createCommunityEventTable(name);
-                    createCommunityBoardTable(name);
+                    //createCommunityBoardTable(name);
                     out.writeUTF("1");
                 }
             } else {
                 out.writeUTF("0");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -345,9 +344,7 @@ public class Server extends Thread {
             System.out.println(ps);
             ps.executeUpdate();
             out.writeUTF("1");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -375,6 +372,7 @@ public class Server extends Thread {
                     int key = 0;
                     if (rs.next()) {
                         key = rs.getInt(1);
+                        System.out.println(key);
                     }
                     String id = Integer.toString(key);
                     out.writeUTF(id);
@@ -382,24 +380,18 @@ public class Server extends Thread {
             } else {
                 out.writeUTF("0");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        int port = 60660;
+        int port = 3300;
         try {
             Thread t = new Server(port);
             t.start();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-
         }
     }
 }

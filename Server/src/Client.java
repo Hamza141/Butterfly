@@ -1,5 +1,5 @@
 /**
- * Created by khanh on 10/9/16.
+ * Created by Khanh Tran on 10/9/16.
  */
 
 import java.net.*;
@@ -8,8 +8,9 @@ import org.json.simple.JSONObject;
 
 public class Client {
     public static void main(String[] args) {
-        String serverName = "128.211.225.79";
-        int port = 60660;
+        //String serverName = "128.211.225.79";
+        String serverName = "10.186.80.75";
+        int port = 3300;
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
             Socket client = new Socket(serverName, port);
@@ -19,20 +20,22 @@ public class Client {
             JSONObject obj = new JSONObject();
             JSONObject obj2 = new JSONObject();
 
-            /*obj.put("function", "addUser"); obj.put("firstName", "Khanh"); obj.put("lastName", "Tran");
+            obj.put("function", "addUser"); obj.put("firstName", "Khanh"); obj.put("lastName", "Tran");
             obj.put("googleID", "newcdragon@gmail.com");
-            out.writeUTF(obj.toString());*/
+            out.writeUTF(obj.toString());
 
-            /*obj2.put("function", "addUser"); obj2.put("firstName", "Larry"); obj2.put("lastName", "Bird");
+            obj2.put("function", "addUser"); obj2.put("firstName", "Larry"); obj2.put("lastName", "Bird");
             obj2.put("googleID", "LarryB@gmail.com");
-            out.writeUTF(obj2.toString());*/
+            out.writeUTF(obj2.toString());
 
-            /*obj = new JSONObject();
-            obj.put("function", "addCommunity"); obj.put("category", "Academic");
-            obj.put("subCategory", "CS"); obj.put("name", "CS307");
-            obj.put("description", "project class"); obj.put("dateCreated", "2016-10-28");
-            obj.put("private", "0");
-            out.writeUTF(obj.toString());*/
+            obj = new JSONObject();
+            obj.put("function", "addCommunity");
+            //obj.put("category", "Academic");
+            //obj.put("subCategory", "CS");
+            obj.put("name", "CS307");
+            //obj.put("description", "project class"); obj.put("dateCreated", "2016-10-28");
+            //obj.put("private", "0");
+            out.writeUTF(obj.toString());
 
             /*obj = new JSONObject();
             obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "1");
@@ -77,8 +80,8 @@ public class Client {
             DataInputStream in = new DataInputStream(inFromServer);
             System.out.println("Server says " + in.readUTF());
             System.out.println("Server says " + in.readUTF());
-            //System.out.println("Server says " + in.readUTF());
-            //System.out.println("Server says " + in.readUTF());
+            System.out.println("Server says " + in.readUTF());
+            System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());
             client.close();
         } catch (IOException e) {
