@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "853250977489",
-    "project_id": "butterfly-145620"
+    "firebase_url": "https://butterfly-145620.firebaseio.com",
+    "project_id": "butterfly-145620",
+    "storage_bucket": "butterfly-145620.appspot.com"
   },
   "client": [
     {
@@ -21,6 +23,10 @@
           }
         },
         {
+          "client_id": "853250977489-0nl5vsulvopfflosbfsebkl4u9drcake.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
           "client_id": "853250977489-1532479u3q7fv5vea328jog9spqaq3ti.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -35,11 +41,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853250977489-0nl5vsulvopfflosbfsebkl4u9drcake.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }
