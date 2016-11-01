@@ -112,25 +112,27 @@ public class EventsActivity extends AppCompatActivity {
                 addButton();
                 CalendarActivity.ecv.setEvents(CalendarActivity.community.getCommunityEvents());
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            socket[0] = new Socket(MainActivity.ip, 3300);
-                            outputStream[0] = socket[0].getOutputStream();
-                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                if (MainActivity.server) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                socket[0] = new Socket(MainActivity.ip, 3300);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
-                            object.put("function", "addEvent");
-                            object.put("eventName", name);
-                            object.put("eventTime", time);
-                            object.put("description", description);
-                            object.put("locationName", place);
-                            dataOutputStream[0].writeUTF(object.toString());
-                        } catch (JSONException | IOException e) {
-                            e.printStackTrace();
+                                object.put("function", "addEvent");
+                                object.put("eventName", name);
+                                object.put("eventTime", time);
+                                object.put("description", description);
+                                object.put("locationName", place);
+                                dataOutputStream[0].writeUTF(object.toString());
+                            } catch (JSONException | IOException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
             }
         });
         dialog.show();

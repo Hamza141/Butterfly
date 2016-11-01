@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,10 +29,8 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
     boolean failed = true;
-
 
     private static final int REQUEST = 1;
     private static String[] PERMISSIONS = {
@@ -77,12 +76,13 @@ public class LoginActivity extends AppCompatActivity implements
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setVisibility(View.GONE);
 
+        status = (TextView) findViewById(R.id.status);
+        status.setText(R.string.welcome);
+
+        //IP changer
         final TextView ip = (TextView) findViewById(R.id.ip);
         final EditText setIP = (EditText) findViewById(R.id.setIP);
-
-        status = (TextView) findViewById(R.id.status);
-        status.setText("Welcome!");
-
+        setIP.setText(MainActivity.ip);
         ip.setText(MainActivity.ip);
         Button ipButton = (Button) findViewById(R.id.ipButton);
         ipButton.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +93,14 @@ public class LoginActivity extends AppCompatActivity implements
             }
         });
 
+        //Server checkbox
+        final CheckBox checkServer = (CheckBox) findViewById(R.id.check_server);
+        checkServer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.server = checkServer.isChecked();
+            }
+        });
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -130,9 +138,9 @@ public class LoginActivity extends AppCompatActivity implements
             if (acct != null) {
                 final Socket[] socket = new Socket[1];
                 final OutputStream[] outputStream = new OutputStream[1];
-                final InputStream[] inputStream = new InputStream[1];
+//                final InputStream[] inputStream = new InputStream[1];
                 final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
-                final DataInputStream[] dataInputStream = new DataInputStream[1];
+//                final DataInputStream[] dataInputStream = new DataInputStream[1];
                 final JSONObject object = new JSONObject();
 
                 final String personName = acct.getDisplayName();
@@ -160,49 +168,52 @@ public class LoginActivity extends AppCompatActivity implements
                 final String finalDateString = dateString;
  */
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            failed = true;
-                            socket[0] = new Socket(MainActivity.ip, MainActivity.port);
-                            outputStream[0] = socket[0].getOutputStream();
-                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-                            failed = false;
-                            object.put("function", "addUser");
-                            object.put("firstName", personGivenName);
-                            object.put("lastName", personFamilyName);
-                            object.put("googleID", googleID);
-                            //object.put("dateCreated", finalDateString);
-                            dataOutputStream[0].writeUTF(object.toString());
-//                            inputStream[0] = socket[0].getInputStream();
-//                            dataInputStream[0] = new DataInputStream(inputStream[0]);
-                            //                          String s = dataInputStream[0].readUTF();
-//                            int id = Integer.parseInt(dataInputStream[0].readUTF());
-                            outputStream[0].close();
-                            dataOutputStream[0].close();
+                if (MainActivity.server) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                failed = true;
+                                socket[0] = new Socket(MainActivity.ip, MainActivity.port);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                                failed = false;
+                                object.put("function", "addUser");
+                                object.put("firstName", personGivenName);
+                                object.put("lastName", personFamilyName);
+                                object.put("googleID", googleID);
+                                //object.put("dateCreated", finalDateString);
+                                dataOutputStream[0].writeUTF(object.toString());
+//                              inputStream[0] = socket[0].getInputStream();
+//                              dataInputStream[0] = new DataInputStream(inputStream[0]);
+//                              String s = dataInputStream[0].readUTF();
+//                              int id = Integer.parseInt(dataInputStream[0].readUTF());
+                                outputStream[0].close();
+                                dataOutputStream[0].close();
 //                            inputStream[0].close();
 //                            dataInputStream[0].close();
-                            socket[0].close();
-                        } catch (IOException | JSONException e) {
-                            e.printStackTrace();
+                                socket[0].close();
+                            } catch (IOException | JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }).start();
-            } else {
-                status.setText(R.string.login_error);
+                    }).start();
+                } else {
+                    //Logging in without server
+                    failed = false;
+                }
             }
 
-            android.os.SystemClock.sleep(150);
+            android.os.SystemClock.sleep(200);
 
             if (!failed) {
                 updateUI(true);
+                return;
             }
-        } else {
-            // Signed out, show unauthenticated UI.
-            updateUI(false);
         }
-
+        // Signed out, show unauthenticated UI.
+        updateUI(false);
+        return;
     }
 
     private void signIn() {
@@ -215,8 +226,9 @@ public class LoginActivity extends AppCompatActivity implements
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
-                    public void onResult(Status status) {
+                    public void onResult(@NonNull Status status) {
                         // [START_EXCLUDE]
+                        failed = false;
                         updateUI(false);
                         // [END_EXCLUDE]
                     }
@@ -225,7 +237,7 @@ public class LoginActivity extends AppCompatActivity implements
     // [END signOut]
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
@@ -239,13 +251,18 @@ public class LoginActivity extends AppCompatActivity implements
                 Intent intent = new Intent(this, CommunityActivity.class);
                 startActivity(intent);
             } else {
-                status.setText("Server not found");
+                status.setText(R.string.server_not_found);
             }
             findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         } else {
-            status.setText(R.string.signed_out);
+            if (failed) {
+                status.setText(R.string.server_not_found);
+            }
+            else {
+                status.setText(R.string.signed_out);
+            }
             status.setVisibility(View.VISIBLE);
             findViewById(R.id.imageView2).setVisibility(View.GONE);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);

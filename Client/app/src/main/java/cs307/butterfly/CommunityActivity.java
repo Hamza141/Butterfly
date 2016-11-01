@@ -61,8 +61,8 @@ public class CommunityActivity extends AppCompatActivity {
         byte[] bytes = new byte[length];
 
         try {
-                fileInputStream = new FileInputStream(file);
-                fileInputStream.read(bytes);
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bytes);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -75,9 +75,9 @@ public class CommunityActivity extends AppCompatActivity {
         }
 
         String content = new String(bytes);
-        String [] contents = content.split("\n");
-        for (int i = 0; i < contents.length; i ++) {
-            result = contents[i];
+        String[] contents = content.split("\n");
+        for (String cont : contents) {
+            result = cont;
             if (!result.equals("")) {
                 Community community = new Community(result);
                 communities.add(community);
@@ -87,7 +87,9 @@ public class CommunityActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("My Groups");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("My Groups");
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageBitmap(textAsBitmap("+", 40, Color.WHITE));
@@ -132,21 +134,23 @@ public class CommunityActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            socket[0] = new Socket(MainActivity.ip, 3300);
-                            outputStream[0] = socket[0].getOutputStream();
-                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-                            object.put("function", "addCommunity");
-                            object.put("name", text);
-                            dataOutputStream[0].writeUTF(object.toString());
-                        } catch (IOException | JSONException e) {
-                            e.printStackTrace();
+                if (MainActivity.server) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                socket[0] = new Socket(MainActivity.ip, 3300);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                                object.put("function", "addCommunity");
+                                object.put("name", text);
+                                dataOutputStream[0].writeUTF(object.toString());
+                            } catch (IOException | JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
             }
         });
         dialog.show();

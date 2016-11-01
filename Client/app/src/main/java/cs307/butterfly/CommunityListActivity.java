@@ -23,8 +23,6 @@ import java.util.ArrayList;
 public class CommunityListActivity extends AppCompatActivity {
 
     ArrayList <Community> communities;
-    private String result;
-    Button b;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +30,9 @@ public class CommunityListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_community_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("All Communities");
+        }
 
         communities = new ArrayList<>();
 
@@ -55,47 +56,46 @@ public class CommunityListActivity extends AppCompatActivity {
         final JSONObject object = new JSONObject();
         final String[] names = new String[1];
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    socket[0] = new Socket(MainActivity.ip, 3300);
-                    outputStream[0] = socket[0].getOutputStream();
-                    dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-                    object.put("function", "getCommunities");
-                    dataOutputStream[0].writeUTF(object.toString());
+        if (MainActivity.server) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        socket[0] = new Socket(MainActivity.ip, 3300);
+                        outputStream[0] = socket[0].getOutputStream();
+                        dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                        object.put("function", "getCommunities");
+                        dataOutputStream[0].writeUTF(object.toString());
 
-                    //now receive all the names of the communities from the server
-                    inputStream[0] = socket[0].getInputStream();
-                    dataInputStream[0] = new DataInputStream(inputStream[0]);
+                        //now receive all the names of the communities from the server
+                        inputStream[0] = socket[0].getInputStream();
+                        dataInputStream[0] = new DataInputStream(inputStream[0]);
 
-                    //save the input stream from the server to the communities arraylist
-                    names[0] = dataInputStream[0].readUTF();
+                        //save the input stream from the server to the communities arraylist
+                        names[0] = dataInputStream[0].readUTF();
 
-                    outputStream[0].close();
-                    dataOutputStream[0].close();
-                    inputStream[0].close();
-                    dataInputStream[0].close();
-                    socket[0].close();
+                        outputStream[0].close();
+                        dataOutputStream[0].close();
+                        inputStream[0].close();
+                        dataInputStream[0].close();
+                        socket[0].close();
 
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
+            }).start();
+
+            android.os.SystemClock.sleep(300);
+
+            String[] name = names[0].split(", ");
+            //Create buttons for each Community
+            for (String aName : name) {
+                Community community = new Community(aName);
+                communities.add(community);
+                addButton(new Community(aName));
             }
-        }).start();
-
-        android.os.SystemClock.sleep(300);
-
-        String [] name = names[0].split(", ");
-        for (int i = 0; i < name.length; i++) {
-            Community community = new Community(name[i]);
-            communities.add(community);
-
-            //add Button for each community
-            result = name[i];
-            addButton(new Community(result));
         }
-
     }
 
     public void addButton(final Community community) {
