@@ -8,6 +8,7 @@ import java.io.*;
 import java.sql.*;
 import javax.mail.*;
 import javax.mail.internet.*;
+import com.google.firebase.*;
 import org.json.simple.parser.*;
 import org.json.simple.JSONObject;
 
@@ -55,15 +56,19 @@ public class Server extends Thread {
                     String function = (String) obj2.get("function");
                     if (function.equals("addUser")) {
                         addUser(obj2);
-                    } else if (function.equals("getCommunities")) {
-                        //TODO: list all communities
-                        getCommunities();
-                    } else if (function.equals("getCommunityUsers")) {
-                        getCommunityUsers((String) obj2.get("communityName"));
-                    } else if (function.equals("addCommunityUser")) {
-                        addCommunityUser(obj2);
                     } else if (function.equals("addCommunity")) {
                         addCommunity(obj2);
+                    } else if (function.equals("getCommunities")) {
+                        getCommunities();
+                    } else if (function.equals("addCommunityUser")) {
+                        addCommunityUser(obj2);
+                    } else if (function.equals("getCommunityUsers")) {
+                        getCommunityUsers((String) obj2.get("communityName"));
+                    } else if (function.equals("leaveCommunityUser")
+                            || function.equals("removeCommunityUser")) {
+                        leaveCommunityUser(obj2);
+                    } else if (function.equals("addMessage")) {
+                        addMessage(obj2);
                     } else if (function.equals("addEvent")) {
                         addEvent(obj2);
                     } else if (function.equals("getEvents")) {
@@ -73,8 +78,6 @@ public class Server extends Thread {
                     } else if (function.equals("emailInvite")) {
                         sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
                                 (String) obj2.get("to"));
-                    } else if (function.equals("leaveCommunityUser")) {
-                        leaveCommunityUser(obj2);
                     }
                 }
             } catch (org.json.simple.parser.ParseException | IOException
@@ -84,7 +87,18 @@ public class Server extends Thread {
         }
     }
 
+    private void addMessage(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Board";
+        String pinned = (String) obj.get("pinned"); String name = (String) obj.get("name");
+        String message = (String) obj.get("message");
+
+
+    }
+
     private void getCommunities() {
+        // TODO change JSONOBJECT to string
         String comma = ", ";
         StringBuilder communities = new StringBuilder();
         try {
@@ -113,8 +127,10 @@ public class Server extends Thread {
             JSONObject obj;
             while (rs.next()) {
                 obj = new JSONObject();
-                obj.put("idUsers", rs.getString("idUsers")); obj.put("firstName", rs.getString("firstName"));
-                obj.put("lastName", rs.getString("lastName")); obj.put("googleID", rs.getString("googleID"));
+                obj.put("idUsers", rs.getString("idUsers"));
+                obj.put("firstName", rs.getString("firstName"));
+                obj.put("lastName", rs.getString("lastName"));
+                obj.put("googleID", rs.getString("googleID"));
                 System.out.println(obj.toString());
                 out.writeUTF(obj.toString());
             }
@@ -133,8 +149,7 @@ public class Server extends Thread {
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
             ps.executeUpdate();
-            out.writeUTF("1");
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -182,6 +197,7 @@ public class Server extends Thread {
     }
 
     private void getEvents(String communityName) {
+        communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
         try {
             String sql = "SELECT * FROM " + communityName;
@@ -190,11 +206,10 @@ public class Server extends Thread {
             JSONObject obj;
             while (rs.next()) {
                 obj = new JSONObject();
-                obj.put("name", rs.getString("name"));
+                obj.put("name", rs.getString("name")); obj.put("city", rs.getString("city"));
+                obj.put("date", rs.getString("date")); obj.put("address", rs.getString("address"));
+                obj.put("state", rs.getString("state")); obj.put("zip", rs.getString("zip"));
                 obj.put("description", rs.getString("description"));
-                obj.put("date", rs.getString("date")); obj.put("city", rs.getString("city"));
-                obj.put("state", rs.getString("state")); obj.put("address", rs.getString("address"));
-                obj.put("zipcode", rs.getString("zipcode"));
                 obj.put("locationName", rs.getString("locationName"));
                 obj.put("numAttendees", rs.getString("numAttendees"));
                 System.out.println(obj.toString());
@@ -207,28 +222,25 @@ public class Server extends Thread {
 
     private void addEvent(JSONObject obj) {
         String communityName = (String) obj.get("communityName");
+        communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
-        String idEvents = "0";
-        String name = (String) obj.get("name");
-        String description = (String) obj.get("description");
-        String date = (String) obj.get("date");
-        String city = (String) obj.get("city");
-        String state = (String) obj.get("state");
-        String address = (String) obj.get("address");
-        String zipcode = (String) obj.get("zipcode");
+        String name = (String) obj.get("name"); String description = (String) obj.get("description");
+        String date = (String) obj.get("date"); String city = (String) obj.get("city");
+        String state = (String) obj.get("state"); String address = (String) obj.get("address");
+        String zip = (String) obj.get("zip");
         String locationName = (String) obj.get("locationName");
         String numAttendees = (String) obj.get("numAttendees");
         try {
-            String sql = "INSERT INTO " + communityName + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO " + communityName + " (name, description, date, city, state, "
+                    + "address, zip, locationName, numAttendees) "
+                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
-            ps.setString(1, idEvents); ps.setString(2, name);
-            ps.setString(3, description); ps.setString(4, date); ps.setString(5, city);
-            ps.setString(6, state); ps.setString(7, address); ps.setString(8, zipcode);
-            ps.setString(9, locationName); ps.setString(10, numAttendees);
+            ps.setString(1, name); ps.setString(2, description); ps.setString(3, date);
+            ps.setString(4, city); ps.setString(5, state); ps.setString(6, address);
+            ps.setString(7, zip); ps.setString(8, locationName); ps.setString(9, numAttendees);
             System.out.println(ps);
             ps.executeUpdate();
-            out.writeUTF("1");
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -237,13 +249,12 @@ public class Server extends Thread {
         //DATE: YYYY-MM-DD
         communityName += "_Users";
         String newTable = "CREATE TABLE " + communityName + " ("
-                + "idUsers INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, " + "firstName VARCHAR(255), " + "lastName VARCHAR(255), "
-                + "googleID VARCHAR(255), " + "isLeader TINYINT(1))";
+                + "idUsers INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, " + "firstName VARCHAR(255), "
+                + "lastName VARCHAR(255), " + "googleID VARCHAR(255), " + "isLeader TINYINT(1))";
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
-            out.writeUTF("1");
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -252,44 +263,40 @@ public class Server extends Thread {
         // DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
         communityName += "_Calendar";
         String newTable = "CREATE TABLE " + communityName + " ("
-                + "idEvents INT(4), " + "name VARCHAR(255), " + "description VARCHAR(255), "
-                + "date DATE, " + "city VARCHAR(255), " + "state VARCHAR(255), "
-                + "address VARCHAR(255), " + "zipcode VARCHAR(255), " + "locationName VARCHAR(255), "
-                + "numAttendees INT(4))";
+                + "idEvents INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, " + "name VARCHAR(255), "
+                + "description VARCHAR(255), " + "date DATE, " + "city VARCHAR(255), "
+                + "state VARCHAR(255), " + "address VARCHAR(255), " + "zip VARCHAR(255), "
+                + "locationName VARCHAR(255), " + "numAttendees INT(4))";
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
-            out.writeUTF("1");
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private void createCommunityBoardTable(String communityName) {
-        //TODO: figure out what variables needed for a board table.
+        //TODO: figure out what variables needed for a board table. id, message, name, date
         communityName += "_Board";
         String newTable = "CREATE TABLE " + communityName + " ("
-                + "";
+                + "idEvents INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, "
+                + "pinned INT(4), " + "name VARCHAR(255), "
+                + "message TEXT CHARACTER SET latin1 COLLATE latin1_general_cs)";
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
-            out.writeUTF("1");
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private void addCommunity(JSONObject obj) {
-        String idCommunities = "0";
-        String neighboorhoodID = "0";
-        String category = (String) obj.get("category");
-        String subCategory = (String) obj.get("subCategory");
-        String name = (String) obj.get("name");
-        String description = (String) obj.get("description");
-        String numMembers = "1";
-        String numUpcomgEvents = "0";
-        String dateCreated = (String) obj.get("dateCreated");
+        String idCommunities = "0"; String neighborhoodID = "0"; String numUpcomgEvents = "0";
+        String numMembers = "1"; String category = (String) obj.get("category");
+        String name = (String) obj.get("name"); String subCategory = (String) obj.get("subCategory");
         String Private = (String) obj.get("private");
+        String description = (String) obj.get("description");
+        String dateCreated = (String) obj.get("dateCreated");
         try {
             queryCheck = "SELECT count(*) from Communities WHERE name = ?";
             ps = conn.prepareStatement(queryCheck);
@@ -300,28 +307,20 @@ public class Server extends Thread {
                 if (rs.getInt(1) == 0) {
                     String sql = "INSERT INTO Communities VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
-                    ps.setString(1, idCommunities);
-                    ps.setString(2, neighboorhoodID);
-                    ps.setString(3, category);
-                    ps.setString(4, subCategory);
-                    ps.setString(5, name);
-                    ps.setString(6, description);
-                    ps.setString(7, numMembers);
-                    ps.setString(8, numUpcomgEvents);
-                    ps.setString(9, dateCreated);
-                    ps.setString(10, Private);
+                    ps.setString(1, idCommunities); ps.setString(2, neighborhoodID);
+                    ps.setString(3, category); ps.setString(4, subCategory);
+                    ps.setString(5, name); ps.setString(6, description);
+                    ps.setString(7, numMembers); ps.setString(8, numUpcomgEvents);
+                    ps.setString(9, dateCreated); ps.setString(10, Private);
                     System.out.println(ps);
                     ps.executeUpdate();
                     name = name.replaceAll("\\s", "_");
                     createCommunityUserTable(name);
                     createCommunityEventTable(name);
-                    //createCommunityBoardTable(name);
-                    out.writeUTF("1");
+                    createCommunityBoardTable(name);
                 }
-            } else {
-                out.writeUTF("0");
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -333,18 +332,17 @@ public class Server extends Thread {
         String idUsers = (String) obj.get("idUsers");
         String isLeader = (String) obj.get("isLeader");
         try {
-            String sql = "INSERT INTO " + communityName + " SELECT * FROM Users WHERE idUsers = " + idUsers;
+            String sql = "INSERT INTO " + communityName
+                    + " SELECT * FROM Users WHERE idUsers = " + idUsers;
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
             ps.executeUpdate();
             sql = "UPDATE " + communityName + " SET isLeader = ? WHERE idUsers = ?";
             ps = conn.prepareStatement(sql);
-            ps.setString(1, isLeader);
-            ps.setString(2, idUsers);
+            ps.setString(1, isLeader); ps.setString(2, idUsers);
             System.out.println(ps);
             ps.executeUpdate();
-            out.writeUTF("1");
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -363,9 +361,7 @@ public class Server extends Thread {
                 if (rs.getInt(1) == 0) {
                     String sql = "INSERT INTO Users (firstName, lastName, googleID) VALUES (?, ?, ?)";
                     ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                    ps.setString(1, first);
-                    ps.setString(2, last);
-                    ps.setString(3, google);
+                    ps.setString(1, first); ps.setString(2, last); ps.setString(3, google);
                     System.out.println(ps);
                     ps.executeUpdate();
                     rs = ps.getGeneratedKeys();
@@ -378,7 +374,7 @@ public class Server extends Thread {
                     out.writeUTF(id);
                 }
             } else {
-                out.writeUTF("0");
+                out.writeUTF("-1");
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
@@ -386,8 +382,20 @@ public class Server extends Thread {
     }
 
     public static void main(String[] args) {
+
         int port = 3300;
         try {
+            URL url = new URL("https://fcm.googleapis.com/fcm/send");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDoOutput(true);
+            http.setRequestMethod("POST");
+            http.setRequestProperty("Content-Type", "application/json");
+            http.setRequestProperty("Authorization", "AIzaSyAwFCRR0bQxp8J7ahmrSwM3x949Yz_aVVo");
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-89e6cb91114f.json"))
+                    .setDatabaseUrl("https://butterfly-699e4.firebaseio.com/")
+                    .build();
+            FirebaseApp.initializeApp(options);
             Thread t = new Server(port);
             t.start();
         } catch (IOException e) {
