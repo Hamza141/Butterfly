@@ -173,7 +173,6 @@ public class LoginActivity extends AppCompatActivity implements
                         @Override
                         public void run() {
                             try {
-                                failed = true;
                                 socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                                 outputStream[0] = socket[0].getOutputStream();
                                 dataOutputStream[0] = new DataOutputStream(outputStream[0]);
@@ -200,8 +199,13 @@ public class LoginActivity extends AppCompatActivity implements
                     }).start();
                 } else {
                     //Logging in without server
-                    failed = false;
+                    failed = true;
                 }
+            }
+
+            if (failed && !MainActivity.server) {
+                updateUI(true);
+                return;
             }
 
             android.os.SystemClock.sleep(200);
@@ -247,7 +251,7 @@ public class LoginActivity extends AppCompatActivity implements
     private void updateUI(boolean signedIn) {
         if (signedIn) {
 
-            if (!failed) {
+            if (!MainActivity.server || !failed) {
                 Intent intent = new Intent(this, CommunityActivity.class);
                 startActivity(intent);
             } else {
@@ -268,6 +272,7 @@ public class LoginActivity extends AppCompatActivity implements
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
+        failed = true;
     }
 
     @Override
