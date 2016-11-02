@@ -34,7 +34,6 @@ public class Server extends Thread {
     }
     public void run() {
         while (true) {
-            genericNotification();
             try {
                 Socket server = serverSocket.accept();
                 System.out.println("Just connected to " + server.getRemoteSocketAddress());
@@ -88,6 +87,8 @@ public class Server extends Thread {
                         upcomingEventNotification();
                     } else if (function.equals("newBoardNotification")) {
                         newBoardNotification();
+                    } else {
+                        genericNotification();
                     }
                 }
             } catch (org.json.simple.parser.ParseException | IOException
@@ -397,19 +398,22 @@ public class Server extends Thread {
             http.setRequestProperty("Authorization", "key=AIzaSyD1CtRFoU5_P9NTVJ3sj6-Qe28OgLbzNZs");
             JSONObject data = new JSONObject();
             JSONObject parent = new JSONObject();
-            data.put("message","test message");
-            data.put("password", "yourpassword");
-            parent.put("to", "/topics/all");
+            data.put("body","got it");
+            data.put("title", "JSON output");
+            parent.put("to", "doIv6J0aonU:APA91bFurjyvsjShdGVtM81MVBChodZrcO08j83IXvfFpg5vDY8D6N7yG6LYKaVuKsJ0Ac6VhJNzBXkibIFhMhDz3wL9y4vSaiEqTl-AH3GnwG6TitkC4s21TOMwIclAog-ieGuJmMp6");
             parent.put("data", data);
             System.out.println(parent);
-            byte[] o = parent.toString().getBytes(StandardCharsets.UTF_8);
-            http.setFixedLengthStreamingMode(o.length);
-            http.connect();
-            try(OutputStream os = http.getOutputStream()) {
-                os.write(o);
+            OutputStream os = http.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+            osw.write(parent.toString());
+            osw.flush();
+            osw.close();
+            BufferedReader is = new BufferedReader(new InputStreamReader(http.getInputStream()));
+            String response;
+            while ((response = is.readLine()) != null) {
+                System.out.println(response);
             }
-            int status = http.getResponseCode();
-            System.out.println(status);
+            is.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -431,8 +435,8 @@ public class Server extends Thread {
         int port = 3300;
         try {
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-89e6cb91114f.json"))
-                    .setDatabaseUrl("https://butterfly-699e4.firebaseio.com/")
+                    .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-40ec2c75b546.json"))
+                    .setDatabaseUrl("butterfly-145620.firebaseio.com/")
                     .build();
             FirebaseApp.initializeApp(options);
 
