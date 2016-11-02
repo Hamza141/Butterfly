@@ -3,6 +3,7 @@
  */
 
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -33,6 +34,7 @@ public class Server extends Thread {
     }
     public void run() {
         while (true) {
+            genericNotification();
             try {
                 Socket server = serverSocket.accept();
                 System.out.println("Just connected to " + server.getRemoteSocketAddress());
@@ -78,6 +80,14 @@ public class Server extends Thread {
                     } else if (function.equals("emailInvite")) {
                         sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
                                 (String) obj2.get("to"));
+                    } else if (function.equals("genericNotification")) {
+                        genericNotification();
+                    } else if (function.equals("pingNotification")) {
+                        pingNotification();
+                    } else if (function.equals("upcomingEventNotification")) {
+                        upcomingEventNotification();
+                    } else if (function.equals("newBoardNotification")) {
+                        newBoardNotification();
                     }
                 }
             } catch (org.json.simple.parser.ParseException | IOException
@@ -89,8 +99,7 @@ public class Server extends Thread {
 
     private void addMessage(JSONObject obj) {
         String communityName = (String) obj.get("communityName");
-        communityName = communityName.replaceAll("\\s", "_");
-        communityName += "_Board";
+        communityName = communityName.replaceAll("\\s", "_"); communityName += "_Board";
         String pinned = (String) obj.get("pinned"); String name = (String) obj.get("name");
         String message = (String) obj.get("message");
 
@@ -98,21 +107,18 @@ public class Server extends Thread {
     }
 
     private void getCommunities() {
-        // TODO change JSONOBJECT to string
         String comma = ", ";
         StringBuilder communities = new StringBuilder();
         try {
             String sql = "SELECT * FROM Communities";
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
-            JSONObject obj = new JSONObject();
             while (rs.next()) {
                 communities.append(rs.getString("name"));
                 communities.append(comma);
             }
-            obj.put("string", communities);
-            System.out.println(obj.toString());
-            out.writeUTF(obj.toString());
+            System.out.println(communities);
+            out.writeUTF(communities.toString());
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -381,21 +387,55 @@ public class Server extends Thread {
         }
     }
 
-    public static void main(String[] args) {
-
-        int port = 3300;
+    private void genericNotification() {
         try {
             URL url = new URL("https://fcm.googleapis.com/fcm/send");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setDoOutput(true);
             http.setRequestMethod("POST");
             http.setRequestProperty("Content-Type", "application/json");
-            http.setRequestProperty("Authorization", "AIzaSyAwFCRR0bQxp8J7ahmrSwM3x949Yz_aVVo");
+            http.setRequestProperty("Authorization", "key=AIzaSyD1CtRFoU5_P9NTVJ3sj6-Qe28OgLbzNZs");
+            JSONObject data = new JSONObject();
+            JSONObject parent = new JSONObject();
+            data.put("message","test message");
+            data.put("password", "yourpassword");
+            parent.put("to", "/topics/all");
+            parent.put("data", data);
+            System.out.println(parent);
+            byte[] o = parent.toString().getBytes(StandardCharsets.UTF_8);
+            http.setFixedLengthStreamingMode(o.length);
+            http.connect();
+            try(OutputStream os = http.getOutputStream()) {
+                os.write(o);
+            }
+            int status = http.getResponseCode();
+            System.out.println(status);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void pingNotification() {
+
+    }
+
+    private void upcomingEventNotification() {
+
+    }
+
+    private void newBoardNotification() {
+
+    }
+
+    public static void main(String[] args) {
+        int port = 3300;
+        try {
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-89e6cb91114f.json"))
                     .setDatabaseUrl("https://butterfly-699e4.firebaseio.com/")
                     .build();
             FirebaseApp.initializeApp(options);
+
             Thread t = new Server(port);
             t.start();
         } catch (IOException e) {

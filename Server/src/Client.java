@@ -12,13 +12,6 @@ public class Client {
         String serverName = "10.186.80.75";
         int port = 3300;
         try {
-            JSONObject cred = new JSONObject();
-            JSONObject parent=new JSONObject();
-            cred.put("username","adm");
-            cred.put("password", "pwd");
-            parent.put("to", "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1...");
-            parent.put("passwordCredentials", cred);
-            System.out.println(parent.toString());
             System.out.println("Connecting to " + serverName + " on port " + port);
             Socket client = new Socket(serverName, port);
             System.out.println("Just connected to " + client.getRemoteSocketAddress());
@@ -58,7 +51,6 @@ public class Client {
             /*obj = new JSONObject();
             obj.put("function", "leaveCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "2");
             out.writeUTF(obj.toString());*/
-
 
             /*obj = new JSONObject();
             obj.put("function", "addCommunity"); obj.put("category", "sports");
