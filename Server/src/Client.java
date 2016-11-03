@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 public class Client {
     public static void main(String[] args) {
         //String serverName = "128.211.225.79";
-        String serverName = "10.186.80.75";
+        String serverName = "10.186.85.23";
         int port = 3300;
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
@@ -22,11 +22,13 @@ public class Client {
             JSONObject obj;
             JSONObject obj2;
 
-            /*obj.put("function", "addUser"); obj.put("firstName", "Khanh"); obj.put("lastName", "Tran");
+            /*obj.put("function", "addUser"); obj.put("firstName", "Khanh");
+            obj.put("lastName", "Tran");
             obj.put("googleID", "newcdragon@gmail.com");
             out.writeUTF(obj.toString());*/
 
-            /*obj2.put("function", "addUser"); obj2.put("firstName", "Larry"); obj2.put("lastName", "Bird");
+            /*obj2.put("function", "addUser"); obj2.put("firstName", "Larry");
+            obj2.put("lastName", "Bird");
             obj2.put("googleID", "LarryB@gmail.com");
             out.writeUTF(obj2.toString());*/
 
@@ -40,16 +42,19 @@ public class Client {
             out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
-            obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "1");
+            obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307");
+            obj.put("idUsers", "1");
             obj.put("isLeader", "1");
             out.writeUTF(obj.toString());*/
             /*obj = new JSONObject();
-            obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "2");
+            obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307");
+            obj.put("idUsers", "2");
             obj.put("isLeader", "0");
             out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
-            obj.put("function", "leaveCommunityUser"); obj.put("communityName", "CS307"); obj.put("idUsers", "2");
+            obj.put("function", "leaveCommunityUser"); obj.put("communityName", "CS307");
+            obj.put("idUsers", "2");
             out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
@@ -97,6 +102,11 @@ public class Client {
             out.writeUTF(obj2.toString());
             System.out.println("Server says " + in.readUTF());*/
 
+            obj = new JSONObject();
+            obj.put("function", "genericNotification");
+            obj.put("idUsers", "4"); obj.put("message", "respond pls");
+            obj.put("googleID", "hamzafarrukh141@gmail.com");
+            out.writeUTF(obj.toString());
             //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());

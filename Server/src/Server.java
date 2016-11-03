@@ -80,15 +80,12 @@ public class Server extends Thread {
                         sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
                                 (String) obj2.get("to"));
                     } else if (function.equals("genericNotification")) {
-                        genericNotification();
+                        genericNotification(getInstanceID((String) obj2.get("googleID")),
+                                (String) obj2.get("message"));
                     } else if (function.equals("pingNotification")) {
-                        pingNotification();
+                        pingNotification((String) obj2.get("googleID"));
                     } else if (function.equals("upcomingEventNotification")) {
-                        upcomingEventNotification();
-                    } else if (function.equals("newBoardNotification")) {
-                        newBoardNotification();
-                    } else {
-                        genericNotification();
+                        upcomingEventNotification((String) obj2.get("googleID"));
                     }
                 }
             } catch (org.json.simple.parser.ParseException | IOException
@@ -104,7 +101,7 @@ public class Server extends Thread {
         String pinned = (String) obj.get("pinned"); String name = (String) obj.get("name");
         String message = (String) obj.get("message");
 
-
+        newBoardNotification(communityName);
     }
 
     private void getCommunities() {
@@ -247,6 +244,7 @@ public class Server extends Thread {
             ps.setString(7, zip); ps.setString(8, locationName); ps.setString(9, numAttendees);
             System.out.println(ps);
             ps.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -358,6 +356,7 @@ public class Server extends Thread {
         String first = (String) obj.get("firstName");
         String last = (String) obj.get("lastName");
         String google = (String) obj.get("googleID");
+        String instanceID = (String) obj.get("instanceID");
         try {
             queryCheck = "SELECT count(*) from Users WHERE googleID = ?";
             ps = conn.prepareStatement(queryCheck);
@@ -366,9 +365,11 @@ public class Server extends Thread {
             rs = ps.executeQuery();
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
-                    String sql = "INSERT INTO Users (firstName, lastName, googleID) VALUES (?, ?, ?)";
+                    String sql;
+                    sql = "INSERT INTO Users (firstName, lastName, googleID) VALUES (?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, first); ps.setString(2, last); ps.setString(3, google);
+                    ps.setString(4, instanceID);
                     System.out.println(ps);
                     ps.executeUpdate();
                     rs = ps.getGeneratedKeys();
@@ -388,7 +389,24 @@ public class Server extends Thread {
         }
     }
 
-    private void genericNotification() {
+    private String getInstanceID(String googleID) {
+        try {
+            queryCheck = "SELECT * from Users WHERE googleID = ?";
+            ps = conn.prepareStatement(queryCheck);
+            ps.setString(1, googleID);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println(rs.getString("instanceID"));
+                return rs.getString("instanceID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private void genericNotification(String to, String message) {
         try {
             URL url = new URL("https://fcm.googleapis.com/fcm/send");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -398,9 +416,8 @@ public class Server extends Thread {
             http.setRequestProperty("Authorization", "key=AIzaSyD1CtRFoU5_P9NTVJ3sj6-Qe28OgLbzNZs");
             JSONObject data = new JSONObject();
             JSONObject parent = new JSONObject();
-            data.put("body","got it");
-            data.put("title", "JSON output");
-            parent.put("to", "doIv6J0aonU:APA91bFurjyvsjShdGVtM81MVBChodZrcO08j83IXvfFpg5vDY8D6N7yG6LYKaVuKsJ0Ac6VhJNzBXkibIFhMhDz3wL9y4vSaiEqTl-AH3GnwG6TitkC4s21TOMwIclAog-ieGuJmMp6");
+            data.put("body", message);
+            parent.put("to", to);
             parent.put("data", data);
             System.out.println(parent);
             OutputStream os = http.getOutputStream();
@@ -419,15 +436,19 @@ public class Server extends Thread {
         }
     }
 
-    private void pingNotification() {
+    private void pingNotification(String to) {
 
     }
 
-    private void upcomingEventNotification() {
-
+    private void upcomingEventNotification(String to) {
+        /*TODO loop through each calendar table
+          TODO figure out when it is 24 hours before an event time
+          TODO send notification to all users in that community
+          TODO will have to be always running to be prompt
+        */
     }
 
-    private void newBoardNotification() {
+    private void newBoardNotification(String to) {
 
     }
 
@@ -439,7 +460,6 @@ public class Server extends Thread {
                     .setDatabaseUrl("butterfly-145620.firebaseio.com/")
                     .build();
             FirebaseApp.initializeApp(options);
-
             Thread t = new Server(port);
             t.start();
         } catch (IOException e) {
