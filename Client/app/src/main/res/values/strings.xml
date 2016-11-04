@@ -35,4 +35,6 @@
     <string name="welcome">Welcome!</string>
     <string name="server_not_found">Server not found</string>
     <string name="server_offline">Server Offline</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="google_sign_in_error">Google Sign in Error</string>
 </resources>
