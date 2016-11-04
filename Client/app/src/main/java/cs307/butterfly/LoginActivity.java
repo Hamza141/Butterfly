@@ -149,7 +149,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
-
+        failed = true;
         //Sign in to Google was successful
         if (result.isSuccess()) {
 
@@ -223,9 +223,8 @@ public class LoginActivity extends AppCompatActivity implements
                             }
                         }
                     }).start();
+                    android.os.SystemClock.sleep(1000);
                 }
-
-                android.os.SystemClock.sleep(400);
 
                 updateUI(true);
                 return;
@@ -242,7 +241,6 @@ public class LoginActivity extends AppCompatActivity implements
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
-        failed = false;
     }
 
     // [START signOut]
@@ -252,7 +250,6 @@ public class LoginActivity extends AppCompatActivity implements
                     @Override
                     public void onResult(@NonNull Status status) {
                         // [START_EXCLUDE]
-                        failed = false;
                         updateUI(false);
                         // [END_EXCLUDE]
                     }
@@ -271,7 +268,7 @@ public class LoginActivity extends AppCompatActivity implements
     private void updateUI(boolean signedIn) {
         if (signedIn) {
             //Check if app is in online mode and if everything was successful
-            if (!MainActivity.server || !failed) {
+            if ((MainActivity.server && !failed) || (failed && !MainActivity.server)) {
                 Intent intent = new Intent(this, CommunityActivity.class);
                 startActivity(intent);
             } else {
@@ -288,7 +285,6 @@ public class LoginActivity extends AppCompatActivity implements
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
-        failed = true;
     }
 
     @Override
