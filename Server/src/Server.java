@@ -3,6 +3,7 @@
  */
 
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -18,6 +19,7 @@ public class Server extends Thread {
     static final private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final private String DB_URL = "jdbc:mysql://localhost/Butterfly";
     static final private String USER = "root";
+    // TODO move sql database password into file outside git to read from
     static final private String PASS = "Ghost999";
     private Connection conn = null;
     private Statement stmt = null;
@@ -56,6 +58,8 @@ public class Server extends Thread {
                     String function = (String) obj2.get("function");
                     if (function.equals("addUser")) {
                         addUser(obj2);
+                    } else if (function.equals("updateInstanceID")) {
+                        updateInstanceID(obj2);
                     } else if (function.equals("addCommunity")) {
                         addCommunity(obj2);
                     } else if (function.equals("getCommunities")) {
@@ -78,6 +82,13 @@ public class Server extends Thread {
                     } else if (function.equals("emailInvite")) {
                         sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
                                 (String) obj2.get("to"));
+                    } else if (function.equals("genericNotification")) {
+                        genericNotification(getInstanceID((String) obj2.get("idUsers")),
+                                (String) obj2.get("message"));
+                    } else if (function.equals("pingNotification")) {
+                        pingNotification((String) obj2.get("googleID"));
+                    } else if (function.equals("upcomingEventNotification")) {
+                        upcomingEventNotification((String) obj2.get("googleID"));
                     }
                 }
             } catch (org.json.simple.parser.ParseException | IOException
@@ -87,32 +98,40 @@ public class Server extends Thread {
         }
     }
 
+    private void getMesssages() {
+        //TODO return json of messages
+    }
+
     private void addMessage(JSONObject obj) {
         String communityName = (String) obj.get("communityName");
-        communityName = communityName.replaceAll("\\s", "_");
-        communityName += "_Board";
+        communityName = communityName.replaceAll("\\s", "_"); communityName += "_Board";
         String pinned = (String) obj.get("pinned"); String name = (String) obj.get("name");
         String message = (String) obj.get("message");
-
-
+        try {
+            String sql = "INSERT INTO " + communityName + " (pinned, name, message) VALUES(?, ?, ?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, pinned); ps.setString(2, name); ps.setString(3, message);
+            System.out.println(ps);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        newBoardNotification(communityName);
     }
 
     private void getCommunities() {
-        // TODO change JSONOBJECT to string
         String comma = ", ";
         StringBuilder communities = new StringBuilder();
         try {
             String sql = "SELECT * FROM Communities";
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
-            JSONObject obj = new JSONObject();
             while (rs.next()) {
                 communities.append(rs.getString("name"));
                 communities.append(comma);
             }
-            obj.put("string", communities);
-            System.out.println(obj.toString());
-            out.writeUTF(obj.toString());
+            System.out.println(communities);
+            out.writeUTF(communities.toString());
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -347,10 +366,24 @@ public class Server extends Thread {
         }
     }
 
+    private void updateInstanceID(JSONObject obj) {
+        try {
+            String googleID = (String) obj.get("googleID");
+            String instanceID = (String) obj.get("instanceID");
+            queryCheck = "UPDATE Users SET instanceID = ? WHERE googleID = ?";
+            ps = conn.prepareStatement(queryCheck);
+            ps.setString(1, instanceID); ps.setString(2, googleID);
+            System.out.println(ps);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     private void addUser(JSONObject obj) {
         String first = (String) obj.get("firstName");
         String last = (String) obj.get("lastName");
         String google = (String) obj.get("googleID");
+        String instanceID = (String) obj.get("instanceID");
         try {
             queryCheck = "SELECT count(*) from Users WHERE googleID = ?";
             ps = conn.prepareStatement(queryCheck);
@@ -359,9 +392,11 @@ public class Server extends Thread {
             rs = ps.executeQuery();
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
-                    String sql = "INSERT INTO Users (firstName, lastName, googleID) VALUES (?, ?, ?)";
+                    String sql;
+                    sql = "INSERT INTO Users (firstName, lastName, googleID, instanceID) VALUES (?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, first); ps.setString(2, last); ps.setString(3, google);
+                    ps.setString(4, instanceID);
                     System.out.println(ps);
                     ps.executeUpdate();
                     rs = ps.getGeneratedKeys();
@@ -372,28 +407,85 @@ public class Server extends Thread {
                     }
                     String id = Integer.toString(key);
                     out.writeUTF(id);
+                } else {
+                    out.writeUTF("-1");
                 }
-            } else {
-                out.writeUTF("-1");
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) {
+    private String getInstanceID(String idUsers) {
+        try {
+            queryCheck = "SELECT * from Users WHERE idUsers = ?";
+            ps = conn.prepareStatement(queryCheck);
+            ps.setString(1, idUsers);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("instanceID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
-        int port = 3300;
+    private void genericNotification(String to, String message) {
         try {
             URL url = new URL("https://fcm.googleapis.com/fcm/send");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setDoOutput(true);
             http.setRequestMethod("POST");
             http.setRequestProperty("Content-Type", "application/json");
-            http.setRequestProperty("Authorization", "AIzaSyAwFCRR0bQxp8J7ahmrSwM3x949Yz_aVVo");
+            // TODO move key into file outside git and read key from there
+            http.setRequestProperty("Authorization", "key=AIzaSyD1CtRFoU5_P9NTVJ3sj6-Qe28OgLbzNZs");
+            JSONObject data = new JSONObject();
+            JSONObject parent = new JSONObject();
+            data.put("body", message);
+            //data.put("title", "test");
+            parent.put("to", to);
+            parent.put("notification", data);
+            System.out.println(parent);
+            OutputStream os = http.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+            osw.write(parent.toString());
+            osw.flush();
+            osw.close();
+            BufferedReader is = new BufferedReader(new InputStreamReader(http.getInputStream()));
+            String response;
+            while ((response = is.readLine()) != null) {
+                System.out.println(response);
+            }
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void pingNotification(String to) {
+
+    }
+
+    private void upcomingEventNotification(String to) {
+        /*TODO loop through each calendar table
+          TODO figure out when it is 24 hours before an event time
+          TODO send notification to all users in that community
+          TODO will have to be always running to be prompt
+        */
+    }
+
+    private void newBoardNotification(String to) {
+
+    }
+
+    public static void main(String[] args) {
+        int port = 3300;
+        try {
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-89e6cb91114f.json"))
-                    .setDatabaseUrl("https://butterfly-699e4.firebaseio.com/")
+                    .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-40ec2c75b546.json"))
+                    .setDatabaseUrl("butterfly-145620.firebaseio.com/")
                     .build();
             FirebaseApp.initializeApp(options);
             Thread t = new Server(port);
