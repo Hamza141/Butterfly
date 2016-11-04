@@ -104,8 +104,8 @@ public class Client {
 
             obj = new JSONObject();
             obj.put("function", "genericNotification");
-            obj.put("idUsers", "4"); obj.put("message", "respond pls");
-            obj.put("googleID", "hamzafarrukh141@gmail.com");
+            obj.put("idUsers", "2"); obj.put("message", "send IdUsers");
+            obj.put("googleID", "newcdragon@gmail.com");
             out.writeUTF(obj.toString());
             //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());

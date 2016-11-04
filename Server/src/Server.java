@@ -19,6 +19,7 @@ public class Server extends Thread {
     static final private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final private String DB_URL = "jdbc:mysql://localhost/Butterfly";
     static final private String USER = "root";
+    // TODO move sql database password into file outside git to read from
     static final private String PASS = "Ghost999";
     private Connection conn = null;
     private Statement stmt = null;
@@ -57,6 +58,8 @@ public class Server extends Thread {
                     String function = (String) obj2.get("function");
                     if (function.equals("addUser")) {
                         addUser(obj2);
+                    } else if (function.equals("updateInstanceID")) {
+                        updateInstanceID(obj2);
                     } else if (function.equals("addCommunity")) {
                         addCommunity(obj2);
                     } else if (function.equals("getCommunities")) {
@@ -80,7 +83,7 @@ public class Server extends Thread {
                         sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
                                 (String) obj2.get("to"));
                     } else if (function.equals("genericNotification")) {
-                        genericNotification(getInstanceID((String) obj2.get("googleID")),
+                        genericNotification(getInstanceID((String) obj2.get("idUsers")),
                                 (String) obj2.get("message"));
                     } else if (function.equals("pingNotification")) {
                         pingNotification((String) obj2.get("googleID"));
@@ -95,12 +98,24 @@ public class Server extends Thread {
         }
     }
 
+    private void getMesssages() {
+        //TODO return json of messages
+    }
+
     private void addMessage(JSONObject obj) {
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_"); communityName += "_Board";
         String pinned = (String) obj.get("pinned"); String name = (String) obj.get("name");
         String message = (String) obj.get("message");
-
+        try {
+            String sql = "INSERT INTO " + communityName + " (pinned, name, message) VALUES(?, ?, ?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, pinned); ps.setString(2, name); ps.setString(3, message);
+            System.out.println(ps);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         newBoardNotification(communityName);
     }
 
@@ -244,7 +259,6 @@ public class Server extends Thread {
             ps.setString(7, zip); ps.setString(8, locationName); ps.setString(9, numAttendees);
             System.out.println(ps);
             ps.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -352,6 +366,19 @@ public class Server extends Thread {
         }
     }
 
+    private void updateInstanceID(JSONObject obj) {
+        try {
+            String googleID = (String) obj.get("googleID");
+            String instanceID = (String) obj.get("instanceID");
+            queryCheck = "UPDATE Users SET instanceID = ? WHERE googleID = ?";
+            ps = conn.prepareStatement(queryCheck);
+            ps.setString(1, instanceID); ps.setString(2, googleID);
+            System.out.println(ps);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     private void addUser(JSONObject obj) {
         String first = (String) obj.get("firstName");
         String last = (String) obj.get("lastName");
@@ -366,7 +393,7 @@ public class Server extends Thread {
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
                     String sql;
-                    sql = "INSERT INTO Users (firstName, lastName, googleID) VALUES (?, ?, ?, ?)";
+                    sql = "INSERT INTO Users (firstName, lastName, googleID, instanceID) VALUES (?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, first); ps.setString(2, last); ps.setString(3, google);
                     ps.setString(4, instanceID);
@@ -380,24 +407,23 @@ public class Server extends Thread {
                     }
                     String id = Integer.toString(key);
                     out.writeUTF(id);
+                } else {
+                    out.writeUTF("-1");
                 }
-            } else {
-                out.writeUTF("-1");
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    private String getInstanceID(String googleID) {
+    private String getInstanceID(String idUsers) {
         try {
-            queryCheck = "SELECT * from Users WHERE googleID = ?";
+            queryCheck = "SELECT * from Users WHERE idUsers = ?";
             ps = conn.prepareStatement(queryCheck);
-            ps.setString(1, googleID);
+            ps.setString(1, idUsers);
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
-                System.out.println(rs.getString("instanceID"));
                 return rs.getString("instanceID");
             }
         } catch (SQLException e) {
@@ -413,12 +439,14 @@ public class Server extends Thread {
             http.setDoOutput(true);
             http.setRequestMethod("POST");
             http.setRequestProperty("Content-Type", "application/json");
+            // TODO move key into file outside git and read key from there
             http.setRequestProperty("Authorization", "key=AIzaSyD1CtRFoU5_P9NTVJ3sj6-Qe28OgLbzNZs");
             JSONObject data = new JSONObject();
             JSONObject parent = new JSONObject();
             data.put("body", message);
+            //data.put("title", "test");
             parent.put("to", to);
-            parent.put("data", data);
+            parent.put("notification", data);
             System.out.println(parent);
             OutputStream os = http.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
