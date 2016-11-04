@@ -8,18 +8,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +32,7 @@ public class EventsActivity extends AppCompatActivity {
 
     private String result;
     Button b;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,7 +53,7 @@ public class EventsActivity extends AppCompatActivity {
 
         Calendar calendar1 = Calendar.getInstance();
         calendar1.setTime(CalendarActivity.date);
-        for(int i = 0; i < CalendarActivity.community.getCommunityEvents().size(); i++) {
+        for (int i = 0; i < CalendarActivity.community.getCommunityEvents().size(); i++) {
             if (CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.DAY_OF_YEAR) == calendar1.get(Calendar.DAY_OF_YEAR) &&
                     CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.YEAR) == calendar1.get(Calendar.YEAR)) {
                 addButton(CalendarActivity.community.getCommunityEvents().get(i).getName());
@@ -82,7 +80,7 @@ public class EventsActivity extends AppCompatActivity {
         });
     }
 
-    public void addEvent(){
+    public void addEvent() {
         final Dialog dialog = new Dialog(EventsActivity.this);
         dialog.setContentView(R.layout.dialog2);
         dialog.setTitle("Title");
@@ -95,51 +93,46 @@ public class EventsActivity extends AppCompatActivity {
                 final Socket[] socket = new Socket[1];
                 final OutputStream[] outputStream = new OutputStream[1];
                 final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
-                JSONObject object = new JSONObject();
+                final JSONObject object = new JSONObject();
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //10.186.111.165
-                        try {
-                            socket[0] = new Socket("10.0.2.2", 3300);
-                            outputStream[0] = socket[0].getOutputStream();
-                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-
-                EditText nameEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput);
-                String name=nameEdit.getText().toString();
-                EditText timeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInputTime);
-                String time=timeEdit.getText().toString();
-                EditText placeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput11);
-                String place=placeEdit.getText().toString();
-                EditText descriptionEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput222);
-                String description=descriptionEdit.getText().toString();
+                EditText nameEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput);
+                final String name = nameEdit.getText().toString();
+                EditText timeEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInputTime);
+                final String time = timeEdit.getText().toString();
+                EditText placeEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput11);
+                final String place = placeEdit.getText().toString();
+                EditText descriptionEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput222);
+                final String description = descriptionEdit.getText().toString();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(CalendarActivity.date);
                 CommunityEvent event = new CommunityEvent(calendar, name, time, place, description);
                 CalendarActivity.community.addEvent(event);
                 dialog.dismiss();
-                result=name;
+                result = name;
                 addButton();
                 CalendarActivity.ecv.setEvents(CalendarActivity.community.getCommunityEvents());
 
+                if (MainActivity.server) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                socket[0] = new Socket(MainActivity.ip, 3300);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
-                try {
-                    object.put("function", "addEvent");
-                    object.put("eventName", name);
-                    object.put("eventTime", time);
-                    object.put("description", description);
-                    object.put("locationName", place);
-                    dataOutputStream[0].writeUTF(object.toString());
-                } catch (JSONException | IOException e) {
-                    e.printStackTrace();
+                                object.put("function", "addEvent");
+                                object.put("eventName", name);
+                                object.put("eventTime", time);
+                                object.put("description", description);
+                                object.put("locationName", place);
+                                dataOutputStream[0].writeUTF(object.toString());
+                            } catch (JSONException | IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
                 }
-
             }
         });
         dialog.show();
@@ -160,12 +153,11 @@ public class EventsActivity extends AppCompatActivity {
         return image;
     }
 
-    public void addButton()
-    {
-        LinearLayout ll = (LinearLayout)findViewById(R.id.ll2);
+    public void addButton() {
+        LinearLayout ll = (LinearLayout) findViewById(R.id.ll2);
         final Button b = new Button(this);
         b.setText(result);
-        android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,320); // 60 is height you can set it as u need
+        android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
         b.setLayoutParams(lp);
         ll.addView(b);
         final Intent intent = new Intent(this, GroupActivity.class);
@@ -180,12 +172,11 @@ public class EventsActivity extends AppCompatActivity {
 
     }
 
-    public void addButton(String name)
-    {
-        LinearLayout ll = (LinearLayout)findViewById(R.id.ll2);
+    public void addButton(String name) {
+        LinearLayout ll = (LinearLayout) findViewById(R.id.ll2);
         final Button b = new Button(this);
         b.setText(name);
-        android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,320); // 60 is height you can set it as u need
+        android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
         b.setLayoutParams(lp);
         ll.addView(b);
         final Intent intent = new Intent(this, GroupActivity.class);

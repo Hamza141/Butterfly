@@ -26,4 +26,13 @@
     <string name="status">status</string>
     <string name="login_error">Error</string>
     <string name="title_activity_group">GroupActivity</string>
+    <string name="title_activity_community_list">CommunityListActivity</string>
+    <string name="view_all_communities">View all communities</string>
+    <string name="title_activity_community_join">CommunityJoinActivity</string>
+    <string name="server">Server</string>
+    <string name="_192_168_1_1">192.168.1.1</string>
+    <string name="change">Change</string>
+    <string name="welcome">Welcome!</string>
+    <string name="server_not_found">Server not found</string>
+    <string name="server_offline">Server Offline</string>
 </resources>
