@@ -147,6 +147,17 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+    //TODO Use AsyncTask to implement the socket connection
+    //https://developer.android.com/reference/android/os/AsyncTask.html
+    //https://developer.android.com/training/basics/network-ops/connecting.html
+    /*private class Connect extends AsyncTask <GoogleSignInAccount, Void, Void> {
+        @Override
+        protected Void doInBackground(GoogleSignInAccount... params) {
+
+            return null;
+        }
+    }*/
+
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         failed = true;
@@ -206,6 +217,20 @@ public class LoginActivity extends AppCompatActivity implements
                                 //Get id from server
                                 MainActivity.id = dataInputStream[0].readUTF();
 
+                                android.os.SystemClock.sleep(300);
+
+                                //Close everything
+                                dataOutputStream[0].close();
+                                outputStream[0].close();
+                                dataInputStream[0].close();
+                                inputStream[0].close();
+                                socket[0].close();
+
+                                //Connect to server again
+                                socket[0] = new Socket(MainActivity.ip, MainActivity.port);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+
                                 //Send token to server
                                 object2.put("function", "updateInstanceID");
                                 object2.put("googleID", googleID);
@@ -213,10 +238,8 @@ public class LoginActivity extends AppCompatActivity implements
                                 dataOutputStream[0].writeUTF(object2.toString());
 
                                 //Close everything
-                                outputStream[0].close();
                                 dataOutputStream[0].close();
-                                inputStream[0].close();
-                                dataInputStream[0].close();
+                                outputStream[0].close();
                                 socket[0].close();
                             } catch (IOException | JSONException e) {
                                 e.printStackTrace();
