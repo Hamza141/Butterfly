@@ -19,7 +19,7 @@ public class Server extends Thread {
     static final private String DB_URL = "jdbc:mysql://localhost/Butterfly";
     static final private String USER = "root";
     // TODO move sql database password into file outside git to read from
-    static final private String PASS = "Ghost999";
+    static final private String PASS = "";
     private Connection conn = null;
     private Statement stmt = null;
     private ResultSet rs;
@@ -174,7 +174,7 @@ public class Server extends Thread {
     }
 
     private void sendInvite(String from, String fromName, String to) {
-        final String password = "gmktgecmvmrtdgia";
+        final String password = "";
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -482,7 +482,7 @@ public class Server extends Thread {
             http.setRequestMethod("POST");
             http.setRequestProperty("Content-Type", "application/json");
             // TODO move key into file outside git and read key from there
-            http.setRequestProperty("Authorization", "key=AIzaSyD1CtRFoU5_P9NTVJ3sj6-Qe28OgLbzNZs");
+            http.setRequestProperty("Authorization", "");
             OutputStream os = http.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
             osw.write(parent.toString());
