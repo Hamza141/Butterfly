@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -24,13 +25,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -102,6 +106,21 @@ public class LoginActivity extends AppCompatActivity implements
             }
         });
 
+        //logToken button
+        Button logTokenButton = (Button) findViewById(R.id.logTokenButton);
+        logTokenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get token
+                String token = FirebaseInstanceId.getInstance().getToken();
+
+                // Log and toast
+                String msg = getString(R.string.msg_token_fmt, token);
+                Log.d(TAG, msg);
+                Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -128,96 +147,118 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+    //TODO Use AsyncTask to implement the socket connection
+    //https://developer.android.com/reference/android/os/AsyncTask.html
+    //https://developer.android.com/training/basics/network-ops/connecting.html
+    /*private class Connect extends AsyncTask <GoogleSignInAccount, Void, Void> {
+        @Override
+        protected Void doInBackground(GoogleSignInAccount... params) {
+
+            return null;
+        }
+    }*/
+
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        failed = true;
+        //Sign in to Google was successful
         if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
 
-            //Gather user's info
+            GoogleSignInAccount acct = result.getSignInAccount();
+            //Google account is not null
+
             if (acct != null) {
+                //Create stuff for the client to connect to the app
                 final Socket[] socket = new Socket[1];
                 final OutputStream[] outputStream = new OutputStream[1];
-//                final InputStream[] inputStream = new InputStream[1];
+                final InputStream[] inputStream = new InputStream[1];
                 final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
-//                final DataInputStream[] dataInputStream = new DataInputStream[1];
+                final DataInputStream[] dataInputStream = new DataInputStream[1];
                 final JSONObject object = new JSONObject();
+                final JSONObject object2 = new JSONObject();
 
+                //Store user's info in variables
                 final String personName = acct.getDisplayName();
                 final String personGivenName = acct.getGivenName();
                 final String personFamilyName = acct.getFamilyName();
                 final String googleID = acct.getEmail();
-                //final String personId = acct.getId();
                 personPhoto = acct.getPhotoUrl();
                 Picasso.with(this).load(personPhoto).into((ImageView) findViewById(R.id.imageView2));
+
+                //Set status to "Signed in as ..."
                 status.setText(getString(R.string.signed_in_fmt, personName));
                 status.setVisibility(View.VISIBLE);
 
-/*                //date
-                String dateString = "";
-                Calendar calendar = Calendar.getInstance();
-                int month = calendar.get(Calendar.MONTH);
-                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                int year = calendar.get(Calendar.YEAR);
-
-                dateString = dateString.concat(String.valueOf(year));
-                dateString = dateString.concat("-");
-                dateString = dateString.concat(String.valueOf(month + 1));
-                dateString = dateString.concat("-");
-                dateString = dateString.concat(String.valueOf(dayOfMonth));
-                final String finalDateString = dateString;
- */
-
+                //Check if app is in online mode
                 if (MainActivity.server) {
+
+                    //Create new thread for the socket to connect to the server
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
+                                //Connect to server
                                 socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                                 outputStream[0] = socket[0].getOutputStream();
+                                inputStream[0] = socket[0].getInputStream();
                                 dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                                dataInputStream[0] = new DataInputStream(inputStream[0]);
+
+                                //If execution reaches till here, everything is working
                                 failed = false;
+
+                                //Send user info from Google to Server
                                 object.put("function", "addUser");
                                 object.put("firstName", personGivenName);
                                 object.put("lastName", personFamilyName);
                                 object.put("googleID", googleID);
-                                //object.put("dateCreated", finalDateString);
                                 dataOutputStream[0].writeUTF(object.toString());
-//                              inputStream[0] = socket[0].getInputStream();
-//                              dataInputStream[0] = new DataInputStream(inputStream[0]);
-//                              String s = dataInputStream[0].readUTF();
-//                              int id = Integer.parseInt(dataInputStream[0].readUTF());
-                                outputStream[0].close();
+
+                                //Get id from server
+                                MainActivity.id = dataInputStream[0].readUTF();
+
+                                android.os.SystemClock.sleep(300);
+
+                                //Close everything
                                 dataOutputStream[0].close();
-//                            inputStream[0].close();
-//                            dataInputStream[0].close();
+                                outputStream[0].close();
+                                dataInputStream[0].close();
+                                inputStream[0].close();
+                                socket[0].close();
+
+                                //Connect to server again
+                                socket[0] = new Socket(MainActivity.ip, MainActivity.port);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+
+                                //Send token to server
+                                object2.put("function", "updateInstanceID");
+                                object2.put("googleID", googleID);
+                                object2.put("instanceID", FirebaseInstanceId.getInstance().getToken());
+                                dataOutputStream[0].writeUTF(object2.toString());
+
+                                //Close everything
+                                dataOutputStream[0].close();
+                                outputStream[0].close();
                                 socket[0].close();
                             } catch (IOException | JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                     }).start();
-                } else {
-                    //Logging in without server
-                    failed = true;
+                    android.os.SystemClock.sleep(1000);
                 }
-            }
 
-            if (failed && !MainActivity.server) {
-                updateUI(true);
-                return;
-            }
-
-            android.os.SystemClock.sleep(200);
-
-            if (!failed) {
                 updateUI(true);
                 return;
             }
         }
-        // Signed out, show unauthenticated UI.
-        updateUI(false);
-        return;
+        //Google Sign in Failed
+        status.setText(R.string.google_sign_in_error);
+        status.setVisibility(View.VISIBLE);
+        findViewById(R.id.imageView2).setVisibility(View.GONE);
+        findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+        findViewById(R.id.sign_out_button).setVisibility(View.GONE);
     }
 
     private void signIn() {
@@ -232,7 +273,6 @@ public class LoginActivity extends AppCompatActivity implements
                     @Override
                     public void onResult(@NonNull Status status) {
                         // [START_EXCLUDE]
-                        failed = false;
                         updateUI(false);
                         // [END_EXCLUDE]
                     }
@@ -250,29 +290,24 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void updateUI(boolean signedIn) {
         if (signedIn) {
-
-            if (!MainActivity.server || !failed) {
+            //Check if app is in online mode and if everything was successful
+            if ((MainActivity.server && !failed) || (failed && !MainActivity.server)) {
                 Intent intent = new Intent(this, CommunityActivity.class);
                 startActivity(intent);
             } else {
+                //Either server was offline or the connection to the server failed
                 status.setText(R.string.server_not_found);
             }
             findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         } else {
-            if (failed) {
-                status.setText(R.string.server_not_found);
-            }
-            else {
-                status.setText(R.string.signed_out);
-            }
+            status.setText(R.string.signed_out);
             status.setVisibility(View.VISIBLE);
             findViewById(R.id.imageView2).setVisibility(View.GONE);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
-        failed = true;
     }
 
     @Override

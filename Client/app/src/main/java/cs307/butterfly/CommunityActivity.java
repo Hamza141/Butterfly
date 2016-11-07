@@ -145,6 +145,11 @@ public class CommunityActivity extends AppCompatActivity {
                                 object.put("function", "addCommunity");
                                 object.put("name", text);
                                 dataOutputStream[0].writeUTF(object.toString());
+
+                                //close everything
+                                outputStream[0].close();
+                                dataOutputStream[0].close();
+                                socket[0].close();
                             } catch (IOException | JSONException e) {
                                 e.printStackTrace();
                             }
