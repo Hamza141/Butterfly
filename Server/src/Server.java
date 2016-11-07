@@ -3,7 +3,6 @@
  */
 
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -20,7 +19,7 @@ public class Server extends Thread {
     static final private String DB_URL = "jdbc:mysql://localhost/Butterfly";
     static final private String USER = "root";
     // TODO move sql database password into file outside git to read from
-    static final private String PASS = "Ghost999";
+    static final private String PASS = "";
     private Connection conn = null;
     private Statement stmt = null;
     private ResultSet rs;
@@ -56,6 +55,7 @@ public class Server extends Thread {
                     Object obj = parser.parse(in.readUTF());
                     JSONObject obj2 = (JSONObject) obj;
                     String function = (String) obj2.get("function");
+                    System.out.println(function);
                     if (function.equals("addUser")) {
                         addUser(obj2);
                     } else if (function.equals("updateInstanceID")) {
@@ -116,7 +116,7 @@ public class Server extends Thread {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        newBoardNotification(communityName);
+        newBoardNotification(communityName, name, message);
     }
 
     private void getCommunities() {
@@ -174,7 +174,7 @@ public class Server extends Thread {
     }
 
     private void sendInvite(String from, String fromName, String to) {
-        final String password = "gmktgecmvmrtdgia";
+        final String password = "";
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -424,6 +424,7 @@ public class Server extends Thread {
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
+                System.out.println(rs.getString("googleID"));
                 return rs.getString("instanceID");
             }
         } catch (SQLException e) {
@@ -433,35 +434,16 @@ public class Server extends Thread {
     }
 
     private void genericNotification(String to, String message) {
-        try {
-            URL url = new URL("https://fcm.googleapis.com/fcm/send");
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setDoOutput(true);
-            http.setRequestMethod("POST");
-            http.setRequestProperty("Content-Type", "application/json");
-            // TODO move key into file outside git and read key from there
-            http.setRequestProperty("Authorization", "key=AIzaSyD1CtRFoU5_P9NTVJ3sj6-Qe28OgLbzNZs");
-            JSONObject data = new JSONObject();
-            JSONObject parent = new JSONObject();
-            data.put("body", message);
-            //data.put("title", "test");
-            parent.put("to", to);
-            parent.put("notification", data);
-            System.out.println(parent);
-            OutputStream os = http.getOutputStream();
-            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-            osw.write(parent.toString());
-            osw.flush();
-            osw.close();
-            BufferedReader is = new BufferedReader(new InputStreamReader(http.getInputStream()));
-            String response;
-            while ((response = is.readLine()) != null) {
-                System.out.println(response);
-            }
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        JSONObject data = new JSONObject();
+        JSONObject notification = new JSONObject();
+        JSONObject parent = new JSONObject();
+        notification.put("body", message);
+        notification.put("title", "TITLE");
+        parent.put("to", to);
+        parent.put("notification", notification);
+        parent.put("priority", "high");
+        System.out.println(parent);
+        notificationWrite(parent);
     }
 
     private void pingNotification(String to) {
@@ -476,8 +458,45 @@ public class Server extends Thread {
         */
     }
 
-    private void newBoardNotification(String to) {
+    private void newBoardNotification(String to, String name, String message) {
+        //TODO add new variable to community_users tables for subscribing to message notifications
+        JSONObject data = new JSONObject();
+        JSONObject notification = new JSONObject();
+        JSONObject parent = new JSONObject();
+        notification.put("body", name + " has posted a new message");
+        notification.put("title", "New Message");
+        data.put("body", message);
+        parent.put("to", to);
+        parent.put("notification", notification);
+        parent.put("data", data);
+        parent.put("priority", "high");
+        System.out.println(parent);
+        notificationWrite(parent);
+    }
 
+    private void notificationWrite(JSONObject parent) {
+        try {
+            URL url = new URL("https://fcm.googleapis.com/fcm/send");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDoOutput(true);
+            http.setRequestMethod("POST");
+            http.setRequestProperty("Content-Type", "application/json");
+            // TODO move key into file outside git and read key from there
+            http.setRequestProperty("Authorization", "");
+            OutputStream os = http.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+            osw.write(parent.toString());
+            osw.flush();
+            osw.close();
+            BufferedReader is = new BufferedReader(new InputStreamReader(http.getInputStream()));
+            String response;
+            while ((response = is.readLine()) != null) {
+                System.out.println(response);
+            }
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
