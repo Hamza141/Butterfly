@@ -3,6 +3,7 @@
  */
 
 import java.net.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -14,19 +15,18 @@ import org.json.simple.JSONObject;
 
 @SuppressWarnings("unchecked")
 public class Server extends Thread {
-    private ServerSocket serverSocket;
     static final private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final private String DB_URL = "jdbc:mysql://localhost/Butterfly";
     static final private String USER = "root";
-    // TODO move sql database password into file outside git to read from
-    static final private String PASS = "";
+    static private String appKey, PASS, Authorization;
     private Connection conn = null;
     private Statement stmt = null;
-    private ResultSet rs;
-    private String queryCheck;
-    private PreparedStatement ps;
+    private ServerSocket serverSocket;
     private DataOutputStream out;
     private DataInputStream in;
+    private String sql;
+    private PreparedStatement ps;
+    private ResultSet rs;
     private JSONParser parser;
 
     private Server(int port) throws IOException {
@@ -52,43 +52,49 @@ public class Server extends Thread {
                 rs = conn.getMetaData().getCatalogs();
                 stmt = conn.createStatement();
                 while (in.available() > 0) {
-                    Object obj = parser.parse(in.readUTF());
-                    JSONObject obj2 = (JSONObject) obj;
-                    String function = (String) obj2.get("function");
+                    Object parsed = parser.parse(in.readUTF());
+                    JSONObject obj = (JSONObject) parsed;
+                    String function = (String) obj.get("function");
                     System.out.println(function);
                     if (function.equals("addUser")) {
-                        addUser(obj2);
+                        addUser(obj);
                     } else if (function.equals("updateInstanceID")) {
-                        updateInstanceID(obj2);
+                        updateInstanceID(obj);
                     } else if (function.equals("addCommunity")) {
-                        addCommunity(obj2);
+                        addCommunity(obj);
                     } else if (function.equals("getCommunities")) {
                         getCommunities();
                     } else if (function.equals("addCommunityUser")) {
-                        addCommunityUser(obj2);
+                        addCommunityUser(obj);
                     } else if (function.equals("getCommunityUsers")) {
-                        getCommunityUsers((String) obj2.get("communityName"));
+                        getCommunityUsers((String) obj.get("communityName"));
                     } else if (function.equals("leaveCommunityUser")
                             || function.equals("removeCommunityUser")) {
-                        leaveCommunityUser(obj2);
+                        leaveCommunityUser(obj);
+                    } else if (function.equals("getMessages")) {
+                        getMessages((String) obj.get("communityName"));
                     } else if (function.equals("addMessage")) {
-                        addMessage(obj2);
+                        addMessage(obj);
                     } else if (function.equals("addEvent")) {
-                        addEvent(obj2);
+                        addEvent(obj);
                     } else if (function.equals("getEvents")) {
-                        getEvents((String) obj2.get("communityName"));
+                        getEvents((String) obj.get("communityName"));
                     } else if (function.equals("getNeighborhoodEvents")) {
                         getNeighborhoodEvents();
                     } else if (function.equals("emailInvite")) {
-                        sendInvite((String) obj2.get("from"), (String) obj2.get("fromName"),
-                                (String) obj2.get("to"));
+                        sendInvite((String) obj.get("from"), (String) obj.get("fromName"),
+                                (String) obj.get("to"));
                     } else if (function.equals("genericNotification")) {
-                        genericNotification(getInstanceID((String) obj2.get("idUsers")),
-                                (String) obj2.get("message"));
+                        genericNotification(getInstanceID((String) obj.get("googleID")),
+                                (String) obj.get("message"));
                     } else if (function.equals("pingNotification")) {
-                        pingNotification((String) obj2.get("googleID"));
+                        pingNotification((String) obj.get("googleID"));
                     } else if (function.equals("upcomingEventNotification")) {
-                        upcomingEventNotification((String) obj2.get("googleID"));
+                        upcomingEventNotification((String) obj.get("googleID"));
+                    } else if (function.equals("updateUserProfile")) {
+                        updateUserProfile(obj);
+                    } else if (function.equals("getUserCommunityEvents")) {
+                        getUserCommunityEvents((String) obj.get("googleID"));
                     }
                 }
             } catch (org.json.simple.parser.ParseException | IOException
@@ -98,8 +104,63 @@ public class Server extends Thread {
         }
     }
 
-    private void getMesssages() {
-        //TODO return json of messages
+    private void updateUserProfile(JSONObject obj) {
+        //TODO other variables for user profile
+        //TODO update communitiesList
+        String googleID = (String) obj.get("googleID");
+        try {
+            sql = "SELECT * FROM Users WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (obj.get("firstName") != null && obj.get("firstName") != rs.getString("firstName")) {
+                sql = "UPDATE Users SET firstName = ? WHERE googleID = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, (String) obj.get("firstName"));
+                ps.setString(2, googleID);
+                System.out.println(ps);
+                ps.executeUpdate();
+            }
+            if (obj.get("lastName") != null && obj.get("lastName") != rs.getString("lastName")) {
+                sql = "UPDATE Users SET lastName = ? WHERE googleID = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, (String) obj.get("lastName"));
+                ps.setString(2, googleID);
+                System.out.println(ps);
+                ps.executeUpdate();
+            }
+            if (obj.get("birthDate") != null && obj.get("birthDate") != rs.getString("birthDate")) {
+                sql = "UPDATE Users SET birthDate = ? WHERE googleID = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, (String) obj.get("birthDate"));
+                ps.setString(2, googleID);
+                System.out.println(ps);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getMessages(String communityName) {
+        communityName = communityName.replaceAll("\\s", "_"); communityName += "_Board";
+        JSONObject obj;
+        try {
+            sql = "SELECT * FROM " + communityName;
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                obj = new JSONObject();
+                obj.put("pinned", rs.getString("pinned"));
+                obj.put("name", rs.getString("name"));
+                obj.put("message", rs.getString("message"));
+                System.out.println(obj);
+                out.writeUTF(obj.toString());
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addMessage(JSONObject obj) {
@@ -108,7 +169,7 @@ public class Server extends Thread {
         String pinned = (String) obj.get("pinned"); String name = (String) obj.get("name");
         String message = (String) obj.get("message");
         try {
-            String sql = "INSERT INTO " + communityName + " (pinned, name, message) VALUES(?, ?, ?)";
+            sql = "INSERT INTO " + communityName + " (pinned, name, message) VALUES(?, ?, ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, pinned); ps.setString(2, name); ps.setString(3, message);
             System.out.println(ps);
@@ -120,16 +181,18 @@ public class Server extends Thread {
     }
 
     private void getCommunities() {
+        //TODO changed formatting for return string
         String comma = ", ";
         StringBuilder communities = new StringBuilder();
         try {
-            String sql = "SELECT * FROM Communities";
+            sql = "SELECT * FROM Communities";
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 communities.append(rs.getString("name"));
                 communities.append(comma);
             }
+            communities.setLength(communities.length() - 2);
             System.out.println(communities);
             out.writeUTF(communities.toString());
         } catch (SQLException | IOException e) {
@@ -140,7 +203,7 @@ public class Server extends Thread {
     private void getCommunityUsers(String communityName) {
         communityName += "_Users";
         try {
-            String sql = "SELECT * FROM " + communityName;
+            sql = "SELECT * FROM " + communityName;
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
             JSONObject obj;
@@ -164,7 +227,7 @@ public class Server extends Thread {
         communityName += "_Users";
         String idUsers = (String) obj.get("idUsers");
         try {
-            String sql = "DELETE FROM " + communityName + " WHERE idUsers = " + idUsers;
+            sql = "DELETE FROM " + communityName + " WHERE idUsers = " + idUsers;
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
             ps.executeUpdate();
@@ -174,18 +237,18 @@ public class Server extends Thread {
     }
 
     private void sendInvite(String from, String fromName, String to) {
-        final String password = "";
+        final String password = appKey;
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-                        return new javax.mail.PasswordAuthentication(from, password);
-                    }
-                });
+            new javax.mail.Authenticator() {
+                protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                    return new javax.mail.PasswordAuthentication(from, password);
+                }
+            });
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
@@ -199,27 +262,47 @@ public class Server extends Thread {
         }
     }
 
-    private void getNeighborhoodEvents() {
-        String sql = "SELECT name FROM Communities";
+    private void getUserCommunityEvents(String googleID) {
         try {
+            sql = "SELECT communities FROM Users WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            String list;
+            if (rs.next()) {
+                list = rs.getString("communitiesList");
+                ArrayList<String> communities = new ArrayList<>(Arrays.asList(list.split(" ,")));
+                communities.forEach(this::getEvents);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void getNeighborhoodEvents() {
+        try {
+            sql = "SELECT name FROM Communities";
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
-            ArrayList<String> communities = new ArrayList<>();
-            while (rs.next()) {
+            if (rs.next()) {
+                ArrayList<String> communities = new ArrayList<>();
                 communities.add(rs.getString("name"));
+                communities.forEach(this::getEvents);
             }
-            System.out.println("call");
-            communities.forEach((name) -> getEvents(name));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private void getEvents(String communityName) {
+        String oldName = communityName;
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
         try {
-            String sql = "SELECT * FROM " + communityName;
+            sql = "SELECT * FROM " + communityName;
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
             JSONObject obj;
@@ -228,7 +311,7 @@ public class Server extends Thread {
                 obj.put("name", rs.getString("name")); obj.put("city", rs.getString("city"));
                 obj.put("date", rs.getString("date")); obj.put("address", rs.getString("address"));
                 obj.put("state", rs.getString("state")); obj.put("zip", rs.getString("zip"));
-                obj.put("description", rs.getString("description"));
+                obj.put("description", rs.getString("description")); obj.put("communityName", oldName);
                 obj.put("locationName", rs.getString("locationName"));
                 obj.put("numAttendees", rs.getString("numAttendees"));
                 System.out.println(obj.toString());
@@ -239,10 +322,33 @@ public class Server extends Thread {
         }
     }
 
+    private boolean checkifLeader(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Users";
+        String googleID = (String) obj.get("googleID");
+        try {
+            sql = "SELECT isLeader from " + communityName + " WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) == 1) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private void addEvent(JSONObject obj) {
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
+        //TODO client not sending communityName
         String name = (String) obj.get("name"); String description = (String) obj.get("description");
         String date = (String) obj.get("date"); String city = (String) obj.get("city");
         String state = (String) obj.get("state"); String address = (String) obj.get("address");
@@ -250,7 +356,7 @@ public class Server extends Thread {
         String locationName = (String) obj.get("locationName");
         String numAttendees = (String) obj.get("numAttendees");
         try {
-            String sql = "INSERT INTO " + communityName + " (name, description, date, city, state, "
+            sql = "INSERT INTO " + communityName + " (name, description, date, city, state, "
                     + "address, zip, locationName, numAttendees) "
                     + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
@@ -264,12 +370,18 @@ public class Server extends Thread {
         }
     }
 
+    private void deleteEvent(JSONObject obj) {
+
+    }
+
     private void createCommunityUserTable(String communityName) {
         //DATE: YYYY-MM-DD
+        //TODO need more than googleID and isLeader?
         communityName += "_Users";
         String newTable = "CREATE TABLE " + communityName + " ("
                 + "idUsers INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, " + "firstName VARCHAR(255), "
-                + "lastName VARCHAR(255), " + "googleID VARCHAR(255), " + "isLeader TINYINT(1))";
+                + "lastName VARCHAR(255), " + "googleID VARCHAR(255), " + "isLeader TINYINT(1), "
+                + "subscribed INT(1))";
         System.out.println(newTable);
         try {
             stmt.executeUpdate(newTable);
@@ -317,14 +429,14 @@ public class Server extends Thread {
         String description = (String) obj.get("description");
         String dateCreated = (String) obj.get("dateCreated");
         try {
-            queryCheck = "SELECT count(*) from Communities WHERE name = ?";
-            ps = conn.prepareStatement(queryCheck);
+            sql = "SELECT count(*) from Communities WHERE name = ?";
+            ps = conn.prepareStatement(sql);
             ps.setString(1, name);
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
-                    String sql = "INSERT INTO Communities VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    sql = "INSERT INTO Communities VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, idCommunities); ps.setString(2, neighborhoodID);
                     ps.setString(3, category); ps.setString(4, subCategory);
@@ -351,7 +463,7 @@ public class Server extends Thread {
         String idUsers = (String) obj.get("idUsers");
         String isLeader = (String) obj.get("isLeader");
         try {
-            String sql = "INSERT INTO " + communityName
+            sql = "INSERT INTO " + communityName
                     + " SELECT * FROM Users WHERE idUsers = " + idUsers;
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
@@ -370,8 +482,8 @@ public class Server extends Thread {
         try {
             String googleID = (String) obj.get("googleID");
             String instanceID = (String) obj.get("instanceID");
-            queryCheck = "UPDATE Users SET instanceID = ? WHERE googleID = ?";
-            ps = conn.prepareStatement(queryCheck);
+            sql = "UPDATE Users SET instanceID = ? WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
             ps.setString(1, instanceID); ps.setString(2, googleID);
             System.out.println(ps);
             ps.execute();
@@ -385,14 +497,13 @@ public class Server extends Thread {
         String google = (String) obj.get("googleID");
         String instanceID = (String) obj.get("instanceID");
         try {
-            queryCheck = "SELECT count(*) from Users WHERE googleID = ?";
-            ps = conn.prepareStatement(queryCheck);
+            sql = "SELECT count(*) from Users WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
             ps.setString(1, google);
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
-                    String sql;
                     sql = "INSERT INTO Users (firstName, lastName, googleID, instanceID) VALUES (?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, first); ps.setString(2, last); ps.setString(3, google);
@@ -416,11 +527,11 @@ public class Server extends Thread {
         }
     }
 
-    private String getInstanceID(String idUsers) {
+    private String getInstanceID(String googleID) {
         try {
-            queryCheck = "SELECT * from Users WHERE idUsers = ?";
-            ps = conn.prepareStatement(queryCheck);
-            ps.setString(1, idUsers);
+            sql = "SELECT * from Users WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -433,8 +544,24 @@ public class Server extends Thread {
         return "";
     }
 
+    /*private ArrayList<String> getSubscribedMembers(String communityName) {
+        ArrayList<String> subscribedGoogleIDs = new ArrayList<>();
+        try {
+            sql = "SELECT * from " + communityName + "_Users WHERE subscribed = '1'";
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                subscribedGoogleIDs.add(rs.getString("googleID"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return subscribedGoogleIDs;
+    }*/
+
     private void genericNotification(String to, String message) {
-        JSONObject data = new JSONObject();
+        //TODO #10?
+        //JSONObject data = new JSONObject();
         JSONObject notification = new JSONObject();
         JSONObject parent = new JSONObject();
         notification.put("body", message);
@@ -447,7 +574,7 @@ public class Server extends Thread {
     }
 
     private void pingNotification(String to) {
-
+        //TODO what is a ping, what does it contain
     }
 
     private void upcomingEventNotification(String to) {
@@ -458,20 +585,25 @@ public class Server extends Thread {
         */
     }
 
-    private void newBoardNotification(String to, String name, String message) {
-        //TODO add new variable to community_users tables for subscribing to message notifications
+    private void newBoardNotification(String community, String name, String message) {
         JSONObject data = new JSONObject();
         JSONObject notification = new JSONObject();
         JSONObject parent = new JSONObject();
         notification.put("body", name + " has posted a new message");
         notification.put("title", "New Message");
         data.put("body", message);
-        parent.put("to", to);
+        parent.put("to", "/topics/" + community);
         parent.put("notification", notification);
         parent.put("data", data);
         parent.put("priority", "high");
-        System.out.println(parent);
         notificationWrite(parent);
+        /*ArrayList<String> IDs = getSubscribedMembers(community);
+        for (String ID : IDs) {
+            String to = getInstanceID(ID);
+            parent.put("to", to);
+            System.out.println(parent);
+            notificationWrite(parent);
+        }*/
     }
 
     private void notificationWrite(JSONObject parent) {
@@ -481,8 +613,7 @@ public class Server extends Thread {
             http.setDoOutput(true);
             http.setRequestMethod("POST");
             http.setRequestProperty("Content-Type", "application/json");
-            // TODO move key into file outside git and read key from there
-            http.setRequestProperty("Authorization", "");
+            http.setRequestProperty("Authorization", Authorization);
             OutputStream os = http.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
             osw.write(parent.toString());
@@ -502,6 +633,14 @@ public class Server extends Thread {
     public static void main(String[] args) {
         int port = 3300;
         try {
+            FileInputStream fileIn = new FileInputStream("/home/khanh/keys.txt");
+            InputStreamReader isr = new InputStreamReader(fileIn, Charset.forName("UTF-8"));
+            BufferedReader br = new BufferedReader(isr);
+            appKey = br.readLine();
+            PASS = br.readLine();
+            Authorization = br.readLine();
+            br.close();
+            isr.close();
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-40ec2c75b546.json"))
                     .setDatabaseUrl("butterfly-145620.firebaseio.com/")
