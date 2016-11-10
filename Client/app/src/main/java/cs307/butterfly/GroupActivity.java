@@ -40,37 +40,34 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_group);
-       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
+        // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(CalendarActivity.community.getName());
         }
 
 
 
-      //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    ImageButton button12 = (ImageButton) findViewById(R.id.tocalender);
-    // fab.setImageResource(R.drawable.calend);
+        //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        ImageButton button12 = (ImageButton) findViewById(R.id.tocalender);
+        // fab.setImageResource(R.drawable.calend);
 
-    button12.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(context, CalendarActivity.class);
-            startActivity(intent);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("wtf");
+        button12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, CalendarActivity.class);
+                startActivity(intent);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle("wtf");
+                }
+
             }
-
-        }
-    });
+        });
 
         ImageButton button2 = (ImageButton) findViewById(R.id.view_all);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-
                 final Dialog dialog = new Dialog(GroupActivity.this);
                 dialog.setContentView(R.layout.dialog3);
                 dialog.setTitle("Title");
@@ -88,7 +85,18 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
 
-}
+        Button uglyAssButton = (Button) findViewById(R.id.uglyAssButton);
+        final Context context = this;
+        uglyAssButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, BoardActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+    }
 
 
 

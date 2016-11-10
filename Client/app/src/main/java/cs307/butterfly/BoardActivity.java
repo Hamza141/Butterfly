@@ -147,7 +147,7 @@ public class BoardActivity extends AppCompatActivity {
 
                     }
                     addMessage(finalPost);
-                    
+
                     //clear text from EditText
                     editBoardPost.setText("");
 
