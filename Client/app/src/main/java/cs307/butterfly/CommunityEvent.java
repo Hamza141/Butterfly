@@ -135,17 +135,17 @@ public class CommunityEvent {
         if (split[0].equals("12")) {
             split[0] = "0";
         }
-        event.date.set(Calendar.HOUR, Integer.parseInt(split[0]));
-        String[] split2 = split[1].split(" ");
-        event.date.set(Calendar.MINUTE, Integer.parseInt(split2[0]));
+        event.date.set(Calendar.HOUR_OF_DAY, Integer.parseInt(split[0]));
+        //String[] split2 = split[1].split(" ");
+        event.date.set(Calendar.MINUTE, Integer.parseInt(split[1]));
         event.date.set(Calendar.SECOND, 0);
         event.date.set(Calendar.MILLISECOND, 0);
-        if (split2[1].equals("am")) {
-            event.date.set(Calendar.AM_PM, Calendar.AM);
-        }
-        else {
-            event.date.set(Calendar.AM_PM, Calendar.PM);
-        }
+        //if (split2[1].equals("am")) {
+            //event.date.set(Calendar.AM_PM, Calendar.AM);
+        //}
+        //else {
+            //event.date.set(Calendar.AM_PM, Calendar.PM);
+        //}
     }
 
     public void editInfo(String name, String place, String description, String time) {

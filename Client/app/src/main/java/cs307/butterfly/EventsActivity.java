@@ -72,9 +72,6 @@ public class EventsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
                 addEvent();
             }
         });
@@ -122,6 +119,7 @@ public class EventsActivity extends AppCompatActivity {
                                 dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
                                 object.put("function", "addEvent");
+                                object.put("communityName", CalendarActivity.community.getName());
                                 object.put("eventName", name);
                                 object.put("eventTime", time);
                                 object.put("description", description);
