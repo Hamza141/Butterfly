@@ -55,29 +55,31 @@
     </EditText>
 
 
-
-    <TextView
-        android:id="@+id/textViewTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Time"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <EditText
-        android:id="@+id/editTextDialogUserInputTime"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_weight="0.96"
+        >
 
-        <requestFocus />
+        <TimePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timePicker6"
+            android:scaleX="0.70"
+            android:scaleY="0.70"
+            android:layout_marginLeft="-55dp"
+            android:layout_marginTop="-60dp"
+            android:layout_marginRight="-50dp"
+            android:layout_marginBottom="-100dp"
 
-    </EditText>
-
-
+            />
+    </LinearLayout>
 
     <Button
         android:id="@+id/ok1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="79dp"
         android:text="Ok" />
 
 </LinearLayout>

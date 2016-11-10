@@ -7,13 +7,19 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import org.json.JSONException;
@@ -26,13 +32,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.*;
 
 
 public class CommunityActivity extends AppCompatActivity {
     final Context context = this;
     static ArrayList<Community> communities;
-
+    Random randomno = new Random();
     private String result;
     Button b;
 
@@ -43,7 +49,11 @@ public class CommunityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
 
-        Button view_all = (Button) findViewById(R.id.view_all);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("My Groups");
+        }
+
+        ImageButton view_all = (ImageButton) findViewById(R.id.view_all);
         view_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,14 +95,11 @@ public class CommunityActivity extends AppCompatActivity {
             }
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("My Groups");
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setImageBitmap(textAsBitmap("+", 40, Color.WHITE));
+       ImageButton fab = (ImageButton) findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +113,12 @@ public class CommunityActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(CommunityActivity.this);
         dialog.setContentView(R.layout.dialog);
         dialog.setTitle("Title");
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
 
         b = (Button) dialog.findViewById(R.id.ok);
         b.setOnClickListener(new View.OnClickListener() {
@@ -178,10 +191,20 @@ public class CommunityActivity extends AppCompatActivity {
 
     public void addButton(final Community community) {
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                Toolbar.LayoutParams.MATCH_PARENT, 300);
+        params.setMargins(0, 0, 0, 8);
+
         final Button b1 = new Button(this);
+        b1.setLayoutParams(params);
+        b1.setBackgroundColor(Color.rgb(255- randomno.nextInt(50) ,255 - randomno.nextInt(30) ,255));
+        b1.setCompoundDrawablesWithIntrinsicBounds( R.drawable.cake, 0, 0, 0);
+        b1.setPadding(150, 0, 0, 0);
         b1.setText(community.getName());
+        b1.setTextSize(18);
+        b1.setTextColor(Color.rgb(0,0,0));
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
-        b1.setLayoutParams(lp);
+
         ll.addView(b1);
         final Intent intent = new Intent(this, GroupActivity.class);
         b1.setOnClickListener(new View.OnClickListener() {
@@ -197,4 +220,29 @@ public class CommunityActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_community, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
 }

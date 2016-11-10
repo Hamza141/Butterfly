@@ -14,7 +14,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.AppCompat.Light">
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
@@ -28,38 +28,38 @@
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".CalendarActivity"
             android:label="CalendarActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".CommunityActivity"
             android:label="CommunityActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".DiscoverActivity"
             android:label="@string/title_activity_discover"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".NotificationActivity"
             android:label="@string/title_activity_notification"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".EventsActivity"
             android:label="@string/title_activity_events"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".GroupActivity"
             android:label="@string/title_activity_group"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".EventViewerActivity" />
         <activity
             android:name=".CommunityListActivity"
             android:label="@string/title_activity_community_list"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service
             android:name=".MyFirebaseMessagingService"

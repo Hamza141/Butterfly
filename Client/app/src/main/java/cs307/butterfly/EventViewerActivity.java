@@ -61,13 +61,13 @@ public class EventViewerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 EditText nameEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput);
                 String name=nameEdit.getText().toString();
-                EditText timeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInputTime);
-                String time=timeEdit.getText().toString();
+             //   EditText timeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInputTime);
+             //   String time=timeEdit.getText().toString();
                 EditText placeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput11);
                 String place=placeEdit.getText().toString();
                 EditText descriptionEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput222);
                 String description=descriptionEdit.getText().toString();
-                EventViewerActivity.event.editInfo(name, place, description, time);
+                EventViewerActivity.event.editInfo(name, place, description, "10:30 am");
                 CharSequence eventSequence = event.toString().subSequence(0, event.toString().length());
                 TextView textView = (TextView) findViewById(R.id.textView);
                 textView.setText(eventSequence);
