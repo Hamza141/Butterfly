@@ -8,8 +8,8 @@ import org.json.simple.JSONObject;
 
 public class Client {
     public static void main(String[] args) {
-        String serverName = "128.211.225.79";
-        //String serverName = "10.186.90.80";
+        //String serverName = "128.211.225.79";
+        String serverName = "10.186.90.202";
         int port = 3300;
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
@@ -111,8 +111,8 @@ public class Client {
             //while(true) {
                 obj = new JSONObject();
                 obj.put("function", "genericNotification");
-                obj.put("idUsers", "2");
-                obj.put("message", "haha");
+                obj.put("googleID", "hamzafarrukh141@gmail.com");
+                obj.put("message", "haha spam loop incoming");
                 out.writeUTF(obj.toString());
             //}
             //System.out.println("Server says " + in.readUTF());
