@@ -61,7 +61,7 @@ public class CalendarActivity extends AppCompatActivity {
                         dataInputStream[0] = new DataInputStream(inputStream[0]);
 
                         //get number of events to read
-                        int numEvents = Integer.valueOf(dataInputStream[0].readUTF());
+                        int numEvents = Integer.parseInt(dataInputStream[0].readUTF());
 
                         //read each event and make new CommunityEvent to add to community
                         for (int i = 0; i < numEvents; i++) {
