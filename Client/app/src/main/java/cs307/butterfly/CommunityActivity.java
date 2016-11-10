@@ -127,7 +127,7 @@ public class CommunityActivity extends AppCompatActivity {
 
                 try {
                     result = text + '\n';
-                    FileOutputStream fileOutputStream = openFileOutput("user_communities", MODE_APPEND);
+                    FileOutputStream fileOutputStream = openFileOutput("iModerator", MODE_APPEND);
                     fileOutputStream.write(result.getBytes());
                     fileOutputStream.close();
                 } catch (IOException e) {

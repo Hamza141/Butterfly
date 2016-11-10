@@ -3,6 +3,7 @@ package cs307.butterfly;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -10,8 +11,12 @@ public class MainActivity extends AppCompatActivity {
     static String ip = "10.186.97.197";
     static int port = 3300;
     static boolean server = true;
+
     static String firstName = "";
     static String id = "";
+
+    static ArrayList <String> myCommunities = new ArrayList<>();
+    static ArrayList <String> iModerator = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
