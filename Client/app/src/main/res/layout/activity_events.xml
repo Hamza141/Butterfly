@@ -50,5 +50,15 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:elevation="6dp" />
+    <ImageButton
+        android:src="@drawable/buddy"
+        android:layout_width="105dp"
+        android:text="Discover"
+        android:layout_height="71dp"
+        android:id="@+id/view_all"
+        android:layout_gravity="bottom|left"
+        android:layout_alignParentTop="true"
+
+        android:drawablePadding="-15sp"/>
 
 </android.support.design.widget.CoordinatorLayout>
