@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -30,6 +31,8 @@ public class BoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_board);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Log.d("BoardActivity", "created");
 
         final Socket[] socket = new Socket[1];
         final OutputStream[] outputStream = new OutputStream[1];

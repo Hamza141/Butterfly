@@ -69,7 +69,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".MyFirebaseInstanceIDService"
             android:enabled="true"
@@ -79,6 +78,10 @@
             </intent-filter>
         </service>
 
+        <activity
+            android:name=".BoardActivity"
+            android:label="@string/title_activity_board"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>
