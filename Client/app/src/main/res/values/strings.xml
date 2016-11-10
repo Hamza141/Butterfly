@@ -31,7 +31,7 @@
     <string name="title_activity_community_join">CommunityJoinActivity</string>
     <string name="server">Server</string>
     <string name="_192_168_1_1">192.168.1.1</string>
-    <string name="change">Change</string>
+    <string name="change">OK</string>
     <string name="welcome">Welcome!</string>
     <string name="server_not_found">Server not found</string>
     <string name="server_offline">Server Offline</string>
