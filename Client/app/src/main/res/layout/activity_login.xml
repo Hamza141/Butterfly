@@ -15,56 +15,74 @@
     <!-- Login progress -->
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/butterfly"
+        android:id="@+id/imageView3"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_width="220dp"
+        android:layout_height="220dp" />
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        app:srcCompat="@drawable/title"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/imageView" />
-
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/imageView2"
-        android:layout_marginTop="17dp"
-        android:gravity="center"
-        android:text="@string/status" />
+        android:layout_width="700dp"
+        android:layout_height="65dp" />
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="match_parent"
+    <CheckBox
+        android:text="@string/server"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/status"
-        android:layout_marginTop="47dp" />
+        android:id="@+id/check_server"
+        android:checked="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:id="@+id/sign_out_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/sign_in_button"
-        android:layout_marginTop="47dp"
         android:background="@color/wallet_dim_foreground_disabled_holo_dark"
         android:text="@string/sign_out"
-        android:textColor="@color/common_google_signin_btn_text_light_focused" />
+        android:textColor="@color/common_google_signin_btn_text_light_focused"
+        android:layout_above="@+id/status"
+        android:layout_alignParentStart="true" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/sign_out_button"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ip"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/_192_168_1_1" />
+        android:text="@string/_192_168_1_1"
+        android:layout_above="@+id/logTokenButton"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/status"
+        android:layout_alignBaseline="@+id/ip"
+        android:layout_alignBottom="@+id/ip"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:text="Token"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logTokenButton"
+        android:layout_above="@+id/check_server"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/setIP" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -73,10 +91,9 @@
         android:text="@string/_192_168_1_1"
         android:ems="10"
         android:id="@+id/setIP"
-        android:layout_marginBottom="25dp"
-        android:layout_above="@+id/ip"
-        android:layout_alignParentStart="true"
-        tools:ignore="LabelFor" />
+        tools:ignore="LabelFor"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/check_server" />
 
     <Button
         android:text="@string/change"
@@ -84,24 +101,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/ipButton"
         android:layout_alignTop="@+id/setIP"
-        android:layout_alignParentEnd="true" />
-
-    <CheckBox
-        android:text="@string/server"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/check_server"
-        android:layout_above="@+id/ipButton"
-        android:layout_alignParentEnd="true"
-        android:checked="true" />
-
-    <Button
-        android:text="Token"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/logTokenButton"
-        android:layout_above="@+id/setIP"
-        android:layout_alignParentStart="true" />
+        android:layout_toStartOf="@+id/imageView3" />
 
 
 </RelativeLayout>

@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public class Community {
-    private ArrayList<CommunityEvent> communityEvents;
+    public ArrayList<CommunityEvent> communityEvents;
     private String name;
 
     public Community(String name) {

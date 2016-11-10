@@ -8,8 +8,8 @@ import org.json.simple.JSONObject;
 
 public class Client {
     public static void main(String[] args) {
-        //String serverName = "128.211.225.79";
-        String serverName = "10.186.85.23";
+        String serverName = "128.211.225.79";
+        //String serverName = "10.186.90.80";
         int port = 3300;
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
@@ -22,9 +22,16 @@ public class Client {
             JSONObject obj;
             JSONObject obj2;
 
-            /*obj.put("function", "addUser"); obj.put("firstName", "Khanh");
+            /*obj = new JSONObject();
+            obj.put("function", "addUser"); obj.put("firstName", "Khanh");
             obj.put("lastName", "Tran");
             obj.put("googleID", "newcdragon@gmail.com");
+            out.writeUTF(obj.toString());*/
+
+            /*obj = new JSONObject();
+            obj.put("function", "updateInstanceID");
+            obj.put("googleID", "newcdragon@gmail.com");
+            obj.put("instanceID", "ertyui178394iujrhtnbg");
             out.writeUTF(obj.toString());*/
 
             /*obj2.put("function", "addUser"); obj2.put("firstName", "Larry");
@@ -101,12 +108,13 @@ public class Client {
             obj2.put("function", "getCommunities");
             out.writeUTF(obj2.toString());
             System.out.println("Server says " + in.readUTF());*/
-
-            obj = new JSONObject();
-            obj.put("function", "genericNotification");
-            obj.put("idUsers", "2"); obj.put("message", "send IdUsers");
-            obj.put("googleID", "newcdragon@gmail.com");
-            out.writeUTF(obj.toString());
+            //while(true) {
+                obj = new JSONObject();
+                obj.put("function", "genericNotification");
+                obj.put("idUsers", "2");
+                obj.put("message", "haha");
+                out.writeUTF(obj.toString());
+            //}
             //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());

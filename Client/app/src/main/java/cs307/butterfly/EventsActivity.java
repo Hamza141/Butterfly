@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -72,9 +73,6 @@ public class EventsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
                 addEvent();
             }
         });
@@ -84,6 +82,15 @@ public class EventsActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(EventsActivity.this);
         dialog.setContentView(R.layout.dialog2);
         dialog.setTitle("Title");
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+
+
 
         b = (Button) dialog.findViewById(R.id.ok1);
         b.setOnClickListener(new View.OnClickListener() {
@@ -97,15 +104,15 @@ public class EventsActivity extends AppCompatActivity {
 
                 EditText nameEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput);
                 final String name = nameEdit.getText().toString();
-                EditText timeEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInputTime);
-                final String time = timeEdit.getText().toString();
+             //   EditText timeEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInputTime);
+               // final String time = timeEdit.getText().toString();
                 EditText placeEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput11);
                 final String place = placeEdit.getText().toString();
                 EditText descriptionEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput222);
                 final String description = descriptionEdit.getText().toString();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(CalendarActivity.date);
-                CommunityEvent event = new CommunityEvent(calendar, name, time, place, description);
+                CommunityEvent event = new CommunityEvent(calendar, name, "10:30 am", place, description);
                 CalendarActivity.community.addEvent(event);
                 dialog.dismiss();
                 result = name;
@@ -122,8 +129,9 @@ public class EventsActivity extends AppCompatActivity {
                                 dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
                                 object.put("function", "addEvent");
+                                object.put("communityName", CalendarActivity.community.getName());
                                 object.put("eventName", name);
-                                object.put("eventTime", time);
+                               // object.put("eventTime", time);
                                 object.put("description", description);
                                 object.put("locationName", place);
                                 dataOutputStream[0].writeUTF(object.toString());
