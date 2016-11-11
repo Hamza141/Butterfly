@@ -55,6 +55,10 @@
             android:name=".GroupActivity"
             android:label="@string/title_activity_group"
             android:theme="@style/Theme.AppCompat.Light" />
+        <activity
+            android:name=".ProfileActivity"
+            android:label="ProfileActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".EventViewerActivity" />
         <activity
             android:name=".CommunityListActivity"
