@@ -168,8 +168,8 @@ public class CommunityEvent {
         int hour = this.date.get(Calendar.HOUR_OF_DAY);
         int minute = this.date.get(Calendar.MINUTE);
         String time = String.valueOf(hour);
-        time.concat(":");
-        time.concat(String.valueOf(minute));
+        time = time.concat(":");
+        time = time.concat(String.valueOf(minute));
         return time;
     }
 
