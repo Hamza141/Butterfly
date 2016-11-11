@@ -156,45 +156,46 @@ public class GroupActivity extends AppCompatActivity {
                 pass[0] = false;
 
                 //Add user to community
-                new Thread(new Runnable() {
+                if (MainActivity.server) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                //Connect to server
+                                socket[0] = new Socket(MainActivity.ip, MainActivity.port);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
-                    @Override
-                    public void run() {
-                        try {
-                            //Connect to server
-                            socket[0] = new Socket(MainActivity.ip, MainActivity.port);
-                            outputStream[0] = socket[0].getOutputStream();
-                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                                object.put("function", "addCommunityUser");
+                                object.put("communityName", CalendarActivity.community.getName());
+                                object.put("isLeader", "0");
+                                object.put("googleID", MainActivity.googleID);
+                                dataOutputStream[0].writeUTF(object.toString());
 
-                            object.put("function", "addCommunityUser");
-                            object.put("communityName", CalendarActivity.community.getName());
-                            object.put("isLeader", "0");
-                            object.put("googleID", MainActivity.googleID);
-                            dataOutputStream[0].writeUTF(object.toString());
+                                //Save community in arraylist
+                                MainActivity.myCommunities.add(CalendarActivity.community.getName());
 
-                            //Save community in arraylist
-                            MainActivity.myCommunities.add(CalendarActivity.community.getName());
+                                //Save community in buffer
+                                MainActivity.buffer.add(CalendarActivity.community.getName());
 
-                            //Save community in buffer
-                            MainActivity.buffer.add(CalendarActivity.community.getName());
+                                //Save community in myCommunities file
+                                String result = CalendarActivity.community.getName() + '\n';
+                                FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
+                                fileOutputStream.write(result.getBytes());
+                                fileOutputStream.close();
 
-                            //Save community in myCommunities file
-                            String result = CalendarActivity.community.getName() + '\n';
-                            FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
-                            fileOutputStream.write(result.getBytes());
-                            fileOutputStream.close();
+                                //close everything
+                                outputStream[0].close();
+                                dataOutputStream[0].close();
+                                socket[0].close();
 
-                            //close everything
-                            outputStream[0].close();
-                            dataOutputStream[0].close();
-                            socket[0].close();
-
-                            pass[0] = true;
-                        } catch (IOException | JSONException e) {
-                            e.printStackTrace();
+                                pass[0] = true;
+                            } catch (IOException | JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
 
                 android.os.SystemClock.sleep(1000);
 
