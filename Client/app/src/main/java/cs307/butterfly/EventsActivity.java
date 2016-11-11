@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TimePicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,8 +91,6 @@ public class EventsActivity extends AppCompatActivity {
         dialog.show();
         dialog.getWindow().setAttributes(lp);
 
-
-
         b = (Button) dialog.findViewById(R.id.ok1);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +111,17 @@ public class EventsActivity extends AppCompatActivity {
                 final String description = descriptionEdit.getText().toString();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(CalendarActivity.date);
-                CommunityEvent event = new CommunityEvent(calendar, name, "10:30", place, description);
+
+                TimePicker timePicker = (TimePicker) findViewById(R.id.timePicker6);
+                int hour = timePicker.getCurrentHour();
+                int minute = timePicker.getCurrentMinute();
+                String time = String.valueOf(hour);
+                time.concat(":");
+                time.concat(String.valueOf(minute));
+                final String finalTime = time;
+
+                CommunityEvent event = new CommunityEvent(calendar, name, time, place, description);
+                final CommunityEvent finalEvent = event;
                 CalendarActivity.community.addEvent(event);
                 dialog.dismiss();
                 result = name;
@@ -131,7 +140,8 @@ public class EventsActivity extends AppCompatActivity {
                                 object.put("function", "addEvent");
                                 object.put("communityName", CalendarActivity.community.getName());
                                 object.put("eventName", name);
-                               // object.put("eventTime", time);
+                                object.put("eventTime", finalTime);
+                                object.put("date", finalEvent.getDateForServer());
                                 object.put("description", description);
                                 object.put("locationName", place);
                                 dataOutputStream[0].writeUTF(object.toString());

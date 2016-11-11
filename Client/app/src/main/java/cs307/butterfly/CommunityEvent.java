@@ -163,4 +163,25 @@ public class CommunityEvent {
         }
     }
 
+    public String getTimeString() {
+        int hour = this.date.get(Calendar.HOUR_OF_DAY);
+        int minute = this.date.get(Calendar.MINUTE);
+        String time = String.valueOf(hour);
+        time.concat(":");
+        time.concat(String.valueOf(minute));
+        return time;
+    }
+
+    public String getDateForServer() {
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH);
+        month++;
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        String dateString = String.valueOf(year);
+        dateString.concat("-");
+        dateString.concat(String.valueOf(month));
+        dateString.concat("-");
+        dateString.concat(String.valueOf(day));
+        return dateString;
+    }
 }
