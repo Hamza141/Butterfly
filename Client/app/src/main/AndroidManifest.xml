@@ -55,6 +55,10 @@
             android:name=".GroupActivity"
             android:label="@string/title_activity_group"
             android:theme="@style/Theme.AppCompat.Light" />
+        <activity
+            android:name=".ProfileActivity"
+            android:label="ProfileActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".EventViewerActivity" />
         <activity
             android:name=".CommunityListActivity"
@@ -81,7 +85,12 @@
         <activity
             android:name=".BoardActivity"
             android:label="@string/title_activity_board"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PersonalCalendarActivity"
+            android:label="@string/title_activity_personal_calendar"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

@@ -132,9 +132,10 @@ public class EventsActivity extends AppCompatActivity {
                 int hour = timePicker.getCurrentHour();
                 int minute = timePicker.getCurrentMinute();
                 String time = String.valueOf(hour);
-                time.concat(":");
-                time.concat(String.valueOf(minute));
+                time = time.concat(":");
+                time = time.concat(String.valueOf(minute));
                 final String finalTime = time;
+                Log.d("EventTime", finalTime);
 
                 CommunityEvent event = new CommunityEvent(calendar, name, time, place, description);
                 final CommunityEvent finalEvent = event;
