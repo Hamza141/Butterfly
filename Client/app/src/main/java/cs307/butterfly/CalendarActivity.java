@@ -29,11 +29,14 @@ public class CalendarActivity extends AppCompatActivity {
     public static ArrayList<SpannableString> eventsButtons = new ArrayList<>();
     public static Community community;
     public static EventCalendarView ecv;
+    public static boolean isUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+
+        isUser = false;
 
         //get current community's events from server
         final Socket[] socket = new Socket[1];

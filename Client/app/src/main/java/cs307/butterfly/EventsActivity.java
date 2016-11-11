@@ -55,14 +55,25 @@ public class EventsActivity extends AppCompatActivity {
 
         Calendar calendar1 = Calendar.getInstance();
         calendar1.setTime(CalendarActivity.date);
-        for (int i = 0; i < CalendarActivity.community.getCommunityEvents().size(); i++) {
-            if (CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.DAY_OF_YEAR) == calendar1.get(Calendar.DAY_OF_YEAR) &&
-                    CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.YEAR) == calendar1.get(Calendar.YEAR)) {
-                addButton(CalendarActivity.community.getCommunityEvents().get(i).getName());
-                Log.d("addButton", CalendarActivity.community.getCommunityEvents().get(i).getName());
+        if (CalendarActivity.isUser) {
+            for (int i = 0; i < PersonalCalendarActivity.userEvents.size(); i++) {
+                if (PersonalCalendarActivity.userEvents.get(i).getDate().get(Calendar.DAY_OF_YEAR) == calendar1.get(Calendar.DAY_OF_YEAR) &&
+                        PersonalCalendarActivity.userEvents.get(i).getDate().get(Calendar.YEAR) == calendar1.get(Calendar.YEAR)) {
+                    addButton(PersonalCalendarActivity.userEvents.get(i).getName());
+                }
             }
+            PersonalCalendarActivity.ecv.setEvents(PersonalCalendarActivity.userEvents);
         }
-        CalendarActivity.ecv.setEvents(CalendarActivity.community.getCommunityEvents());
+        else {
+            for (int i = 0; i < CalendarActivity.community.getCommunityEvents().size(); i++) {
+                if (CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.DAY_OF_YEAR) == calendar1.get(Calendar.DAY_OF_YEAR) &&
+                        CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.YEAR) == calendar1.get(Calendar.YEAR)) {
+                    addButton(CalendarActivity.community.getCommunityEvents().get(i).getName());
+                    Log.d("addButton", CalendarActivity.community.getCommunityEvents().get(i).getName());
+                }
+            }
+            CalendarActivity.ecv.setEvents(CalendarActivity.community.getCommunityEvents());
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,6 +88,10 @@ public class EventsActivity extends AppCompatActivity {
                 addEvent();
             }
         });
+
+        if (CalendarActivity.isUser) {
+            fab.hide();
+        }
     }
 
     public void addEvent() {
@@ -103,16 +118,17 @@ public class EventsActivity extends AppCompatActivity {
 
                 EditText nameEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput);
                 final String name = nameEdit.getText().toString();
-             //   EditText timeEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInputTime);
-               // final String time = timeEdit.getText().toString();
+
                 EditText placeEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput11);
                 final String place = placeEdit.getText().toString();
+
                 EditText descriptionEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput222);
                 final String description = descriptionEdit.getText().toString();
+
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(CalendarActivity.date);
 
-                TimePicker timePicker = (TimePicker) findViewById(R.id.timePicker6);
+                TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker6);
                 int hour = timePicker.getCurrentHour();
                 int minute = timePicker.getCurrentMinute();
                 String time = String.valueOf(hour);
