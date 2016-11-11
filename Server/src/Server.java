@@ -44,8 +44,7 @@ class Server extends Thread {
     static final private String DB_URL = "jdbc:mysql://localhost/Butterfly";
     static final private String USER = "root";
     static private String appKey, PASS, Authorization;
-    private Connection conn = null;
-    //private Statement stmt = null;
+    private Connection conn;
     private ServerSocket serverSocket;
     private DataOutputStream out;
     private DataInputStream in;
@@ -135,7 +134,7 @@ class Server extends Thread {
                             pingNotification((String) obj.get("googleID"));
                             break;
                         case "upcomingEventNotification":
-                            upcomingEventNotification((String) obj.get("googleID"));
+                            upcomingEventNotificationCheck((String) obj.get("googleID"));
                             break;
                         case "updateInstanceID":
                             updateInstanceID(obj);
@@ -195,17 +194,41 @@ class Server extends Thread {
         communityName += "_Users";
         String googleID = (String) obj.get("googleID");
         try {
-            sql = "INSERT INTO " + communityName + " (googleID) VALUES (?)";
+            sql = "SELECT count(*) from " + communityName + " WHERE googleID = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, googleID);
             System.out.println(ps);
-            ps.executeUpdate();
-            sql = "UPDATE " + communityName + " SET isLeader = ? WHERE googleID = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, (String) obj.get("isLeader"));
-            ps.setString(2, googleID);
-            System.out.println(ps);
-            ps.executeUpdate();
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println("addCommunityUser " + Integer.toString(rs.getInt(1)));
+                if (rs.getInt(1) == 0) {
+                    sql = "INSERT INTO " + communityName + " (googleID) VALUES (?)";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, googleID);
+                    System.out.println(ps);
+                    ps.executeUpdate();
+                    sql = "UPDATE " + communityName + " SET isLeader = ? WHERE googleID = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, (String) obj.get("isLeader"));
+                    ps.setString(2, googleID);
+                    System.out.println(ps);
+                    ps.executeUpdate();
+                    sql = "UPDATE Users SET communitiesList = CONCAT(?, communitiesList) WHERE googleID = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, obj.get("communityName") + ", ");
+                    ps.setString(2, googleID);
+                    System.out.println(ps);
+                    ps.executeUpdate();
+
+                    /*sql = "SELECT communitiesList FROM Users WHERE googleID = ?";
+                    ps.setString(1, googleID);
+                    System.out.println(ps);
+                    rs = ps.executeQuery(sql);
+                    if (rs.next()) {
+
+                    }*/
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -265,6 +288,7 @@ class Server extends Thread {
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
+                System.out.println("addUser " + Integer.toString(rs.getInt(1)));
                 if (rs.getInt(1) == 0) {
                     sql = "INSERT INTO Users (firstName, lastName, googleID) "
                             + "VALUES (?, ?, ?)";
@@ -483,6 +507,7 @@ class Server extends Thread {
         parent.put("to", to);
         parent.put("notification", notification);
         parent.put("priority", "high");
+        System.out.println("sent " + parent.toString());
         notificationWrite(parent);
     }
 
@@ -497,7 +522,7 @@ class Server extends Thread {
                 communities.append(rs.getString("name"));
                 communities.append(comma);
             }
-            communities.setLength(communities.length() - 2);
+            //communities.setLength(communities.length() - 2);
             System.out.println(communities);
             out.writeUTF(communities.toString());
         } catch (SQLException | IOException e) {
@@ -631,7 +656,7 @@ class Server extends Thread {
 
     private void getUserCommunityEvents(String googleID) {
         try {
-            sql = "SELECT communities FROM Users WHERE googleID = ?";
+            sql = "SELECT communitiesList FROM Users WHERE googleID = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, googleID);
             System.out.println(ps);
@@ -656,11 +681,22 @@ class Server extends Thread {
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Users";
+        String googleID = (String) obj.get("googleID");
         try {
-            sql = "DELETE FROM " + communityName + " WHERE googleID = " + obj.get("googleID");
+            sql = "SELECT count(*) from " + communityName + " WHERE googleID = ?";
             ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
             System.out.println(ps);
-            ps.executeUpdate();
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) == 1) {
+                    sql = "DELETE FROM " + communityName + " WHERE googleID = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, googleID);
+                    System.out.println(ps);
+                    ps.executeUpdate();
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -721,21 +757,37 @@ class Server extends Thread {
 
     private void timeCheck(String communityCalendar) {
         // called by upcomingEventNotification
-        // DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
+        // TIME: HH:MM:SS, DATE: YYYY-MM-DD
         try {
             sql = "SELECT * FROM " + communityCalendar;
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                String date = rs.getString("date");
-                Date currentDate = Calendar.getInstance().getTime();
+                String eventDate = rs.getString("date");
+                String eventTime = rs.getString("time");
+                ArrayList<String> dateSplit;
+                dateSplit = new ArrayList<>(Arrays.asList(eventDate.toString().split("-")));
+                ArrayList<String> timeSplit;
+                timeSplit = new ArrayList<>(Arrays.asList(eventTime.toString().split(":")));
+                Date date = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+                int hour = cal.get(Calendar.HOUR_OF_DAY);
+                int minute = cal.get(Calendar.MINUTE);
+                if (month == Integer.parseInt(dateSplit.get(1))) {
+                    if (Integer.parseInt(dateSplit.get(2)) - day == 1) {
+                        //send notification
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void upcomingEventNotification(String to) {
+    private void upcomingEventNotificationCheck(String to) {
         /*TODO figure out when it is 24 hours before an event time
           TODO send notification to all users in that community
           TODO will have to be always running to be prompt
@@ -848,6 +900,8 @@ class Server extends Thread {
     }
 
     public static void main(String[] args) {
+        Date currentDate = Calendar.getInstance().getTime();
+        System.out.println(currentDate);
         try {
             FileInputStream fileIn = new FileInputStream("/home/khanh/keys.txt");
             InputStreamReader isr = new InputStreamReader(fileIn, Charset.forName("UTF-8"));

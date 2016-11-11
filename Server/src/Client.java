@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 public class Client {
     public static void main(String[] args) {
         //String serverName = "128.211.225.79";
-        String serverName = "10.186.87.238";
+        String serverName = "10.186.83.239";
         int port = 3300;
             System.out.println("2016-09-12".compareTo("2016-09-09"));
         try {
@@ -45,14 +45,14 @@ public class Client {
             obj2.put("googleID", "LarryB@gmail.com");
             out.writeUTF(obj2.toString());*/
 
-            obj = new JSONObject();
+            /*obj = new JSONObject();
             obj.put("function", "addCommunity");
             //obj.put("category", "Academic");
             //obj.put("subCategory", "CS");
             obj.put("name", "CS307");
             //obj.put("description", "project class"); obj.put("dateCreated", "2016-10-28");
             //obj.put("private", "0");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
             obj.put("function", "addCommunityUser"); obj.put("communityName", "CS307");
@@ -70,7 +70,7 @@ public class Client {
             obj.put("idUsers", "2");
             out.writeUTF(obj.toString());*/
 
-            obj = new JSONObject();
+            /*obj = new JSONObject();
             obj.put("function", "addCommunity"); obj.put("category", "sports");
             obj.put("subCategory", "soccer"); obj.put("name", "Chelsea FC");
             obj.put("description", "London Is Blue"); obj.put("dateCreated", "2016-10-28");
@@ -89,7 +89,7 @@ public class Client {
             obj.put("subCategory", "CS"); obj.put("name", "CS307");
             obj.put("description", "project class"); obj.put("dateCreated", "2016-10-28");
             obj.put("private", "0");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
             obj.put("function", "addEvent"); obj.put("name", "West Ham vs Chelsea");
@@ -115,10 +115,11 @@ public class Client {
             out.writeUTF(obj2.toString());
             System.out.println("Server says " + in.readUTF());*/
             //while(true) {
-                /*obj = new JSONObject();
-                obj.put("function", "addCommunity");
-                obj.put("name", "haha");
-                out.writeUTF(obj.toString());*/
+                obj = new JSONObject();
+                obj.put("function", "genericNotification");
+                obj.put("to", "hamzafarrukh141@gmail.com");
+                obj.put("message", "i thought you were tracking communities users were in");
+                out.writeUTF(obj.toString());
             //}
             //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());
