@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -99,12 +100,21 @@ public class CommunityActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("My Groups");
         }
 
-       ImageButton fab = (ImageButton) findViewById(R.id.fab);
+        ImageButton fab = (ImageButton) findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addGroup();
+            }
+        });
+
+        ImageButton viewall1 = (ImageButton) findViewById(R.id.view_all1);
+        viewall1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PersonalCalendarActivity.class);
+                startActivity(intent);
             }
         });
     }
