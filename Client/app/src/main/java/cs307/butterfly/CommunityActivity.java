@@ -44,8 +44,18 @@ public class CommunityActivity extends AppCompatActivity {
     Button b;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onResume() {
+        super.onResume();
+        int i = 0;
+        while (i != MainActivity.buffer.size()) {
+            Community community = new Community(MainActivity.buffer.get(i));
+            addButton(community);
+            MainActivity.buffer.remove(MainActivity.buffer.get(i));
+        }
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
@@ -65,8 +75,8 @@ public class CommunityActivity extends AppCompatActivity {
 
         communities = new ArrayList<>();
 
-        //read a file to see which communities the user is already a part of
-        File file = new File(context.getFilesDir(), "user_communities");
+        //Read a file to see which communities the user is already a part of
+        File file = new File(context.getFilesDir(), "myCommunities");
         FileInputStream fileInputStream = null;
         int length = (int) file.length();
         byte[] bytes = new byte[length];
@@ -92,7 +102,37 @@ public class CommunityActivity extends AppCompatActivity {
             if (!result.equals("")) {
                 Community community = new Community(result);
                 communities.add(community);
+                MainActivity.myCommunities.add(result);
                 addButton(community);
+            }
+        }
+
+        //Read a file to see which communities the user is a moderator of
+        file = new File(context.getFilesDir(), "iModerator");
+        fileInputStream = null;
+        length = (int) file.length();
+        bytes = new byte[length];
+
+        try {
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fileInputStream != null)
+                    fileInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        content = new String(bytes);
+        contents = content.split("\n");
+        for (String cont : contents) {
+            result = cont;
+            if (!result.equals("")) {
+                MainActivity.iModerator.add(result);
             }
         }
 
@@ -119,6 +159,7 @@ public class CommunityActivity extends AppCompatActivity {
         });
     }
 
+    //Create new community
     public void addGroup() {
         final Dialog dialog = new Dialog(CommunityActivity.this);
         dialog.setContentView(R.layout.dialog);
@@ -134,11 +175,12 @@ public class CommunityActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Create stuff for the client to connect to the app
                 final Socket[] socket = new Socket[1];
                 final OutputStream[] outputStream = new OutputStream[1];
                 final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
                 final JSONObject object = new JSONObject();
-
+                final JSONObject object2 = new JSONObject();
 
                 EditText edit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput);
                 final String text = edit.getText().toString();
@@ -148,9 +190,17 @@ public class CommunityActivity extends AppCompatActivity {
                 communities.add(community);
                 addButton(community);
 
+                //Add the community to the lists
+                MainActivity.iModerator.add(result);
+                MainActivity.myCommunities.add(result);
+
                 try {
                     result = text + '\n';
-                    FileOutputStream fileOutputStream = openFileOutput("user_communities", MODE_APPEND);
+                    FileOutputStream fileOutputStream = openFileOutput("iModerator", MODE_APPEND);
+                    fileOutputStream.write(result.getBytes());
+                    fileOutputStream.close();
+
+                    fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
                     fileOutputStream.write(result.getBytes());
                     fileOutputStream.close();
                 } catch (IOException e) {
@@ -162,12 +212,32 @@ public class CommunityActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
+                                //Connect to server
                                 socket[0] = new Socket(MainActivity.ip, 3300);
                                 outputStream[0] = socket[0].getOutputStream();
                                 dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+
+                                //Send community name to server
                                 object.put("function", "addCommunity");
                                 object.put("name", text);
                                 dataOutputStream[0].writeUTF(object.toString());
+
+                                //Close everything
+                                dataOutputStream[0].close();
+                                outputStream[0].close();
+                                socket[0].close();
+
+                                //Connect to server again
+                                socket[0] = new Socket(MainActivity.ip, MainActivity.port);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+
+                                //Add user to community as moderator
+                                object2.put("function", "addCommunityUser");
+                                object2.put("communityName", text);
+                                object2.put("isLeader", "1");
+                                object2.put("googleID", MainActivity.googleID);
+                                dataOutputStream[0].writeUTF(object2.toString());
 
                                 //close everything
                                 outputStream[0].close();

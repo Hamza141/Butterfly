@@ -157,7 +157,7 @@ public class EventsActivity extends AppCompatActivity {
                                 object.put("function", "addEvent");
                                 object.put("communityName", CalendarActivity.community.getName());
                                 object.put("eventName", name);
-                                object.put("eventTime", finalTime);
+                                object.put("time", finalEvent.getTimeString());
                                 object.put("date", finalEvent.getDateForServer());
                                 object.put("description", description);
                                 object.put("locationName", place);

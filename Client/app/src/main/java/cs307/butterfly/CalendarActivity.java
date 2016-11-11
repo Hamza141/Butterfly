@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
-import android.util.EventLog;
 import android.util.Log;
 import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.*;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -70,18 +70,18 @@ public class CalendarActivity extends AppCompatActivity {
                         for (int i = 0; i < numEvents; i++) {
                             JSONObject jsonevent = new JSONObject(dataInputStream[0].readUTF());
                             Calendar calendar = Calendar.getInstance();
-                            String date = (String) jsonevent.get("date");
+                            String date = jsonevent.getString("date");
                             String[] split = date.split("-");
                             String year = split[0];
                             String month = split[1];
                             String day = split[2];
                             calendar.set(Calendar.YEAR, Integer.valueOf(year));
-                            calendar.set(Calendar.MONTH, Integer.valueOf(month));
+                            calendar.set(Calendar.MONTH, Integer.valueOf(month) - 1);
                             calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(day));
-                            String eventName = (String) jsonevent.get("name");
-                            String eventTime = (String) jsonevent.get("time");
-                            String place = (String) jsonevent.get("locationName");
-                            String description = (String) jsonevent.get("description");
+                            String eventName = jsonevent.getString("eventName");
+                            String eventTime = jsonevent.getString("time");
+                            String place = jsonevent.getString("locationName");
+                            String description = jsonevent.getString("description");
                             CommunityEvent event = new CommunityEvent(calendar, eventName, eventTime, place, description);
                             community.addEvent(event);
                         }
@@ -98,8 +98,7 @@ public class CalendarActivity extends AppCompatActivity {
                 }
             }).start();
 
-            android.os.SystemClock.sleep(300);
-
+            android.os.SystemClock.sleep(1000);
         }
 
         ecv = ((EventCalendarView) findViewById(R.id.calendar_view));
