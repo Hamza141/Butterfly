@@ -132,6 +132,7 @@ public class CommunityEvent {
 
     public static void parseTime(String time, CommunityEvent event) {
         String[] split = time.split(":");
+        Log.d("timeSplit", split[0]);
         if (split[0].equals("12")) {
             split[0] = "0";
         }
