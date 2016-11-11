@@ -44,8 +44,18 @@ public class CommunityActivity extends AppCompatActivity {
     Button b;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onResume() {
+        super.onResume();
+        int i = 0;
+        while (i != MainActivity.buffer.size()) {
+            Community community = new Community(MainActivity.buffer.get(i));
+            addButton(community);
+            MainActivity.buffer.remove(MainActivity.buffer.get(i));
+        }
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);

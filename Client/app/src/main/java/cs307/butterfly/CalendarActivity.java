@@ -76,7 +76,7 @@ public class CalendarActivity extends AppCompatActivity {
                             String month = split[1];
                             String day = split[2];
                             calendar.set(Calendar.YEAR, Integer.valueOf(year));
-                            calendar.set(Calendar.MONTH, Integer.valueOf(month));
+                            calendar.set(Calendar.MONTH, Integer.valueOf(month) - 1);
                             calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(day));
                             String eventName = jsonevent.getString("eventName");
                             String eventTime = jsonevent.getString("time");
@@ -98,8 +98,7 @@ public class CalendarActivity extends AppCompatActivity {
                 }
             }).start();
 
-            android.os.SystemClock.sleep(300);
-
+            android.os.SystemClock.sleep(1000);
         }
 
         ecv = ((EventCalendarView) findViewById(R.id.calendar_view));

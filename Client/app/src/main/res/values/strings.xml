@@ -39,4 +39,5 @@
     <string name="google_sign_in_error">Google Sign in Error</string>
     <string name="title_activity_board">BoardActivity</string>
     <string name="title_activity_personal_calendar">PersonalCalendarActivity</string>
+    <string name="join">Join</string>
 </resources>

@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     static ArrayList <String> myCommunities = new ArrayList<>();
     static ArrayList <String> iModerator = new ArrayList<>();
+    static ArrayList <String> buffer = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
