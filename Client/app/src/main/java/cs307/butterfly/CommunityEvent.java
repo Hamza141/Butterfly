@@ -179,10 +179,10 @@ public class CommunityEvent {
         month++;
         int day = date.get(Calendar.DAY_OF_MONTH);
         String dateString = String.valueOf(year);
-        dateString.concat("-");
-        dateString.concat(String.valueOf(month));
-        dateString.concat("-");
-        dateString.concat(String.valueOf(day));
+        dateString = dateString.concat("-");
+        dateString = dateString.concat(String.valueOf(month));
+        dateString = dateString.concat("-");
+        dateString = dateString.concat(String.valueOf(day));
         return dateString;
     }
 }
