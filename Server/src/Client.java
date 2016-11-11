@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-
 import org.json.simple.JSONObject;
 
+@SuppressWarnings("unchecked")
 public class Client {
     public static void main(String[] args) {
         //String serverName = "128.211.225.79";
-        String serverName = "10.186.87.238";
+        String serverName = "10.186.83.239";
         int port = 3300;
             System.out.println("2016-09-12".compareTo("2016-09-09"));
         try {
@@ -89,9 +89,9 @@ public class Client {
             obj.put("subCategory", "CS"); obj.put("name", "CS307");
             obj.put("description", "project class"); obj.put("dateCreated", "2016-10-28");
             obj.put("private", "0");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
 
-            obj = new JSONObject();
+            /*obj = new JSONObject();
             obj.put("function", "addEvent"); obj.put("name", "West Ham vs Chelsea");
             obj.put("description", "Football League Cup Round of 16"); obj.put("city", "London");
             //obj.put("state", "MO"); obj.put("zip", "63103");
@@ -116,9 +116,9 @@ public class Client {
             System.out.println("Server says " + in.readUTF());*/
             //while(true) {
                 obj = new JSONObject();
-                obj.put("function", "createCommunityUserTable");
-                obj.put("googleID", "hamzafarrukh141@gmail.com");
-                obj.put("message", "haha spam loop incoming");
+                obj.put("function", "genericNotification");
+                obj.put("to", "hamzafarrukh141@gmail.com");
+                obj.put("message", "i thought you were tracking communities users were in");
                 out.writeUTF(obj.toString());
             //}
             //System.out.println("Server says " + in.readUTF());
