@@ -81,7 +81,12 @@
         <activity
             android:name=".BoardActivity"
             android:label="@string/title_activity_board"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PersonalCalendarActivity"
+            android:label="@string/title_activity_personal_calendar"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>
