@@ -175,6 +175,7 @@ public class CommunityEvent {
     public String getDateForServer() {
         int year = date.get(Calendar.YEAR);
         int month = date.get(Calendar.MONTH);
+        month++;
         int day = date.get(Calendar.DAY_OF_MONTH);
         String dateString = String.valueOf(year);
         dateString.concat("-");
