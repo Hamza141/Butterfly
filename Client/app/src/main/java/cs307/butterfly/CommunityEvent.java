@@ -168,8 +168,8 @@ public class CommunityEvent {
         int hour = this.date.get(Calendar.HOUR_OF_DAY);
         int minute = this.date.get(Calendar.MINUTE);
         String time = String.valueOf(hour);
-        time.concat(":");
-        time.concat(String.valueOf(minute));
+        time = time.concat(":");
+        time = time.concat(String.valueOf(minute));
         return time;
     }
 
@@ -179,10 +179,10 @@ public class CommunityEvent {
         month++;
         int day = date.get(Calendar.DAY_OF_MONTH);
         String dateString = String.valueOf(year);
-        dateString.concat("-");
-        dateString.concat(String.valueOf(month));
-        dateString.concat("-");
-        dateString.concat(String.valueOf(day));
+        dateString = dateString.concat("-");
+        dateString = dateString.concat(String.valueOf(month));
+        dateString = dateString.concat("-");
+        dateString = dateString.concat(String.valueOf(day));
         return dateString;
     }
 }
