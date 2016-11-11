@@ -86,7 +86,7 @@ public class CommunityListActivity extends AppCompatActivity {
                 }
             }).start();
 
-            android.os.SystemClock.sleep(300);
+            android.os.SystemClock.sleep(500);
 
             String[] name = names[0].split(", ");
             //Create buttons for each Community
@@ -94,6 +94,14 @@ public class CommunityListActivity extends AppCompatActivity {
                 Community community = new Community(aName);
                 communities.add(community);
                 addButton(new Community(aName));
+            }
+        }
+        else {
+            for (String name : MainActivity.myCommunities) {
+                Community community = new Community(name);
+                communities.add(community);
+                addButton(new Community(name));
+
             }
         }
     }

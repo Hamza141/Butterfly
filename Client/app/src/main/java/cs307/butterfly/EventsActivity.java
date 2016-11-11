@@ -112,7 +112,7 @@ public class EventsActivity extends AppCompatActivity {
                 final String description = descriptionEdit.getText().toString();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(CalendarActivity.date);
-                CommunityEvent event = new CommunityEvent(calendar, name, "10:30 am", place, description);
+                CommunityEvent event = new CommunityEvent(calendar, name, "10:30", place, description);
                 CalendarActivity.community.addEvent(event);
                 dialog.dismiss();
                 result = name;

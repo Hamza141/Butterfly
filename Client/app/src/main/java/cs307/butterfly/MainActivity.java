@@ -8,12 +8,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     //10.0.2.2
-    static String ip = "10.186.97.197";
+    static String ip = "10.186.87.238";
     static int port = 3300;
     static boolean server = true;
 
     static String firstName = "";
-    static String id = "";
+    static String googleID = "";
 
     static ArrayList <String> myCommunities = new ArrayList<>();
     static ArrayList <String> iModerator = new ArrayList<>();

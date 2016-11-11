@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
-import android.util.EventLog;
 import android.util.Log;
 import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.*;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -61,13 +61,15 @@ public class CalendarActivity extends AppCompatActivity {
                         dataInputStream[0] = new DataInputStream(inputStream[0]);
 
                         //get number of events to read
-                        int numEvents = Integer.valueOf(dataInputStream[0].readUTF());
-
+                        int numEvents = Integer.parseInt(dataInputStream[0].readUTF());
+                        int ifs = 0;
+                        ifs++;
                         //read each event and make new CommunityEvent to add to community
                         for (int i = 0; i < numEvents; i++) {
                             JSONObject jsonevent = new JSONObject(dataInputStream[0].readUTF());
                             Calendar calendar = Calendar.getInstance();
-                            String date = (String) jsonevent.get("date");
+                            String date = jsonevent.getString("date");
+                            date = "2016-11-10";
                             String[] split = date.split("-");
                             String year = split[0];
                             String month = split[1];
@@ -75,10 +77,11 @@ public class CalendarActivity extends AppCompatActivity {
                             calendar.set(Calendar.YEAR, Integer.valueOf(year));
                             calendar.set(Calendar.MONTH, Integer.valueOf(month));
                             calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(day));
-                            String eventName = (String) jsonevent.get("name");
-                            String eventTime = (String) jsonevent.get("time");
-                            String place = (String) jsonevent.get("locationName");
-                            String description = (String) jsonevent.get("description");
+                            String eventName = jsonevent.getString("eventName");
+                            //String eventTime = jsonevent.getString("time");
+                            String eventTime = "10:30";
+                            String place = jsonevent.getString("locationName");
+                            String description = jsonevent.getString("description");
                             CommunityEvent event = new CommunityEvent(calendar, eventName, eventTime, place, description);
                             community.addEvent(event);
                         }
