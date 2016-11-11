@@ -68,7 +68,6 @@ public class CalendarActivity extends AppCompatActivity {
                             JSONObject jsonevent = new JSONObject(dataInputStream[0].readUTF());
                             Calendar calendar = Calendar.getInstance();
                             String date = jsonevent.getString("date");
-                            date = "2016-11-10";
                             String[] split = date.split("-");
                             String year = split[0];
                             String month = split[1];
@@ -77,8 +76,7 @@ public class CalendarActivity extends AppCompatActivity {
                             calendar.set(Calendar.MONTH, Integer.valueOf(month));
                             calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(day));
                             String eventName = jsonevent.getString("eventName");
-                            //String eventTime = jsonevent.getString("time");
-                            String eventTime = "10:30";
+                            String eventTime = jsonevent.getString("time");
                             String place = jsonevent.getString("locationName");
                             String description = jsonevent.getString("description");
                             CommunityEvent event = new CommunityEvent(calendar, eventName, eventTime, place, description);
