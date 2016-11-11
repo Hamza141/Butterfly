@@ -2,15 +2,21 @@
  * Created by Khanh Tran on 10/9/16.
  */
 
-import java.net.*;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+
 import org.json.simple.JSONObject;
 
 public class Client {
     public static void main(String[] args) {
         //String serverName = "128.211.225.79";
-        String serverName = "10.186.90.202";
+        String serverName = "10.186.87.238";
         int port = 3300;
+            System.out.println("2016-09-12".compareTo("2016-09-09"));
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
             Socket client = new Socket(serverName, port);
@@ -110,7 +116,7 @@ public class Client {
             System.out.println("Server says " + in.readUTF());*/
             //while(true) {
                 obj = new JSONObject();
-                obj.put("function", "genericNotification");
+                obj.put("function", "createCommunityUserTable");
                 obj.put("googleID", "hamzafarrukh141@gmail.com");
                 obj.put("message", "haha spam loop incoming");
                 out.writeUTF(obj.toString());
