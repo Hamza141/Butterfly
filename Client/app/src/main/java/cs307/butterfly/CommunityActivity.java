@@ -7,10 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -33,8 +30,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Random;
 
 public class CommunityActivity extends AppCompatActivity {
     final Context context = this;
@@ -42,6 +39,7 @@ public class CommunityActivity extends AppCompatActivity {
     Random randomno = new Random();
     private String result;
     Button b;
+    static ArrayList<Button> buttons;
 
     @Override
     protected void onResume() {
@@ -50,6 +48,7 @@ public class CommunityActivity extends AppCompatActivity {
         while (i != MainActivity.buffer.size()) {
             Community community = new Community(MainActivity.buffer.get(i));
             addButton(community);
+            communities.add(community);
             MainActivity.buffer.remove(MainActivity.buffer.get(i));
         }
     }
@@ -74,6 +73,7 @@ public class CommunityActivity extends AppCompatActivity {
         });
 
         communities = new ArrayList<>();
+        buttons = new ArrayList<>();
 
         //Read a file to see which communities the user is already a part of
         File file = new File(context.getFilesDir(), "myCommunities");
@@ -276,13 +276,14 @@ public class CommunityActivity extends AppCompatActivity {
         params.setMargins(0, 0, 0, 8);
 
         final Button b1 = new Button(this);
+        buttons.add(b1);
         b1.setLayoutParams(params);
-        b1.setBackgroundColor(Color.rgb(255- randomno.nextInt(50) ,255 - randomno.nextInt(30) ,255));
-        b1.setCompoundDrawablesWithIntrinsicBounds( R.drawable.cake, 0, 0, 0);
+        b1.setBackgroundColor(Color.rgb(255 - randomno.nextInt(50), 255 - randomno.nextInt(30), 255));
+        b1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.cake, 0, 0, 0);
         b1.setPadding(150, 0, 0, 0);
         b1.setText(community.getName());
         b1.setTextSize(18);
-        b1.setTextColor(Color.rgb(0,0,0));
+        b1.setTextColor(Color.rgb(0, 0, 0));
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
 
         ll.addView(b1);

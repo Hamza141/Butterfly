@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,8 +15,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_group"
+    <include
         android:id="@+id/include"
+        layout="@layout/content_group"
         android:layout_width="92dp"
         android:layout_height="201dp" />
 
@@ -32,64 +34,76 @@
             android:orientation="vertical">
 
             <TextView
-                android:text="Welcome to the community board!"
+                android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView2" />
+                android:text="@string/welcome_to_the_community_board" />
 
             <com.google.android.gms.maps.MapView
+                android:id="@+id/mapview"
                 android:layout_width="match_parent"
-                android:layout_height="232dp"
-                android:id="@+id/mapview" />
+                android:layout_height="232dp" />
 
-            <Button
-                android:text="@string/join"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/join" />
         </LinearLayout>
     </ScrollView>
 
     <ImageButton
-        android:src="@drawable/buddy"
-        android:layout_width="105dp"
-        android:text="Discover"
-        android:layout_height="71dp"
         android:id="@+id/view_all"
-        android:layout_gravity="bottom|left"
+        android:layout_width="105dp"
+        android:layout_height="71dp"
         android:layout_alignParentTop="true"
+        android:layout_gravity="bottom|left"
         android:background="@android:color/holo_red_light"
-        android:drawablePadding="-15sp"/>
+        android:drawablePadding="-15sp"
+        android:src="@drawable/buddy"
+        android:text="@string/discover"
+        tools:ignore="RtlHardcoded" />
 
     <ImageButton
+        android:id="@+id/tocalender"
+        android:layout_width="105dp"
+        android:layout_height="71dp"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="bottom|right"
         android:background="@android:color/holo_blue_dark"
         android:src="@drawable/a1234"
-        android:layout_width="105dp"
-        android:layout_height="71dp"
-        android:id="@+id/tocalender"
-        android:layout_gravity="bottom|right"
-        android:layout_alignParentTop="true"
-        />
+        tools:ignore="RtlHardcoded" />
 
     <ImageButton
 
+        android:id="@+id/view_all1"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/view_all1"
-        android:text="Alerts"
-        android:layout_gravity="bottom|center"
         android:layout_alignParentTop="true"
-        android:src="@drawable/alertx"
-        android:drawablePadding="-15sp"
+        android:layout_gravity="bottom|center"
         android:background="@android:color/darker_gray"
+        android:drawablePadding="-15sp"
+        android:src="@drawable/alertx"
+        android:text="@string/alerts"
 
         />
 
     <Button
-        android:text="Button"
+        android:id="@+id/uglyAssButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/uglyAssButton" />
+        android:text="Button" />
+
+    <Button
+        android:text="@string/leave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/leave"
+        app:layout_anchorGravity="bottom|left"
+        android:layout_gravity="top|right"
+        tools:ignore="RtlHardcoded" />
+
+    <Button
+        android:id="@+id/join"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/join"
+        android:layout_gravity="top|center_horizontal" />
 
 
 </android.support.design.widget.CoordinatorLayout>

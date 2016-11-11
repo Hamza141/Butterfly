@@ -91,6 +91,9 @@ public class CommunityListActivity extends AppCompatActivity {
             String[] name = names[0].split(", ");
             //Create buttons for each Community
             for (String aName : name) {
+                if (aName == ""){
+                    continue;
+                }
                 Community community = new Community(aName);
                 communities.add(community);
                 addButton(new Community(aName));
