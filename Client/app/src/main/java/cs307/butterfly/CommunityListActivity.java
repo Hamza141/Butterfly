@@ -100,10 +100,10 @@ public class CommunityListActivity extends AppCompatActivity {
             }
         }
         else {
-            for (String name : MainActivity.myCommunities) {
-                Community community = new Community(name);
+            for (Community com: MainActivity.myCommunities) {
+                Community community = new Community(com.getName());
                 communities.add(community);
-                addButton(new Community(name));
+                addButton(new Community(com.getName()));
 
             }
         }

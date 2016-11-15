@@ -15,9 +15,9 @@ public class MainActivity extends AppCompatActivity {
     static String firstName = "";
     static String googleID = "";
 
-    static ArrayList <String> myCommunities = new ArrayList<>();
-    static ArrayList <String> iModerator = new ArrayList<>();
-    static ArrayList <String> buffer = new ArrayList<>();
+    static ArrayList <Community> myCommunities;
+    static ArrayList <String> iModerator;
+    static ArrayList <Community> buffer = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

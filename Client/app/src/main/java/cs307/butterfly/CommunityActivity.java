@@ -35,7 +35,6 @@ import java.util.Random;
 
 public class CommunityActivity extends AppCompatActivity {
     final Context context = this;
-    static ArrayList<Community> communities;
     Random randomno = new Random();
     private String result;
     Button b;
@@ -46,9 +45,9 @@ public class CommunityActivity extends AppCompatActivity {
         super.onResume();
         int i = 0;
         while (i != MainActivity.buffer.size()) {
-            Community community = new Community(MainActivity.buffer.get(i));
+            Community community = new Community(MainActivity.buffer.get(i).getName());
             addButton(community);
-            communities.add(community);
+            MainActivity.myCommunities.add(community);
             MainActivity.buffer.remove(MainActivity.buffer.get(i));
         }
     }
@@ -72,7 +71,8 @@ public class CommunityActivity extends AppCompatActivity {
             }
         });
 
-        communities = new ArrayList<>();
+        MainActivity.myCommunities = new ArrayList<>();
+        MainActivity.iModerator = new ArrayList<>();
         buttons = new ArrayList<>();
 
         //Read a file to see which communities the user is already a part of
@@ -101,8 +101,7 @@ public class CommunityActivity extends AppCompatActivity {
             result = cont;
             if (!result.equals("")) {
                 Community community = new Community(result);
-                communities.add(community);
-                MainActivity.myCommunities.add(result);
+                MainActivity.myCommunities.add(community);
                 addButton(community);
             }
         }
@@ -187,26 +186,30 @@ public class CommunityActivity extends AppCompatActivity {
                 dialog.dismiss();
                 result = text;
                 Community community = new Community(text);
-                communities.add(community);
+                //Add the community to the myCommunities list
+                MainActivity.myCommunities.add(community);
                 addButton(community);
 
-                //Add the community to the lists
+                //Add the community to the iModerator list
                 MainActivity.iModerator.add(result);
-                MainActivity.myCommunities.add(result);
 
                 try {
                     result = text + '\n';
-                    FileOutputStream fileOutputStream = openFileOutput("iModerator", MODE_APPEND);
+
+                    //Add new community to myCommunities file
+                    FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
                     fileOutputStream.write(result.getBytes());
                     fileOutputStream.close();
 
-                    fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
+                    //Add new community to iModerator file
+                    fileOutputStream = openFileOutput("iModerator", MODE_APPEND);
                     fileOutputStream.write(result.getBytes());
                     fileOutputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
+                //If app is running in Server mode send data to server
                 if (MainActivity.server) {
                     new Thread(new Runnable() {
                         @Override

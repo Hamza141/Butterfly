@@ -18,8 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Calendar;
-import java.util.Objects;
 
 public class GroupActivity extends AppCompatActivity {
     final Context context = this;
@@ -143,10 +141,10 @@ public class GroupActivity extends AppCompatActivity {
 
         join.setVisibility(View.GONE);
         leave.setVisibility(View.GONE);
-        if (!MainActivity.myCommunities.contains(CalendarActivity.community.getName())) {
+        if (!MainActivity.myCommunities.contains(CalendarActivity.community)) {
             join.setVisibility(View.VISIBLE);
         }
-        if (MainActivity.myCommunities.contains(CalendarActivity.community.getName())) {
+        if (MainActivity.myCommunities.contains(CalendarActivity.community)) {
             leave.setVisibility(View.VISIBLE);
         }
 
@@ -159,8 +157,6 @@ public class GroupActivity extends AppCompatActivity {
                 final OutputStream[] outputStream = new OutputStream[1];
                 final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
                 final JSONObject object = new JSONObject();
-                final boolean[] pass = new boolean[1];
-                pass[0] = false;
 
                 //Add user to community
                 if (MainActivity.server) {
@@ -179,24 +175,11 @@ public class GroupActivity extends AppCompatActivity {
                                 object.put("googleID", MainActivity.googleID);
                                 dataOutputStream[0].writeUTF(object.toString());
 
-                                //Save community in mycommunities arraylist
-                                MainActivity.myCommunities.add(CalendarActivity.community.getName());
-
-                                //Save community in buffer
-                                MainActivity.buffer.add(CalendarActivity.community.getName());
-
-                                //Save community in myCommunities file
-                                String result = CalendarActivity.community.getName() + '\n';
-                                FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
-                                fileOutputStream.write(result.getBytes());
-                                fileOutputStream.close();
-
                                 //close everything
                                 outputStream[0].close();
                                 dataOutputStream[0].close();
                                 socket[0].close();
 
-                                pass[0] = true;
                             } catch (IOException | JSONException e) {
                                 e.printStackTrace();
                             }
@@ -204,13 +187,24 @@ public class GroupActivity extends AppCompatActivity {
                     }).start();
                 }
 
-                android.os.SystemClock.sleep(1000);
+                //Save community in buffer
+                MainActivity.buffer.add(CalendarActivity.community);
 
-                if (pass[0]) {
-                    join.setVisibility(View.GONE);
-                    leave.setVisibility(View.VISIBLE);
-
+                //Save community in myCommunities file
+                try {
+                    String result = CalendarActivity.community.getName() + '\n';
+                    FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
+                    fileOutputStream.write(result.getBytes());
+                    fileOutputStream.close();
                 }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                android.os.SystemClock.sleep(500);
+
+                join.setVisibility(View.GONE);
+                leave.setVisibility(View.VISIBLE);
             }
         });
 
@@ -223,8 +217,7 @@ public class GroupActivity extends AppCompatActivity {
                 final OutputStream[] outputStream = new OutputStream[1];
                 final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
                 final JSONObject object = new JSONObject();
-                final boolean[] pass = new boolean[1];
-                pass[0] = false;
+                int index;
 
                 //Remove user to community
                 if (MainActivity.server) {
@@ -242,25 +235,11 @@ public class GroupActivity extends AppCompatActivity {
                                 object.put("googleID", MainActivity.googleID);
                                 dataOutputStream[0].writeUTF(object.toString());
 
-
-                                //Save new community list in myCommunities file
-                                deleteFile("myCommunities");
-                                int i = 0;
-                                while (i < MainActivity.myCommunities.size()) {
-                                    String name = MainActivity.myCommunities.get(i);
-                                    String result = name + '\n';
-                                    FileOutputStream fileOutputStream;
-                                    fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
-                                    fileOutputStream.write(result.getBytes());
-                                    fileOutputStream.close();
-                                }
-
                                 //close everything
                                 outputStream[0].close();
                                 dataOutputStream[0].close();
                                 socket[0].close();
 
-                                pass[0] = true;
                             } catch (IOException | JSONException e) {
                                 e.printStackTrace();
                             }
@@ -268,25 +247,36 @@ public class GroupActivity extends AppCompatActivity {
                     }).start();
                 }
 
-                android.os.SystemClock.sleep(1000);
+                //Get index of Community in myCommunities
+                index = MainActivity.myCommunities.indexOf(CalendarActivity.community);
 
-                if (pass[0]) {
-                    //Remove button from buttons arraylist
-                    int i = MainActivity.myCommunities.indexOf(CalendarActivity.community.getName());
-                    CommunityActivity.buttons.get(i).setVisibility(View.GONE);
-                    CommunityActivity.buttons.remove(i);
+                //Remove community from myCommunities arraylist
+                MainActivity.myCommunities.remove(CalendarActivity.community);
 
-                    //Remove community from arraylist
-                    MainActivity.myCommunities.remove(CalendarActivity.community.getName());
-                    for (Community c : CommunityActivity.communities){
-                        if (Objects.equals(c.getName(), CalendarActivity.community.getName())) {
-                            CommunityActivity.communities.remove(c);
-                        }
+                //Save new community list in myCommunities file
+                deleteFile("myCommunities");
+                try {
+                    for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
+                        String name = MainActivity.myCommunities.get(i).getName();
+                        String result = name + '\n';
+                        FileOutputStream fileOutputStream;
+                        fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
+                        fileOutputStream.write(result.getBytes());
+                        fileOutputStream.close();
                     }
-
-                    leave.setVisibility(View.GONE);
-                    join.setVisibility(View.VISIBLE);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+
+                android.os.SystemClock.sleep(500);
+
+                //Remove button from buttons arraylist
+                CommunityActivity.buttons.get(index).setVisibility(View.GONE);
+                CommunityActivity.buttons.remove(index);
+
+                //Change visibility of Join and Gone buttons
+                leave.setVisibility(View.GONE);
+                join.setVisibility(View.VISIBLE);
             }
         });
 
