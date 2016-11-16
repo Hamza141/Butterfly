@@ -1,11 +1,11 @@
 package cs307.butterfly;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
-import android.util.EventLog;
 import android.util.Log;
 import android.view.View;
 
@@ -25,6 +25,7 @@ import java.util.Date;
 public class PersonalCalendarActivity extends AppCompatActivity {
     public static String EXTRA_TITLE = "com.cs307.butterfly.TITLE";
     public static ArrayList<SpannableString> eventsButtons = new ArrayList<>();
+    @SuppressLint("StaticFieldLeak")
     public static EventCalendarView ecv;
     public static ArrayList<CommunityEvent> userEvents;
 
@@ -66,12 +67,13 @@ public class PersonalCalendarActivity extends AppCompatActivity {
 
                         //read each event and make new CommunityEvent to add to community
                         for (int i = 0; i < numCommunities; i++) {
+                            //noinspection unused
                             String communityName = dataInputStream[0].readUTF();
                             int numEvents = Integer.parseInt(dataInputStream[0].readUTF());
                             Calendar calendar = Calendar.getInstance();
                             for (int j = 0; j < numEvents; j++) {
                                 JSONObject jsonEvent = new JSONObject(dataInputStream[0].readUTF());
-                                String date= jsonEvent.getString("date");
+                                String date = jsonEvent.getString("date");
                                 String[] split = date.split("-");
                                 String year = split[0];
                                 String month = split[1];

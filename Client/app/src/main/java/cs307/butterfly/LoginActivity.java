@@ -31,10 +31,8 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -171,9 +169,7 @@ public class LoginActivity extends AppCompatActivity implements
                 //Create stuff for the client to connect to the app
                 final Socket[] socket = new Socket[1];
                 final OutputStream[] outputStream = new OutputStream[1];
-                final InputStream[] inputStream = new InputStream[1];
                 final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
-                final DataInputStream[] dataInputStream = new DataInputStream[1];
                 final JSONObject object = new JSONObject();
                 final JSONObject object2 = new JSONObject();
 

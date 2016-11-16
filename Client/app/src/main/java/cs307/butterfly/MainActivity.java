@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     //10.0.2.2
-    static String ip = "10.186.83.239";
+    static String ip = "128.211.225.79";
     static int port = 3300;
     static boolean server = true;
 

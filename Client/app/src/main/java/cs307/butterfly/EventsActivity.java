@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -63,8 +62,7 @@ public class EventsActivity extends AppCompatActivity {
                 }
             }
             PersonalCalendarActivity.ecv.setEvents(PersonalCalendarActivity.userEvents);
-        }
-        else {
+        } else {
             for (int i = 0; i < CalendarActivity.community.getCommunityEvents().size(); i++) {
                 if (CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.DAY_OF_YEAR) == calendar1.get(Calendar.DAY_OF_YEAR) &&
                         CalendarActivity.community.getCommunityEvents().get(i).getDate().get(Calendar.YEAR) == calendar1.get(Calendar.YEAR)) {
@@ -77,7 +75,9 @@ public class EventsActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(dateString);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(dateString);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab1);
         fab.setImageBitmap(textAsBitmap("+", 40, Color.WHITE));
@@ -100,7 +100,9 @@ public class EventsActivity extends AppCompatActivity {
         dialog.setTitle("Title");
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
+        if (dialog.getWindow() != null) {
+            lp.copyFrom(dialog.getWindow().getAttributes());
+        }
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.show();
@@ -129,7 +131,9 @@ public class EventsActivity extends AppCompatActivity {
                 calendar.setTime(CalendarActivity.date);
 
                 TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker6);
+                //noinspection deprecation
                 int hour = timePicker.getCurrentHour();
+                //noinspection deprecation
                 int minute = timePicker.getCurrentMinute();
                 String time = String.valueOf(hour);
                 time = time.concat(":");
@@ -195,6 +199,7 @@ public class EventsActivity extends AppCompatActivity {
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
         b.setLayoutParams(lp);
         ll.addView(b);
+        //noinspection unused
         final Intent intent = new Intent(this, GroupActivity.class);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,6 +219,7 @@ public class EventsActivity extends AppCompatActivity {
         android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
         b.setLayoutParams(lp);
         ll.addView(b);
+        //noinspection unused
         final Intent intent = new Intent(this, GroupActivity.class);
         b.setOnClickListener(new View.OnClickListener() {
             @Override

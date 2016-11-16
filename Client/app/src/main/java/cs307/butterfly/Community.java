@@ -1,12 +1,12 @@
+/*
+ * Created by Travis on 10/7/2016.
+ */
+
 package cs307.butterfly;
 
 import android.util.Log;
 
 import java.util.ArrayList;
-
-/**
- * Created by Travis on 10/7/2016.
- */
 
 class Community {
     ArrayList<CommunityEvent> communityEvents;
@@ -30,6 +30,7 @@ class Community {
     public String getName() {
         return this.name;
     }
+    @SuppressWarnings("unused")
     public boolean deleteEvent(CommunityEvent event) {
         return communityEvents.remove(event);
     }

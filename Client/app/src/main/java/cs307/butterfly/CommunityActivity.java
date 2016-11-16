@@ -3,10 +3,7 @@ package cs307.butterfly;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,18 +20,22 @@ import android.widget.LinearLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class CommunityActivity extends AppCompatActivity {
     final Context context = this;
+    @SuppressWarnings("SpellCheckingInspection")
     Random randomno = new Random();
     private String result;
     Button b;
@@ -75,14 +76,121 @@ public class CommunityActivity extends AppCompatActivity {
         MainActivity.iModerator = new ArrayList<>();
         buttons = new ArrayList<>();
 
-        //Read a file to see which communities the user is already a part of
-        File file = new File(context.getFilesDir(), "myCommunities");
+        if (!MainActivity.server) {
+            //Read a file to see which communities the user is already a part of
+            File file = new File(context.getFilesDir(), "myCommunities");
+            FileInputStream fileInputStream = null;
+            int length = (int) file.length();
+            byte[] bytes = new byte[length];
+
+            try {
+                fileInputStream = new FileInputStream(file);
+                //noinspection ResultOfMethodCallIgnored
+                fileInputStream.read(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fileInputStream != null)
+                        fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            String content = new String(bytes);
+            String[] contents = content.split("\n");
+            for (String cont : contents) {
+                result = cont;
+                if (!result.equals("")) {
+                    Community community = new Community(result);
+                    MainActivity.myCommunities.add(community);
+                    addButton(community);
+                }
+            }
+        }
+
+        //Check with server to see which communities is the user a part of
+        if (MainActivity.server) {
+            final String[] name = new String[1];
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //Create stuff for the client to connect to the app
+                        Socket socket;
+                        OutputStream outputStream;
+                        InputStream inputStream;
+                        DataOutputStream dataOutputStream;
+                        DataInputStream dataInputStream;
+                        JSONObject object = new JSONObject();
+
+                        //Connect to server
+                        socket = new Socket(MainActivity.ip, 3300);
+                        outputStream = socket.getOutputStream();
+                        dataOutputStream = new DataOutputStream(outputStream);
+
+                        //Send community name to server
+                        object.put("function", "getUserCommunities");
+                        object.put("googleID", MainActivity.googleID);
+                        dataOutputStream.writeUTF(object.toString());
+
+                        //Receive all the names of the communities from the server
+                        inputStream = socket.getInputStream();
+                        dataInputStream = new DataInputStream(inputStream);
+
+                        //Save the input stream from the server to the communities arraylist
+                        name[0] = dataInputStream.readUTF();
+
+                        //TODO check whether user is a moderator of these communities
+
+                        //Close everything
+                        dataOutputStream.close();
+                        outputStream.close();
+                        socket.close();
+
+                        //close everything
+                        outputStream.close();
+                        dataOutputStream.close();
+                        socket.close();
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+            android.os.SystemClock.sleep(1000);
+
+            String[] names = name[0].split(", ");
+            MainActivity.myCommunities.clear();
+            //Create buttons for each Community
+            for (String aName : names) {
+                if (Objects.equals(aName, "")) {
+                    continue;
+                }
+                Community community = new Community(aName);
+                MainActivity.myCommunities.add(community);
+                addButton(community);
+                try {
+                    String result = aName + '\n';
+                    FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
+                    fileOutputStream.write(result.getBytes());
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //Read a file to see which communities the user is a moderator of
+        File file = new File(context.getFilesDir(), "iModerator");
         FileInputStream fileInputStream = null;
         int length = (int) file.length();
         byte[] bytes = new byte[length];
 
         try {
             fileInputStream = new FileInputStream(file);
+            //noinspection ResultOfMethodCallIgnored
             fileInputStream.read(bytes);
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,37 +205,6 @@ public class CommunityActivity extends AppCompatActivity {
 
         String content = new String(bytes);
         String[] contents = content.split("\n");
-        for (String cont : contents) {
-            result = cont;
-            if (!result.equals("")) {
-                Community community = new Community(result);
-                MainActivity.myCommunities.add(community);
-                addButton(community);
-            }
-        }
-
-        //Read a file to see which communities the user is a moderator of
-        file = new File(context.getFilesDir(), "iModerator");
-        fileInputStream = null;
-        length = (int) file.length();
-        bytes = new byte[length];
-
-        try {
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(bytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fileInputStream != null)
-                    fileInputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        content = new String(bytes);
-        contents = content.split("\n");
         for (String cont : contents) {
             result = cont;
             if (!result.equals("")) {
@@ -148,6 +225,7 @@ public class CommunityActivity extends AppCompatActivity {
             }
         });
 
+        //noinspection SpellCheckingInspection
         ImageButton viewall1 = (ImageButton) findViewById(R.id.view_all1);
         viewall1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +242,9 @@ public class CommunityActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.dialog);
         dialog.setTitle("Title");
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
+        if (dialog.getWindow() != null) {
+            lp.copyFrom(dialog.getWindow().getAttributes());
+        }
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.show();
@@ -257,21 +337,6 @@ public class CommunityActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public static Bitmap textAsBitmap(String text, float textSize, int textColor) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setTextSize(textSize);
-        paint.setColor(textColor);
-        paint.setTextAlign(Paint.Align.LEFT);
-        float baseline = -paint.ascent(); // ascent() is negative
-        int width = (int) (paint.measureText(text) + 0.0f); // round
-        int height = (int) (baseline + paint.descent() + 0.0f);
-        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(image);
-        canvas.drawText(text, 0, baseline, paint);
-        return image;
-    }
-
     public void addButton(final Community community) {
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -287,7 +352,7 @@ public class CommunityActivity extends AppCompatActivity {
         b1.setText(community.getName());
         b1.setTextSize(18);
         b1.setTextColor(Color.rgb(0, 0, 0));
-        android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
+        //android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
 
         ll.addView(b1);
         final Intent intent = new Intent(this, GroupActivity.class);

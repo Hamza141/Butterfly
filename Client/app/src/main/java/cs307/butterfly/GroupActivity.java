@@ -18,11 +18,38 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class GroupActivity extends AppCompatActivity {
     final Context context = this;
+    @SuppressWarnings("SpellCheckingInspection")
     public static String theguy;
     Button profile4, profile3, profile2, profile1, profile;
+    //Join and Leave
+    Button join;
+    Button leave;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ArrayList<Community> communities = MainActivity.myCommunities;
+
+        if (MainActivity.buffer.size() != 0) {
+            communities = MainActivity.buffer;
+        }
+
+        for (int i = 0; i < communities.size(); i++) {
+            if (communities.get(i).getName().equals(CalendarActivity.community.getName())) {
+                leave.setVisibility(View.VISIBLE);
+                join.setVisibility(View.GONE);
+                return;
+            }
+        }
+
+        join.setVisibility(View.VISIBLE);
+        leave.setVisibility(View.GONE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,20 +62,18 @@ public class GroupActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(CalendarActivity.community.getName());
         }
 
+        join = (Button) findViewById(R.id.join);
+        leave = (Button) findViewById(R.id.leave);
 
         //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         ImageButton button12 = (ImageButton) findViewById(R.id.tocalender);
-        // fab.setImageResource(R.drawable.calend);
+        // fab.setImageResource(R.drawable.calendar);
 
         button12.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, CalendarActivity.class);
                 startActivity(intent);
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle("wtf");
-                }
-
             }
         });
 
@@ -62,7 +87,9 @@ public class GroupActivity extends AppCompatActivity {
                 dialog.setTitle("Title");
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                lp.copyFrom(dialog.getWindow().getAttributes());
+                if (dialog.getWindow() != null) {
+                    lp.copyFrom(dialog.getWindow().getAttributes());
+                }
                 lp.width = WindowManager.LayoutParams.MATCH_PARENT;
                 lp.height = WindowManager.LayoutParams.MATCH_PARENT;
 
@@ -75,8 +102,6 @@ public class GroupActivity extends AppCompatActivity {
                         GroupActivity.theguy = profile.getText().toString();
                         Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
                         startActivity(intent);
-
-
                     }
                 });
                 profile1 = (Button) dialog.findViewById(R.id.button4);
@@ -87,8 +112,6 @@ public class GroupActivity extends AppCompatActivity {
                         GroupActivity.theguy = profile1.getText().toString();
                         Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
                         startActivity(intent);
-
-
                     }
                 });
 
@@ -100,8 +123,6 @@ public class GroupActivity extends AppCompatActivity {
                         GroupActivity.theguy = profile2.getText().toString();
                         Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
                         startActivity(intent);
-
-
                     }
                 });
 
@@ -114,8 +135,6 @@ public class GroupActivity extends AppCompatActivity {
                         GroupActivity.theguy = profile3.getText().toString();
                         Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
                         startActivity(intent);
-
-
                     }
                 });
 
@@ -129,15 +148,9 @@ public class GroupActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-
                 dialog.show();
-
             }
         });
-
-        //Join and Leave
-        final Button join = (Button) findViewById(R.id.join);
-        final Button leave = (Button) findViewById(R.id.leave);
 
         join.setVisibility(View.GONE);
         leave.setVisibility(View.GONE);
@@ -196,8 +209,7 @@ public class GroupActivity extends AppCompatActivity {
                     FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
                     fileOutputStream.write(result.getBytes());
                     fileOutputStream.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 
@@ -218,7 +230,7 @@ public class GroupActivity extends AppCompatActivity {
                 final OutputStream[] outputStream = new OutputStream[1];
                 final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
                 final JSONObject object = new JSONObject();
-                int index;
+                int index = -1;
 
                 //Remove user to community
                 if (MainActivity.server) {
@@ -249,10 +261,21 @@ public class GroupActivity extends AppCompatActivity {
                 }
 
                 //Get index of Community in myCommunities
-                index = MainActivity.myCommunities.indexOf(CalendarActivity.community);
+                ArrayList<Community> communities = MainActivity.myCommunities;
+
+                if (MainActivity.buffer.size() != 0) {
+                    communities = MainActivity.buffer;
+                }
+
+                for (int i = 0; i < communities.size(); i++) {
+                    if (communities.get(i).getName().equals(CalendarActivity.community.getName())) {
+                        index = i;
+                        break;
+                    }
+                }
 
                 //Remove community from myCommunities arraylist
-                MainActivity.myCommunities.remove(CalendarActivity.community);
+                communities.remove(index);
 
                 //Save new community list in myCommunities file
                 deleteFile("myCommunities");
@@ -271,10 +294,11 @@ public class GroupActivity extends AppCompatActivity {
 
                 android.os.SystemClock.sleep(500);
 
-                //Remove button from buttons arraylist
-                CommunityActivity.buttons.get(index).setVisibility(View.GONE);
-                CommunityActivity.buttons.remove(index);
-
+                if (communities == MainActivity.myCommunities) {
+                    //Remove button from buttons arraylist
+                    CommunityActivity.buttons.get(index).setVisibility(View.GONE);
+                    CommunityActivity.buttons.remove(index);
+                }
                 //Change visibility of Join and Gone buttons
                 leave.setVisibility(View.GONE);
                 join.setVisibility(View.VISIBLE);
@@ -290,12 +314,5 @@ public class GroupActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
-
-
 }
-
-
-

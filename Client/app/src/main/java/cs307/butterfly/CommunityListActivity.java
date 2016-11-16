@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class CommunityListActivity extends AppCompatActivity {
@@ -65,11 +64,11 @@ public class CommunityListActivity extends AppCompatActivity {
                         object.put("function", "getCommunities");
                         dataOutputStream[0].writeUTF(object.toString());
 
-                        //now receive all the names of the communities from the server
+                        //Receive all the names of the communities from the server
                         inputStream[0] = socket[0].getInputStream();
                         dataInputStream[0] = new DataInputStream(inputStream[0]);
 
-                        //save the input stream from the server to the communities arraylist
+                        //Save the input stream from the server to the communities arraylist
                         names[0] = dataInputStream[0].readUTF();
 
                         outputStream[0].close();
@@ -89,14 +88,13 @@ public class CommunityListActivity extends AppCompatActivity {
             String[] name = names[0].split(", ");
             //Create buttons for each Community
             for (String aName : name) {
-                if (Objects.equals(aName, "")){
+                if (Objects.equals(aName, "")) {
                     continue;
                 }
                 Community community = new Community(aName);
-                addButton(new Community(aName));
+                addButton(community);
             }
-        }
-        else {
+        } else {
             //If running app in Offline mode, list myCommunities
             for (Community com : MainActivity.myCommunities) {
                 Community community = new Community(com.getName());
