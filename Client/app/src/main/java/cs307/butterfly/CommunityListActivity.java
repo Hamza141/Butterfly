@@ -19,10 +19,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CommunityListActivity extends AppCompatActivity {
-
-    ArrayList <Community> communities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +32,6 @@ public class CommunityListActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("All Communities");
         }
-
-        communities = new ArrayList<>();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +53,7 @@ public class CommunityListActivity extends AppCompatActivity {
         final JSONObject object = new JSONObject();
         final String[] names = new String[1];
 
+        //If running in Server mode, list communities from server
         if (MainActivity.server) {
             new Thread(new Runnable() {
                 @Override
@@ -91,20 +89,18 @@ public class CommunityListActivity extends AppCompatActivity {
             String[] name = names[0].split(", ");
             //Create buttons for each Community
             for (String aName : name) {
-                if (aName == ""){
+                if (Objects.equals(aName, "")){
                     continue;
                 }
                 Community community = new Community(aName);
-                communities.add(community);
                 addButton(new Community(aName));
             }
         }
         else {
-            for (Community com: MainActivity.myCommunities) {
+            //If running app in Offline mode, list myCommunities
+            for (Community com : MainActivity.myCommunities) {
                 Community community = new Community(com.getName());
-                communities.add(community);
-                addButton(new Community(com.getName()));
-
+                addButton(community);
             }
         }
     }
@@ -120,11 +116,6 @@ public class CommunityListActivity extends AppCompatActivity {
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*for (int i = 0; i < communities.size(); i++) {
-                    if (communities.get(i).getName().equals(b1.getText().toString())) {
-                        CalendarActivity.community = communities.get(i);
-                    }
-                }*/
                 CalendarActivity.community = community;
                 startActivity(intent);
             }

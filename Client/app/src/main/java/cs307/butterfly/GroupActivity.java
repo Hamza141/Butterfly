@@ -203,6 +203,7 @@ public class GroupActivity extends AppCompatActivity {
 
                 android.os.SystemClock.sleep(500);
 
+                //Change visibility of Join and Gone buttons
                 join.setVisibility(View.GONE);
                 leave.setVisibility(View.VISIBLE);
             }

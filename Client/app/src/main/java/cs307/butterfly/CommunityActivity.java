@@ -294,11 +294,6 @@ public class CommunityActivity extends AppCompatActivity {
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*for (int i = 0; i < communities.size(); i++) {
-                    if (communities.get(i).getName().equals(b1.getText().toString())) {
-                        CalendarActivity.community = communities.get(i);
-                    }
-                }*/
                 CalendarActivity.community = community;
                 startActivity(intent);
             }
