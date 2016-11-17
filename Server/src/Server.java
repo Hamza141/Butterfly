@@ -96,6 +96,12 @@ class Server extends Thread {
                         case "addUser":
                             addUser(obj);
                             break;
+                        case "communitySearch":
+                            communitySearch((String) obj.get("type"), (String) obj.get("value"));
+                            break;
+                        case "checkIn":
+                            checkIn(obj);
+                            break;
                         case "deleteEvent":
                             deleteEvent(obj);
                             break;
@@ -108,7 +114,7 @@ class Server extends Thread {
                             break;
                         case "genericNotification":
                             genericNotification(getInstanceID((String) obj.get("googleID")),
-                                    (String) obj.get("message"));
+                                    (String) obj.get("message"), (String) obj.get("title"));
                             break;
                         case "getCommunities":
                             getCommunities();
@@ -135,11 +141,8 @@ class Server extends Thread {
                         case "removeCommunityUser":
                             leaveCommunityUser(obj);
                             break;
-                        case "pingNotification":
-                            pingNotification((String) obj.get("googleID"));
-                            break;
                         case "upcomingEventNotification":
-                            upcomingEventNotificationCheck((String) obj.get("googleID"));
+                            upcomingEventNotificationCheck();
                             break;
                         case "updateInstanceID":
                             updateInstanceID(obj);
@@ -311,12 +314,61 @@ class Server extends Thread {
         }
     }
 
+    private String communitySearch(String type, String value) {
+        StringBuilder communities = new StringBuilder();
+        try {
+            sql = "SELECT * FROM communities WHERE ? = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, type);
+            ps.setString(2, value);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                communities.append(rs.getString("name"));
+                communities.append(", ");
+            }
+            System.out.println(communities);
+            out.writeUTF(communities.toString());
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private void checkIn(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        String eventName = (String) obj.get("eventName");
+        String googleID = (String) obj.get("googleID");
+        String listCheckedIn, id;
+        try {
+            sql = "SELECT * FROM eventsCheckIn WHERE (communityName = ? AND eventName = ?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, communityName);
+            ps.setString(2, eventName);
+            if (rs.next()) {
+                id = rs.getString("idEventsCheckIns");
+                listCheckedIn = rs.getString("listCheckedIn");
+                listCheckedIn += googleID + ", ";
+                sql = "UPDATE eventsCheckIn SET communityName = ?, eventName = ?, numCheckedIn = numCheckedIn + 1, listCheckedIn = ? WHERE idEventCheckIns = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, communityName);
+                ps.setString(2, eventName);
+                ps.setString(3, listCheckedIn);
+                ps.setString(4, id);
+                System.out.println(ps);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void createCommunityBoardTable(String communityName) {
         //called by addCommunity
         communityName += "_Board";
         String newTable = "CREATE TABLE " + communityName + " ("
                 + "idEvents INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, "
-                + "pinned INT(4), " + "name VARCHAR(255), " + "date DATE, "
+                + "pinned INT(4), name VARCHAR(255), date DATE, "
                 + "message TEXT CHARACTER SET latin1 COLLATE latin1_general_cs)";
         System.out.println(newTable);
         try {
@@ -333,10 +385,10 @@ class Server extends Thread {
         //SELECT TIME_FORMAT('21:46:25', '%r') = 09:46:25 PM
         communityName += "_Calendar";
         String newTable = "CREATE TABLE " + communityName + " ("
-                + "idEvents INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, " + "eventName VARCHAR(255), "
-                + "description VARCHAR(255), " + "date DATE, " + "time TIME, " + "city VARCHAR(255), "
-                + "state VARCHAR(255), " + "address VARCHAR(255), " + "zip VARCHAR(255), "
-                + "locationName VARCHAR(255), " + "numAttendees INT(4))";
+                + "idEvents INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, eventName VARCHAR(255), "
+                + "description VARCHAR(255), date DATE, time TIME, city VARCHAR(255), "
+                + "state VARCHAR(255), address VARCHAR(255), zip VARCHAR(255), "
+                + "locationName VARCHAR(255), numAttendees INT(4), listAttendees VARCHAR(255))";
         System.out.println(newTable);
         try {
             ps = conn.prepareStatement(newTable);
@@ -351,8 +403,8 @@ class Server extends Thread {
         System.out.println(communityName);
         communityName += "_Users";
         String newTable = "CREATE TABLE " + communityName + " ("
-                + "idUsers INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, " + "googleID VARCHAR(255), "
-                + "isLeader TINYINT(1), " + "subscribed INT(1))";
+                + "idUsers INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, googleID VARCHAR(255), "
+                + "isLeader TINYINT(1), subscribed INT(1))";
         System.out.println(newTable);
         try {
             ps = conn.prepareStatement(newTable);
@@ -367,8 +419,9 @@ class Server extends Thread {
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
         try {
-            sql = "DELETE FROM " + communityName + " WHERE name = " + obj.get("name");
+            sql = "DELETE FROM " + communityName + " WHERE eventName = ?";
             ps = conn.prepareStatement(sql);
+            ps.setString(1, (String) obj.get("eventName"));
             System.out.println(ps);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -503,18 +556,16 @@ class Server extends Thread {
         }
     }
 
-    private void genericNotification(String to, String message) {
-        //TODO #10?
-        //JSONObject data = new JSONObject();
+    private void genericNotification(String to, String message, String title) {
         JSONObject notification = new JSONObject();
         JSONObject parent = new JSONObject();
         notification.put("body", message);
-        notification.put("title", "TITLE");
+        notification.put("title", title);
         parent.put("to", to);
         parent.put("notification", notification);
         parent.put("priority", "high");
         System.out.println("sent " + parent.toString());
-        notificationWrite(parent);
+        messageWrite(parent);
     }
 
     private void getCommunities() {
@@ -546,8 +597,6 @@ class Server extends Thread {
             while (rs.next()) {
                 obj = new JSONObject();
                 obj.put("idUsers", rs.getString("idUsers"));
-                obj.put("firstName", rs.getString("firstName"));
-                obj.put("lastName", rs.getString("lastName"));
                 obj.put("googleID", rs.getString("googleID"));
                 System.out.println(obj.toString());
                 out.writeUTF(obj.toString());
@@ -562,7 +611,7 @@ class Server extends Thread {
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
         try {
-            sql = "SELECT count(*) from " + communityName;
+            sql = "SELECT COUNT(*) FROM " + communityName;
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
             rs = ps.executeQuery();
@@ -599,7 +648,7 @@ class Server extends Thread {
     private String getInstanceID(String googleID) {
         //function passed to genericNotification
         try {
-            sql = "SELECT * from Users WHERE googleID = ?";
+            sql = "SELECT * FROM Users WHERE googleID = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, googleID);
             System.out.println(ps);
@@ -619,7 +668,7 @@ class Server extends Thread {
         communityName += "_Board";
         JSONObject obj;
         try {
-            sql = "SELECT count(*) from " + communityName;
+            sql = "SELECT COUNT(*) FROM " + communityName;
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
             rs = ps.executeQuery();
@@ -706,7 +755,7 @@ class Server extends Thread {
         communityName += "_Users";
         String googleID = (String) obj.get("googleID");
         try {
-            sql = "SELECT count(*) from " + communityName + " WHERE googleID = ?";
+            sql = "SELECT COUNT(*) FROM " + communityName + " WHERE googleID = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, googleID);
             System.out.println(ps);
@@ -751,29 +800,7 @@ class Server extends Thread {
         }
     }
 
-    private void newBoardNotification(String community, String name, String message) {
-        // called by addMessage
-        JSONObject data = new JSONObject();
-        JSONObject notification = new JSONObject();
-        JSONObject parent = new JSONObject();
-        notification.put("body", name + " has posted a new message");
-        notification.put("title", "New Message");
-        data.put("body", message);
-        parent.put("to", "/topics/" + community);
-        parent.put("notification", notification);
-        parent.put("data", data);
-        parent.put("priority", "high");
-        notificationWrite(parent);
-        /*ArrayList<String> IDs = getSubscribedMembers(community);
-        for (String ID : IDs) {
-            String to = getInstanceID(ID);
-            parent.put("to", to);
-            System.out.println(parent);
-            notificationWrite(parent);
-        }*/
-    }
-
-    private void notificationWrite(JSONObject parent) {
+    private void messageWrite(JSONObject parent) {
         //called by genericNotification and newBoardNotification
         System.out.println(parent.toString());
         try {
@@ -799,9 +826,26 @@ class Server extends Thread {
         }
     }
 
-    private void pingNotification(String to) {
-        //TODO what is a ping, what does it contain
-        // just says ping to all members
+    private void newBoardNotification(String community, String name, String message) {
+        // called by addMessage
+        JSONObject data = new JSONObject();
+        JSONObject notification = new JSONObject();
+        JSONObject parent = new JSONObject();
+        notification.put("body", name + " has posted a new message");
+        notification.put("title", "New Message");
+        data.put("body", message);
+        parent.put("to", "/topics/" + community);
+        parent.put("notification", notification);
+        parent.put("data", data);
+        parent.put("priority", "high");
+        messageWrite(parent);
+        /*ArrayList<String> IDs = getSubscribedMembers(community);
+        for (String ID : IDs) {
+            String to = getInstanceID(ID);
+            parent.put("to", to);
+            System.out.println(parent);
+            messageWrite(parent);
+        }*/
     }
 
     private void timeCheck(String communityCalendar) {
@@ -813,21 +857,22 @@ class Server extends Thread {
             rs = ps.executeQuery();
             while (rs.next()) {
                 String eventDate = rs.getString("date");
-                String eventTime = rs.getString("time");
+                //String eventTime = rs.getString("time");
                 ArrayList<String> dateSplit;
-                dateSplit = new ArrayList<>(Arrays.asList(eventDate.toString().split("-")));
-                ArrayList<String> timeSplit;
-                timeSplit = new ArrayList<>(Arrays.asList(eventTime.toString().split(":")));
+                dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
+                //ArrayList<String> timeSplit;
+                //timeSplit = new ArrayList<>(Arrays.asList(eventTime.split(":")));
                 Date date = new Date();
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-                int hour = cal.get(Calendar.HOUR_OF_DAY);
-                int minute = cal.get(Calendar.MINUTE);
-                if (month == Integer.parseInt(dateSplit.get(1))) {
-                    if (Integer.parseInt(dateSplit.get(2)) - day == 1) {
-                        //send notification
+                //int hour = cal.get(Calendar.HOUR_OF_DAY);
+                //int minute = cal.get(Calendar.MINUTE);
+                if (cal.get(Calendar.YEAR) == Integer.parseInt(dateSplit.get(0))) {
+                    if (cal.get(Calendar.MONTH) == Integer.parseInt(dateSplit.get(1))) {
+                        if (Integer.parseInt(dateSplit.get(2)) - cal.get(Calendar.DAY_OF_MONTH) == 1) {
+                            genericNotification("/topics/" + communityCalendar,
+                                    "A Community event is upcoming", "Upcoming Event");
+                        }
                     }
                 }
             }
@@ -836,7 +881,7 @@ class Server extends Thread {
         }
     }
 
-    private void upcomingEventNotificationCheck(String to) {
+    private void upcomingEventNotificationCheck() {
         /*TODO figure out when it is 24 hours before an event time
           TODO send notification to all users in that community
           TODO will have to be always running to be prompt
@@ -851,7 +896,6 @@ class Server extends Thread {
                 temp += "_Calendar";
                 communities.add(temp);
                 communities.forEach(this::timeCheck);
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -911,8 +955,8 @@ class Server extends Thread {
         }
     }
 
-    private boolean checkifLeader(JSONObject obj) {
-        /*String communityName = (String) obj.get("communityName");
+    /*private boolean checkifLeader(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Users";
         try {
@@ -928,13 +972,13 @@ class Server extends Thread {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }*/
+        }
         return false;
-    }
+    }*/
 
-    private ArrayList<String> getSubscribedMembers(String communityName) {
+    /*private ArrayList<String> getSubscribedMembers(String communityName) {
         ArrayList<String> subscribedGoogleIDs = new ArrayList<>();
-        /*try {
+        try {
             sql = "SELECT * from " + communityName + "_Users WHERE subscribed = '1'";
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
@@ -943,9 +987,9 @@ class Server extends Thread {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }*/
+        }
         return subscribedGoogleIDs;
-    }
+    }*/
 
     public static void main(String[] args) {
         Date currentDate = Calendar.getInstance().getTime();
