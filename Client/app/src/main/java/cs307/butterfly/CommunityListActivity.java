@@ -64,6 +64,8 @@ public class CommunityListActivity extends AppCompatActivity {
                         object.put("function", "getCommunities");
                         dataOutputStream[0].writeUTF(object.toString());
 
+                        android.os.SystemClock.sleep(200);
+
                         //Receive all the names of the communities from the server
                         inputStream[0] = socket[0].getInputStream();
                         dataInputStream[0] = new DataInputStream(inputStream[0]);
