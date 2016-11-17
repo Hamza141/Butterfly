@@ -13,8 +13,8 @@ import org.json.simple.JSONObject;
 @SuppressWarnings("unchecked")
 public class Client {
     public static void main(String[] args) {
-        //String serverName = "128.211.225.79";
-        String serverName = "10.186.83.239";
+        String serverName = "128.211.225.79";
+        //String serverName = "10.186.83.239";
         int port = 3300;
             System.out.println("2016-09-12".compareTo("2016-09-09"));
         try {
@@ -27,6 +27,11 @@ public class Client {
             DataInputStream in = new DataInputStream(inFromServer);
             JSONObject obj;
             JSONObject obj2;
+
+            /*obj = new JSONObject();
+            obj.put("function", "getUserCommunities");
+            obj.put("googleID", "hamzafarrukh141@gmail.com");
+            out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
             obj.put("function", "addUser"); obj.put("firstName", "Khanh");
@@ -114,13 +119,13 @@ public class Client {
             obj2.put("function", "getCommunities");
             out.writeUTF(obj2.toString());
             System.out.println("Server says " + in.readUTF());*/
-            //while(true) {
-                obj = new JSONObject();
-                obj.put("function", "genericNotification");
-                obj.put("to", "hamzafarrukh141@gmail.com");
-                obj.put("message", "i thought you were tracking communities users were in");
-                out.writeUTF(obj.toString());
-            //}
+
+            obj = new JSONObject();
+            obj.put("function", "genericNotification");
+            obj.put("googleID", "t.kent50@gmail.com");
+            obj.put("message", "ready for spam??");
+            out.writeUTF(obj.toString());
+
             //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());

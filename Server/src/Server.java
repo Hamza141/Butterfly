@@ -76,6 +76,8 @@ class Server extends Thread {
                 conn.getMetaData().getCatalogs();
                 conn.createStatement();
                 while (in.available() > 0) {
+                    Date currentDate = Calendar.getInstance().getTime();
+                    System.out.println(currentDate);
                     Object parsed = parser.parse(in.readUTF());
                     JSONObject obj = (JSONObject) parsed;
                     switch ((String) obj.get("function")) {
@@ -122,6 +124,9 @@ class Server extends Thread {
                             break;
                         case "getNeighborhoodEvents":
                             getNeighborhoodEvents();
+                            break;
+                        case "getUserCommunities":
+                            getUserCommunities((String) obj.get("googleID"));
                             break;
                         case "getUserCommunityEvents":
                             getUserCommunityEvents((String) obj.get("googleID"));
@@ -213,7 +218,8 @@ class Server extends Thread {
                     ps.setString(2, googleID);
                     System.out.println(ps);
                     ps.executeUpdate();
-                    sql = "UPDATE Users SET communitiesList = CONCAT(?, communitiesList) WHERE googleID = ?";
+                    sql = "UPDATE Users SET communitiesList = " +
+                            "CONCAT(?, communitiesList) WHERE googleID = ?";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, obj.get("communityName") + ", ");
                     ps.setString(2, googleID);
@@ -493,7 +499,7 @@ class Server extends Thread {
             Transport.send(message);
             System.out.println("Invite Sent from: " + from + " to: " + to);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -654,6 +660,23 @@ class Server extends Thread {
         }
     }
 
+    private void getUserCommunities(String googleID) {
+        try {
+            sql = "SELECT communitiesList FROM Users WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            String list;
+            if (rs.next()) {
+                list = rs.getString("communitiesList");
+                out.writeUTF(list);
+            }
+        } catch (SQLException |IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void getUserCommunityEvents(String googleID) {
         try {
             sql = "SELECT communitiesList FROM Users WHERE googleID = ?";
@@ -664,7 +687,7 @@ class Server extends Thread {
             String list;
             if (rs.next()) {
                 list = rs.getString("communitiesList");
-                ArrayList<String> communities = new ArrayList<>(Arrays.asList(list.split(" ,")));
+                ArrayList<String> communities = new ArrayList<>(Arrays.asList(list.split(", ")));
                 out.writeUTF(Integer.toString(communities.size()));
                 for (String community: communities) {
                     out.writeUTF(community);
@@ -695,6 +718,32 @@ class Server extends Thread {
                     ps.setString(1, googleID);
                     System.out.println(ps);
                     ps.executeUpdate();
+                    sql = "SELECT communitiesList FROM Users WHERE googleID = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, googleID);
+                    System.out.println(ps);
+                    rs = ps.executeQuery();
+                    String list;
+                    if (rs.next()) {
+                        list = rs.getString("communitiesList");
+                        ArrayList<String> communities;
+                        communities = new ArrayList<>(Arrays.asList(list.split(", ")));
+                        StringBuilder string = new StringBuilder();
+                        for (String community : communities) {
+                            if(community.contains((String) obj.get("communityName"))) {
+                                System.out.println("found " + community);
+                            } else {
+                                string.append(rs.getString("name"));
+                                string.append(", ");
+                            }
+                        }
+                        sql = "UPDATE Users SET communitiesList = ? WHERE googleID = ?";
+                        ps = conn.prepareStatement(sql);
+                        ps.setString(1, string.toString());
+                        ps.setString(2, googleID);
+                        System.out.println(ps);
+                        ps.executeUpdate();
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -813,8 +862,8 @@ class Server extends Thread {
         try {
             sql = "UPDATE Users SET instanceID = ? WHERE googleID = ?";
             ps = conn.prepareStatement(sql);
-            ps.setString(1, (String) obj.get("googleID"));
-            ps.setString(2, (String) obj.get("instanceID"));
+            ps.setString(1, (String) obj.get("instanceID"));
+            ps.setString(2, (String) obj.get("googleID"));
             System.out.println(ps);
             ps.execute();
         } catch (SQLException e) {
@@ -824,7 +873,6 @@ class Server extends Thread {
 
     private void updateUserProfile(JSONObject obj) {
         //TODO other variables for user profile
-        //TODO update communitiesList
         String googleID = (String) obj.get("googleID");
         try {
             sql = "SELECT * FROM Users WHERE googleID = ?";
