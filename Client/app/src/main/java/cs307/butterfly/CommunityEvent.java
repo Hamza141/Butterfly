@@ -132,20 +132,21 @@ public class CommunityEvent {
 
     public static void parseTime(String time, CommunityEvent event) {
         String[] split = time.split(":");
+        Log.d("timeSplit", split[0]);
         if (split[0].equals("12")) {
             split[0] = "0";
         }
-        event.date.set(Calendar.HOUR, Integer.parseInt(split[0]));
-        String[] split2 = split[1].split(" ");
-        event.date.set(Calendar.MINUTE, Integer.parseInt(split2[0]));
+        event.date.set(Calendar.HOUR_OF_DAY, Integer.parseInt(split[0]));
+        //String[] split2 = split[1].split(" ");
+        event.date.set(Calendar.MINUTE, Integer.parseInt(split[1]));
         event.date.set(Calendar.SECOND, 0);
         event.date.set(Calendar.MILLISECOND, 0);
-        if (split2[1].equals("am")) {
-            event.date.set(Calendar.AM_PM, Calendar.AM);
-        }
-        else {
-            event.date.set(Calendar.AM_PM, Calendar.PM);
-        }
+        //if (split2[1].equals("am")) {
+            //event.date.set(Calendar.AM_PM, Calendar.AM);
+        //}
+        //else {
+            //event.date.set(Calendar.AM_PM, Calendar.PM);
+        //}
     }
 
     public void editInfo(String name, String place, String description, String time) {
@@ -163,4 +164,25 @@ public class CommunityEvent {
         }
     }
 
+    public String getTimeString() {
+        int hour = this.date.get(Calendar.HOUR_OF_DAY);
+        int minute = this.date.get(Calendar.MINUTE);
+        String time = String.valueOf(hour);
+        time = time.concat(":");
+        time = time.concat(String.valueOf(minute));
+        return time;
+    }
+
+    public String getDateForServer() {
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH);
+        month++;
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        String dateString = String.valueOf(year);
+        dateString = dateString.concat("-");
+        dateString = dateString.concat(String.valueOf(month));
+        dateString = dateString.concat("-");
+        dateString = dateString.concat(String.valueOf(day));
+        return dateString;
+    }
 }

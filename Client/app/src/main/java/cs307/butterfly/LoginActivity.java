@@ -181,9 +181,9 @@ public class LoginActivity extends AppCompatActivity implements
                 final String personName = acct.getDisplayName();
                 final String personGivenName = acct.getGivenName();
                 final String personFamilyName = acct.getFamilyName();
-                final String googleID = acct.getEmail();
+                MainActivity.googleID = acct.getEmail();
                 personPhoto = acct.getPhotoUrl();
-                Picasso.with(this).load(personPhoto).into((ImageView) findViewById(R.id.imageView2));
+                Picasso.with(this).load(personPhoto).into((ImageView) findViewById(R.id.imageView3));
 
                 //Set status to "Signed in as ..."
                 status.setText(getString(R.string.signed_in_fmt, personName));
@@ -200,9 +200,7 @@ public class LoginActivity extends AppCompatActivity implements
                                 //Connect to server
                                 socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                                 outputStream[0] = socket[0].getOutputStream();
-                                inputStream[0] = socket[0].getInputStream();
                                 dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-                                dataInputStream[0] = new DataInputStream(inputStream[0]);
 
                                 //If execution reaches till here, everything is working
                                 failed = false;
@@ -211,19 +209,14 @@ public class LoginActivity extends AppCompatActivity implements
                                 object.put("function", "addUser");
                                 object.put("firstName", personGivenName);
                                 object.put("lastName", personFamilyName);
-                                object.put("googleID", googleID);
+                                object.put("googleID", MainActivity.googleID);
                                 dataOutputStream[0].writeUTF(object.toString());
 
-                                //Get id from server
-                                MainActivity.id = dataInputStream[0].readUTF();
-
-                                android.os.SystemClock.sleep(300);
+                                //android.os.SystemClock.sleep(300);
 
                                 //Close everything
                                 dataOutputStream[0].close();
                                 outputStream[0].close();
-                                dataInputStream[0].close();
-                                inputStream[0].close();
                                 socket[0].close();
 
                                 //Connect to server again
@@ -233,7 +226,7 @@ public class LoginActivity extends AppCompatActivity implements
 
                                 //Send token to server
                                 object2.put("function", "updateInstanceID");
-                                object2.put("googleID", googleID);
+                                object2.put("googleID", MainActivity.googleID);
                                 object2.put("instanceID", FirebaseInstanceId.getInstance().getToken());
                                 dataOutputStream[0].writeUTF(object2.toString());
 
@@ -256,7 +249,7 @@ public class LoginActivity extends AppCompatActivity implements
         //Google Sign in Failed
         status.setText(R.string.google_sign_in_error);
         status.setVisibility(View.VISIBLE);
-        findViewById(R.id.imageView2).setVisibility(View.GONE);
+     //   findViewById(R.id.imageView2).setVisibility(View.GONE);
         findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
         findViewById(R.id.sign_out_button).setVisibility(View.GONE);
     }
@@ -298,13 +291,13 @@ public class LoginActivity extends AppCompatActivity implements
                 //Either server was offline or the connection to the server failed
                 status.setText(R.string.server_not_found);
             }
-            findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
+          //  findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         } else {
             status.setText(R.string.signed_out);
             status.setVisibility(View.VISIBLE);
-            findViewById(R.id.imageView2).setVisibility(View.GONE);
+          //  findViewById(R.id.imageView2).setVisibility(View.GONE);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
