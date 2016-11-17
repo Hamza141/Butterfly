@@ -187,8 +187,9 @@ class Server extends Thread {
                     ps.executeUpdate();
                     name = name.replaceAll("\\s", "_");
                     createCommunityBoardTable(name);
-                    createCommunityEventTable(name);
-                    createCommunityUserTable(name);
+                    createCommunityEventsTable(name);
+                    createCommunityUsersTable(name);
+                    createCommunityHangoutsTable(name);
                 }
             }
         } catch (SQLException e) {
@@ -202,7 +203,7 @@ class Server extends Thread {
         communityName += "_Users";
         String googleID = (String) obj.get("googleID");
         try {
-            sql = "SELECT count(*) from " + communityName + " WHERE googleID = ?";
+            sql = "SELECT count(*) FROM " + communityName + " WHERE googleID = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, googleID);
             System.out.println(ps);
@@ -264,6 +265,32 @@ class Server extends Thread {
             ps.setString(10, (String) obj.get("numAttendees"));
             System.out.println(ps);
             ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addHangoutUser(JSONObject obj) {
+        //TODO test
+        String communityName = (String) obj.get("communityName");
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Hangouts";
+        String googleID = (String) obj.get("googleID");
+        String hangoutName = (String) obj.get("hangoutName");
+        try {
+            sql = "SELECT * FROM " + communityName + " WHERE hangoutName = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, hangoutName);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                sql = "UPDATE " + communityName + " SET listAttendees = "
+                       + "CONCAT(?, listAttendees) WHERE hangoutName = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, googleID);
+                System.out.println(ps);
+                ps.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -336,6 +363,7 @@ class Server extends Thread {
     }
 
     private void checkIn(JSONObject obj) {
+        //TODO test
         String communityName = (String) obj.get("communityName");
         String eventName = (String) obj.get("eventName");
         String googleID = (String) obj.get("googleID");
@@ -349,7 +377,9 @@ class Server extends Thread {
                 id = rs.getString("idEventsCheckIns");
                 listCheckedIn = rs.getString("listCheckedIn");
                 listCheckedIn += googleID + ", ";
-                sql = "UPDATE eventsCheckIn SET communityName = ?, eventName = ?, numCheckedIn = numCheckedIn + 1, listCheckedIn = ? WHERE idEventCheckIns = ?";
+                sql = "UPDATE eventsCheckIn SET communityName = ?, eventName = ?, "
+                        + "numCheckedIn = numCheckedIn + 1, listCheckedIn = ? "
+                        + "WHERE idEventCheckIns = ?";
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, communityName);
                 ps.setString(2, eventName);
@@ -379,7 +409,7 @@ class Server extends Thread {
         }
     }
 
-    private void createCommunityEventTable(String communityName) {
+    private void createCommunityEventsTable(String communityName) {
         //called by addCommunity
         //DATETIME: YYYY-MM-DD HH:MM:SS, DATE: YYYY-MM-DD
         //SELECT TIME_FORMAT('21:46:25', '%r') = 09:46:25 PM
@@ -388,7 +418,8 @@ class Server extends Thread {
                 + "idEvents INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, eventName VARCHAR(255), "
                 + "description VARCHAR(255), date DATE, time TIME, city VARCHAR(255), "
                 + "state VARCHAR(255), address VARCHAR(255), zip VARCHAR(255), "
-                + "locationName VARCHAR(255), numAttendees INT(4), listAttendees VARCHAR(255))";
+                + "locationName VARCHAR(255), numAttendees INT(4), "
+                + "listAttendees TEXT CHARACTER SET latin1 COLLATE latin1_general_cs)";
         System.out.println(newTable);
         try {
             ps = conn.prepareStatement(newTable);
@@ -398,9 +429,25 @@ class Server extends Thread {
         }
     }
 
-    private void createCommunityUserTable(String communityName) {
+    private void createCommunityHangoutsTable(String communityName) {
         //called by addCommunity
-        System.out.println(communityName);
+        communityName += "_Hangouts";
+        String newTable = "CREATE TABLE " + communityName + " ("
+                + "idHangouts INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, creator VARCHAR(255), "
+                + "hangoutName VARCHAR(255), startTime TIME, endTime TIME, date DATE, "
+                + "address VARCHAR(255), locationName VARCHAR(255), "
+                + "listAttendees TEXT CHARACTER SET latin1 COLLATE latin1_general_cs)";
+        System.out.println(newTable);
+        try {
+            ps = conn.prepareStatement(newTable);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createCommunityUsersTable(String communityName) {
+        //called by addCommunity
         communityName += "_Users";
         String newTable = "CREATE TABLE " + communityName + " ("
                 + "idUsers INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, googleID VARCHAR(255), "
@@ -552,6 +599,23 @@ class Server extends Thread {
             Transport.send(message);
             System.out.println("Invite Sent from: " + from + " to: " + to);
         } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void endedHangoutsCheck() {
+        try {
+            sql = "SELECT name FROM Communities";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                ArrayList<String> communities = new ArrayList<>();
+                String temp = rs.getString("name").replaceAll("\\s", "_");
+                temp += "+Hangouts";
+                communities.add(temp);
+                communities.forEach(this::timeCheckHangouts);
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -750,6 +814,7 @@ class Server extends Thread {
 
     private void leaveCommunityUser(JSONObject obj) {
         //TODO call updateUserProfile and update communitiesList
+        //TODO Did this work?
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Users";
@@ -782,7 +847,7 @@ class Server extends Thread {
                             if(community.contains((String) obj.get("communityName"))) {
                                 System.out.println("found " + community);
                             } else {
-                                string.append(rs.getString("name"));
+                                string.append(community);
                                 string.append(", ");
                             }
                         }
@@ -794,6 +859,42 @@ class Server extends Thread {
                         ps.executeUpdate();
                     }
                 }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void leaveHangoutUser(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Hangouts";
+        String googleID = (String) obj.get("googleID");
+        String eventName = (String) obj.get("eventName");
+        try {
+            sql = "SELECT * FROM " + communityName + " WHERE hangoutName = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, eventName);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                String list = rs.getString("listAttendees");
+                ArrayList<String> attendees;
+                attendees = new ArrayList<>(Arrays.asList(list.split(", ")));
+                StringBuilder string = new StringBuilder();
+                for (String attendee : attendees) {
+                    if(attendee.contains(googleID)) {
+                        System.out.println("found " + attendee);
+                    } else {
+                        string.append(rs.getString("name"));
+                        string.append(", ");
+                    }
+                }
+                sql = "UPDATE Users SET communitiesList = ? WHERE googleID = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, string.toString());
+                ps.setString(2, googleID);
+                System.out.println(ps);
+                ps.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -848,9 +949,10 @@ class Server extends Thread {
         }*/
     }
 
-    private void timeCheck(String communityCalendar) {
+    private void timeCheckEvents(String communityCalendar) {
         // called by upcomingEventNotification
         // TIME: HH:MM:SS, DATE: YYYY-MM-DD
+        //TODO test
         try {
             sql = "SELECT * FROM " + communityCalendar;
             ps = conn.prepareStatement(sql);
@@ -872,6 +974,7 @@ class Server extends Thread {
                         if (Integer.parseInt(dateSplit.get(2)) - cal.get(Calendar.DAY_OF_MONTH) == 1) {
                             genericNotification("/topics/" + communityCalendar,
                                     "A Community event is upcoming", "Upcoming Event");
+                            //TODO create new entry in eventsCheckIn
                         }
                     }
                 }
@@ -881,11 +984,47 @@ class Server extends Thread {
         }
     }
 
+    private void timeCheckHangouts(String communityHangout) {
+        //TODO test
+        try {
+            sql = "SELECT * FROM " + communityHangout;
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String eventDate = rs.getString("date");
+                String eventTime = rs.getString("endTime");
+                ArrayList<String> dateSplit;
+                dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
+                ArrayList<String> timeSplit;
+                timeSplit = new ArrayList<>(Arrays.asList(eventTime.split(":")));
+                Date date = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                int currYear = cal.get(Calendar.YEAR);
+                int currMonth = cal.get(Calendar.MONTH);
+                int currDay = cal.get(Calendar.DAY_OF_MONTH);
+                int currHour = cal.get(Calendar.HOUR_OF_DAY);
+                int currMinute = cal.get(Calendar.MINUTE);
+                int hangoutYear = Integer.parseInt(dateSplit.get(0));
+                int hangoutMonth = Integer.parseInt(dateSplit.get(1));
+                int hangoutDay = Integer.parseInt(dateSplit.get(2));
+                int hangoutHour = Integer.parseInt(timeSplit.get(0));
+                int hangoutMinute = Integer.parseInt(timeSplit.get(1));
+                if (currYear == hangoutYear && currMonth == hangoutMonth && hangoutDay - currDay == 1) {
+                    if (currHour - hangoutHour >= 0 && currMinute - hangoutMinute >= 0) {
+                        sql = "DELETE FROM " + communityHangout + " WHERE idHangouts = ?";
+                        ps = conn.prepareStatement(sql);
+                        ps.setString(1, rs.getString("idHangouts"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void upcomingEventNotificationCheck() {
-        /*TODO figure out when it is 24 hours before an event time
-          TODO send notification to all users in that community
-          TODO will have to be always running to be prompt
-        */
+        //TODO will have to be always running to be prompt
         try {
             sql = "SELECT name FROM Communities";
             ps = conn.prepareStatement(sql);
@@ -895,7 +1034,7 @@ class Server extends Thread {
                 String temp = rs.getString("name").replaceAll("\\s", "_");
                 temp += "_Calendar";
                 communities.add(temp);
-                communities.forEach(this::timeCheck);
+                communities.forEach(this::timeCheckEvents);
             }
         } catch (SQLException e) {
             e.printStackTrace();
