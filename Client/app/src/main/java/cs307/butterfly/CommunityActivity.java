@@ -144,11 +144,6 @@ public class CommunityActivity extends AppCompatActivity {
 
                         //TODO check whether user is a moderator of these communities
 
-                        //Close everything
-                        dataOutputStream.close();
-                        outputStream.close();
-                        socket.close();
-
                         //close everything
                         outputStream.close();
                         dataOutputStream.close();
