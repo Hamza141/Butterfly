@@ -21,11 +21,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -77,9 +73,9 @@ class Server extends Thread {
                 conn.createStatement();
                 while (in.available() > 0) {
                     Date currentDate = Calendar.getInstance().getTime();
-                    System.out.println(currentDate);
                     Object parsed = parser.parse(in.readUTF());
                     JSONObject obj = (JSONObject) parsed;
+                    System.out.println("TIMESTAMP " + currentDate + " " + obj.get("function"));
                     switch ((String) obj.get("function")) {
                         case "addCommunity":
                             addCommunity(obj);
@@ -680,27 +676,33 @@ class Server extends Thread {
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
-                out.writeUTF(Integer.toString(rs.getInt(1)));
-                sql = "SELECT * FROM " + communityName;
-                ps = conn.prepareStatement(sql);
-                System.out.println(ps);
-                rs = ps.executeQuery();
-                JSONObject obj;
-                while (rs.next()) {
-                    obj = new JSONObject();
-                    obj.put("eventName", rs.getString("eventName"));
-                    obj.put("city", rs.getString("city"));
-                    obj.put("date", rs.getString("date"));
-                    obj.put("time", rs.getString("time"));
-                    obj.put("address", rs.getString("address"));
-                    obj.put("state", rs.getString("state"));
-                    obj.put("zip", rs.getString("zip"));
-                    obj.put("description", rs.getString("description"));
-                    obj.put("communityName", oldName);
-                    obj.put("locationName", rs.getString("locationName"));
-                    obj.put("numAttendees", rs.getString("numAttendees"));
-                    System.out.println(obj.toString());
-                    out.writeUTF(obj.toString());
+                if (rs.getInt(1) > 0) {
+                    System.out.println("in if " + Integer.toString(rs.getInt(1)));
+                    out.writeUTF(Integer.toString(rs.getInt(1)));
+                    sql = "SELECT * FROM " + communityName;
+                    ps = conn.prepareStatement(sql);
+                    System.out.println(ps);
+                    rs = ps.executeQuery();
+                    JSONObject obj;
+                    while (rs.next()) {
+                        obj = new JSONObject();
+                        obj.put("eventName", rs.getString("eventName"));
+                        obj.put("city", rs.getString("city"));
+                        obj.put("date", rs.getString("date"));
+                        obj.put("time", rs.getString("time"));
+                        obj.put("address", rs.getString("address"));
+                        obj.put("state", rs.getString("state"));
+                        obj.put("zip", rs.getString("zip"));
+                        obj.put("description", rs.getString("description"));
+                        obj.put("communityName", oldName);
+                        obj.put("locationName", rs.getString("locationName"));
+                        obj.put("numAttendees", rs.getString("numAttendees"));
+                        System.out.println(obj.toString());
+                        out.writeUTF(obj.toString());
+                    }
+                } else {
+                    System.out.println("else 0");
+                    out.writeUTF("0");
                 }
             }
 
@@ -781,11 +783,16 @@ class Server extends Thread {
             System.out.println(ps);
             rs = ps.executeQuery();
             String list;
-            if (rs.next()) {
+            if (rs.isLast()) {
                 list = rs.getString("communitiesList");
+                System.out.println(list);
                 out.writeUTF(list);
+                System.out.println("sent");
+            } else {
+                out.writeUTF("");
             }
-        } catch (SQLException |IOException e) {
+            sleep(50);
+        } catch (SQLException | InterruptedException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -806,8 +813,11 @@ class Server extends Thread {
                     out.writeUTF(community);
                     getEvents(community);
                 }
+            } else {
+                out.writeUTF("");
             }
-        } catch (SQLException |IOException e) {
+            //sleep(2000);
+        } catch (SQLException  | IOException e) {
             e.printStackTrace();
         }
     }
@@ -842,18 +852,18 @@ class Server extends Thread {
                         list = rs.getString("communitiesList");
                         ArrayList<String> communities;
                         communities = new ArrayList<>(Arrays.asList(list.split(", ")));
-                        StringBuilder string = new StringBuilder();
+                        StringBuilder communitiesList = new StringBuilder();
                         for (String community : communities) {
                             if(community.contains((String) obj.get("communityName"))) {
                                 System.out.println("found " + community);
                             } else {
-                                string.append(community);
-                                string.append(", ");
+                                communitiesList.append(community);
+                                communitiesList.append(", ");
                             }
                         }
                         sql = "UPDATE Users SET communitiesList = ? WHERE googleID = ?";
                         ps = conn.prepareStatement(sql);
-                        ps.setString(1, string.toString());
+                        ps.setString(1, communitiesList.toString());
                         ps.setString(2, googleID);
                         System.out.println(ps);
                         ps.executeUpdate();
@@ -866,6 +876,7 @@ class Server extends Thread {
     }
 
     private void leaveHangoutUser(JSONObject obj) {
+        //TODO finish
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Hangouts";
