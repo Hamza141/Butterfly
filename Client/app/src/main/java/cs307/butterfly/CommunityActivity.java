@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -149,30 +150,32 @@ public class CommunityActivity extends AppCompatActivity {
                         dataOutputStream.close();
                         socket.close();
                     } catch (IOException | JSONException e) {
+                        Log.d("Exception", "I knew it");
                         e.printStackTrace();
                     }
                 }
             }).start();
 
-            android.os.SystemClock.sleep(1000);
-
-            String[] names = name[0].split(", ");
-            MainActivity.myCommunities.clear();
-            //Create buttons for each Community
-            for (String aName : names) {
-                if (Objects.equals(aName, "")) {
-                    continue;
-                }
-                Community community = new Community(aName);
-                MainActivity.myCommunities.add(community);
-                addButton(community);
-                try {
-                    String result = aName + '\n';
-                    FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
-                    fileOutputStream.write(result.getBytes());
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            android.os.SystemClock.sleep(500);
+            if (name[0] != null) {
+                String[] names = name[0].split(", ");
+                MainActivity.myCommunities.clear();
+                //Create buttons for each Community
+                for (String aName : names) {
+                    if (Objects.equals(aName, "")) {
+                        continue;
+                    }
+                    Community community = new Community(aName);
+                    MainActivity.myCommunities.add(community);
+                    addButton(community);
+                    try {
+                        String result = aName + '\n';
+                        FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
+                        fileOutputStream.write(result.getBytes());
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

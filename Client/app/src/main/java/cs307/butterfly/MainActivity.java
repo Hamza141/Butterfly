@@ -3,6 +3,7 @@ package cs307.butterfly;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     //10.0.2.2
-    static String ip = "128.211.225.79";
+    static String ip = "10.186.88.79";
     static int port = 3300;
     static boolean server = true;
     static boolean failed = true;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<String> iModerator;
     static ArrayList<Community> buffer = new ArrayList<>();
 
+    static Socket ssocket;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    void connectionSend(final JSONObject jsonObject) {
+    static void connectionSend(final JSONObject jsonObject) {
         final Socket[] socket = new Socket[1];
         final OutputStream[] outputStream = new OutputStream[1];
         final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
@@ -51,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //Connect to server
                     socket[0] = new Socket(ip, port);
-                    outputStream[0] = socket[0].getOutputStream();
+                    ssocket = socket[0];
+                    outputStream[0] = ssocket.getOutputStream();
                     dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
                     //Send JSONObject to server
@@ -63,13 +67,11 @@ public class MainActivity extends AppCompatActivity {
                     //Close everything
                     dataOutputStream[0].close();
                     outputStream[0].close();
-                    socket[0].close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
-        android.os.SystemClock.sleep(500);
     }
 
     String [] connectionReceiveStrings() {
@@ -117,9 +119,8 @@ public class MainActivity extends AppCompatActivity {
         return strings;
     }
 
-    ArrayList <JSONObject> connectionReceiveJSONObjects() {
+    static ArrayList <JSONObject> connectionReceiveJSONObjects() {
         final ArrayList<JSONObject> jsonObjects = new ArrayList<>();
-        final Socket[] socket = new Socket[1];
         final InputStream[] inputStream = new InputStream[1];
         final DataInputStream[] dataInputStream = new DataInputStream[1];
         failed = true;
@@ -129,8 +130,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     //Connect to server
-                    socket[0] = new Socket(ip, port);
-                    inputStream[0] = socket[0].getInputStream();
+                    inputStream[0] = ssocket.getInputStream();
                     dataInputStream[0] = new DataInputStream(inputStream[0]);
 
                     //Add incoming string to arraylist
@@ -138,9 +138,11 @@ public class MainActivity extends AppCompatActivity {
 
                     //Get number of incoming JSON Objects
                     int num = Integer.parseInt(string);
+                    Log.d("Num", String.valueOf(num));
                     for (int i = 0; i < num; i++) {
                         //Add each JSON Object to arraylist
                         JSONObject jsonObject = new JSONObject(dataInputStream[0].readUTF());
+                        Log.d("add JSON", jsonObject.toString());
                         jsonObjects.add(jsonObject);
                     }
 
@@ -150,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     //Close everything
                     dataInputStream[0].close();
                     inputStream[0].close();
-                    socket[0].close();
+                    ssocket.close();
                 } catch (IOException | JSONException | NumberFormatException e) {
                     e.printStackTrace();
                 }
