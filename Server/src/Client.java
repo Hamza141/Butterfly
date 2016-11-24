@@ -14,9 +14,8 @@ import org.json.simple.JSONObject;
 public class Client {
     public static void main(String[] args) {
         //String serverName = "128.211.225.79";
-        String serverName = "10.186.83.239";
+        String serverName = "10.186.88.79";
         int port = 3300;
-            System.out.println("2016-09-12".compareTo("2016-09-09"));
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
             Socket client = new Socket(serverName, port);
@@ -26,7 +25,17 @@ public class Client {
             InputStream inFromServer = client.getInputStream();
             DataInputStream in = new DataInputStream(inFromServer);
             JSONObject obj;
-            JSONObject obj2;
+
+            obj = new JSONObject();
+            obj.put("function", "updateInstanceID");
+            obj.put("googleID", "hamzafarrukh141@gmail.com");
+            obj.put("instanceID", "iasudbasudfn58ha");
+            out.writeUTF(obj.toString());
+
+            obj = new JSONObject();
+            obj.put("function", "getUserCommunities");
+            obj.put("googleID", "hamzafarrukh141@gmail.com");
+            out.writeUTF(obj.toString());
 
             /*obj = new JSONObject();
             obj.put("function", "addUser"); obj.put("firstName", "Khanh");
@@ -82,13 +91,22 @@ public class Client {
             obj.put("subCategory", "hockey"); obj.put("name", "Red Wings");
             obj.put("description", "Best Original 6"); obj.put("dateCreated", "2016-10-30");
             obj.put("private", "0");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
 
-            obj = new JSONObject();
+            /*obj = new JSONObject();
             obj.put("function", "addCommunity"); obj.put("category", "Academic");
             obj.put("subCategory", "CS"); obj.put("name", "CS307");
             obj.put("description", "project class"); obj.put("dateCreated", "2016-10-28");
             obj.put("private", "0");
+            out.writeUTF(obj.toString());*/
+
+            /*obj = new JSONObject();
+            obj.put("function", "deleteEvent"); obj.put("communityName", "hahaha");
+            obj.put("eventName", "hahaha");
+            out.writeUTF(obj.toString());*/
+
+            /*obj = new JSONObject();
+            obj.put("function", "getCommunityUsers"); obj.put("communityName", "hahaha");
             out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
@@ -98,10 +116,10 @@ public class Client {
             obj.put("address", "Queen Elizabeth Olympic Park, London E20 2ST, United Kingdom");
             obj.put("locationName", "London Stadium");
             obj.put("numAttendees", "0"); obj.put("communityName", "Chelsea FC");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
 
-            obj2 = new JSONObject();
-            obj2.put("function", "getEvents"); obj2.put("communityName", "Chelsea FC");
+            /*obj2 = new JSONObject();
+            obj2.put("function", "getEvents"); obj2.put("communityName", "hahaha");
             out.writeUTF(obj2.toString());
             System.out.println("Server says " + in.readUTF());*/
 
@@ -114,15 +132,15 @@ public class Client {
             obj2.put("function", "getCommunities");
             out.writeUTF(obj2.toString());
             System.out.println("Server says " + in.readUTF());*/
-            //while(true) {
-                obj = new JSONObject();
-                obj.put("function", "genericNotification");
-                obj.put("to", "hamzafarrukh141@gmail.com");
-                obj.put("message", "i thought you were tracking communities users were in");
-                out.writeUTF(obj.toString());
-            //}
-            //System.out.println("Server says " + in.readUTF());
-            //System.out.println("Server says " + in.readUTF());
+
+            /*obj = new JSONObject();
+            obj.put("function", "genericNotification");
+            obj.put("googleID", "newcdragon@gmail.com");
+            obj.put("message", "ready for spam??");
+            out.writeUTF(obj.toString());*/
+
+            System.out.println("Server says 1 " + in.readUTF());
+            //System.out.println("Server says 2 " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());
             client.close();
         } catch (IOException e) {
