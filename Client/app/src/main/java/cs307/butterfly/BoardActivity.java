@@ -119,14 +119,14 @@ public class BoardActivity extends AppCompatActivity {
                                     String minute = String.valueOf(calendar.get(Calendar.MINUTE));
 
                                     String date = year;
-                                    date.concat("-");
-                                    date.concat(month);
-                                    date.concat("-");
-                                    date.concat(day);
+                                    date = date.concat("-");
+                                    date = date.concat(month);
+                                    date = date.concat("-");
+                                    date = date.concat(day);
 
                                     String time = hour;
-                                    time.concat(":");
-                                    time.concat(minute);
+                                    time = time.concat(":");
+                                    time = time.concat(minute);
 
                                     object.put("message", finalPost);
                                     object.put("date", date);

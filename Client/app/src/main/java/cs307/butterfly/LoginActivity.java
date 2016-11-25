@@ -178,6 +178,7 @@ public class LoginActivity extends AppCompatActivity implements
                 final String personGivenName = acct.getGivenName();
                 final String personFamilyName = acct.getFamilyName();
                 MainActivity.googleID = acct.getEmail();
+                MainActivity.firstName = acct.getDisplayName();
                 personPhoto = acct.getPhotoUrl();
                 Picasso.with(this).load(personPhoto).into((ImageView) findViewById(R.id.imageView3));
 
