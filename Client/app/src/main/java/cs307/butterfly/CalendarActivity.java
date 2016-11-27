@@ -1,5 +1,6 @@
 package cs307.butterfly;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,15 +11,7 @@ import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.*;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,6 +22,7 @@ public class CalendarActivity extends AppCompatActivity {
     public static Date date;
     public static ArrayList<SpannableString> eventsButtons = new ArrayList<>();
     public static Community community;
+    @SuppressLint("StaticFieldLeak")
     public static EventCalendarView ecv;
     public static boolean isUser;
 
@@ -110,6 +104,7 @@ public class CalendarActivity extends AppCompatActivity {
             MainActivity.connectionSend(object);
             if (!MainActivity.failed) {
                 ArrayList<JSONObject> objects = MainActivity.connectionReceiveJSONObjects();
+                //noinspection ConstantConditions
                 for (int i = 0; i < objects.size(); i++) {
                     JSONObject jsonEvent = objects.get(i);
                     Calendar calendar = Calendar.getInstance();

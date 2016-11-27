@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     //10.0.2.2
-    static String ip = "10.186.88.79";
+    static String ip = "10.186.89.115";
     static int port = 3300;
     static boolean server = true;
     static boolean failed = true;
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<String> iModerator;
     static ArrayList<Community> buffer = new ArrayList<>();
 
+    @SuppressWarnings("SpellCheckingInspection")
     static Socket ssocket;
 
     @Override

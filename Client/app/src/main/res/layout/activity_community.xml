@@ -71,5 +71,13 @@
 
     <include layout="@layout/content_community" />
 
+    <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/send_invite"
+        app:layout_anchorGravity="center_vertical|center_horizontal"
+        android:layout_gravity="top|right" />
+
 
 </android.support.design.widget.CoordinatorLayout>
