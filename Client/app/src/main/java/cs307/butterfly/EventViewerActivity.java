@@ -19,8 +19,10 @@ import android.widget.TimePicker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Calendar;
@@ -29,12 +31,14 @@ public class EventViewerActivity extends AppCompatActivity {
     public static String name;
     public static CommunityEvent event;
     public static EventsActivity previousActivity;
+    public static String checkedIn;
     Button b;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_viewer);
+        checkedIn = "0";
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(CalendarActivity.date);
@@ -55,6 +59,127 @@ public class EventViewerActivity extends AppCompatActivity {
                 }
             }
         }
+
+        Button rsvpButton = (Button) findViewById(R.id.rsvpButton);
+        rsvpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final Socket[] socket = new Socket[1];
+                final OutputStream[] outputStream = new OutputStream[1];
+                final InputStream[] inputStream = new InputStream[1];
+                final DataInputStream[] dataInputStream = new DataInputStream[1];
+                final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
+                final JSONObject object1 = new JSONObject();
+                final JSONObject object2 = new JSONObject();
+                final JSONObject object3 = new JSONObject();
+
+                if (MainActivity.server) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                socket[0] = new Socket(MainActivity.ip, 3300);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+
+                                object1.put("function", "rsvpCheck");
+                                object1.put("communityName", CalendarActivity.community.getName());
+                                object1.put("eventName", name);
+                                object1.put("googleID", MainActivity.googleID);
+                                dataOutputStream[0].writeUTF(object1.toString());
+
+                                inputStream[0] = socket[0].getInputStream();
+                                dataInputStream[0] = new DataInputStream(inputStream[0]);
+
+                                checkedIn = dataInputStream[0].readUTF();
+
+                                socket[0].close();
+                                outputStream[0].close();
+                                dataOutputStream[0].close();
+                                inputStream[0].close();
+                                dataInputStream[0].close();
+
+                            } catch (JSONException | IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }
+
+                android.os.SystemClock.sleep(500);
+
+                if (checkedIn.equals("0")) {
+                    if (MainActivity.server) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    socket[0] = new Socket(MainActivity.ip, 3300);
+                                    outputStream[0] = socket[0].getOutputStream();
+                                    dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+
+                                    object2.put("function", "rsvpEvent");
+                                    object2.put("eventName", name);
+                                    object2.put("communityName", CalendarActivity.community.getName());
+                                    object2.put("googleID", MainActivity.googleID);
+
+                                    dataOutputStream[0].writeUTF(object2.toString());
+                                    socket[0].close();
+                                    outputStream[0].close();
+                                    dataOutputStream[0].close();
+
+                                } catch (JSONException | IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+                }
+                else if (checkedIn.equals("1")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EventViewerActivity.this);
+                    builder.setMessage("You are already RSVP'd to this event. Would you like to remove your RSVP?");
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (MainActivity.server) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            socket[0] = new Socket(MainActivity.ip, 3300);
+                                            outputStream[0] = socket[0].getOutputStream();
+                                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+
+                                            object3.put("function", "rsvpEventRemove");
+                                            object3.put("eventName", name);
+                                            object3.put("communityName", CalendarActivity.community.getName());
+                                            object3.put("googleID", MainActivity.googleID);
+
+                                            dataOutputStream[0].writeUTF(object3.toString());
+                                            socket[0].close();
+                                            outputStream[0].close();
+                                            dataOutputStream[0].close();
+
+                                        } catch (JSONException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    AlertDialog cancelRsvp = builder.create();
+                    cancelRsvp.show();
+                }
+            }
+        });
     }
 
     public void editEvent() {
@@ -126,6 +251,11 @@ public class EventViewerActivity extends AppCompatActivity {
                                 object.put("description", description);
                                 object.put("locationName", place);
                                 dataOutputStream[0].writeUTF(object.toString());
+
+                                socket[0].close();
+                                outputStream[0].close();
+                                dataOutputStream[0].close();
+
                             } catch (JSONException | IOException e) {
                                 e.printStackTrace();
                             }

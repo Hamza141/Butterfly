@@ -38,7 +38,7 @@ public class CalendarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
 
         isUser = false;
-/*
+
         //get current community's events from server
         final Socket[] socket = new Socket[1];
         final OutputStream[] outputStream = new OutputStream[1];
@@ -46,8 +46,7 @@ public class CalendarActivity extends AppCompatActivity {
         final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
         final DataInputStream[] dataInputStream = new DataInputStream[1];
         final JSONObject object = new JSONObject();
-*/
-        /*
+
         if (MainActivity.server) {
             community.communityEvents.clear();
             new Thread(new Runnable() {
@@ -102,8 +101,8 @@ public class CalendarActivity extends AppCompatActivity {
 
             android.os.SystemClock.sleep(1000);
         }
-*/
-        try {
+
+        /*try {
             JSONObject object = new JSONObject();
             object.put("function", "getEvents");
             object.put("communityName", community.getName());
@@ -132,7 +131,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
         ecv = ((EventCalendarView) findViewById(R.id.calendar_view));
         ecv.setEvents(community.getCommunityEvents());
