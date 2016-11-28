@@ -149,29 +149,15 @@ public class EventViewerActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             if (MainActivity.server) {
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            socket[0] = new Socket(MainActivity.ip, 3300);
-                                            outputStream[0] = socket[0].getOutputStream();
-                                            dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-
-                                            object3.put("function", "rsvpEventRemove");
-                                            object3.put("eventName", name);
-                                            object3.put("communityName", CalendarActivity.community.getName());
-                                            object3.put("googleID", MainActivity.googleID);
-
-                                            dataOutputStream[0].writeUTF(object3.toString());
-                                            socket[0].close();
-                                            outputStream[0].close();
-                                            dataOutputStream[0].close();
-
-                                        } catch (JSONException | IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
+                                try {
+                                    object3.put("function", "rsvpEventRemove");
+                                    object3.put("eventName", name);
+                                    object3.put("communityName", CalendarActivity.community.getName());
+                                    object3.put("googleID", MainActivity.googleID);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                MainActivity.connectionSend(object3);
                             }
                         }
                     });
