@@ -7,28 +7,21 @@
     android:fitsSystemWindows="true"
     tools:context="cs307.butterfly.CommunityActivity">
 
+    <include layout="@layout/content_community" />
 
-    <RelativeLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="75dp">
 
-        <ScrollView
+        <LinearLayout
+            android:id="@+id/linear"
             android:layout_width="match_parent"
-            android:layout_height="439dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/linear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-        </ScrollView>
-    </RelativeLayout>
-
-
-
-
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <ImageButton
         android:src="@drawable/searching"
@@ -68,16 +61,6 @@
 
 
      />
-
-    <include layout="@layout/content_community" />
-
-    <Button
-        android:text="Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/send_invite"
-        app:layout_anchorGravity="center_vertical|center_horizontal"
-        android:layout_gravity="top|right" />
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -278,29 +277,7 @@ public class CommunityActivity extends AppCompatActivity {
             }
         });
 
-        final Dialog dialog = new Dialog(CommunityActivity.this);
-        dialog.setContentView(R.layout.dialog_send_invite);
-        dialog.setTitle("Title");
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        if (dialog.getWindow() != null) {
-            lp.copyFrom(dialog.getWindow().getAttributes());
-        }
-        Button sendInvite = (Button) findViewById(R.id.send_invite);
-        sendInvite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.show();
-                EditText email = (EditText) findViewById(R.id.email);
 
-                Button sendButton = (Button) findViewById(R.id.sendButton);
-                sendButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //TODO connect server and send email to server
-                    }
-                });
-            }
-        });
     }
 
     //Create new community
@@ -432,6 +409,36 @@ public class CommunityActivity extends AppCompatActivity {
         });
     }
 
+    //Send Invite dialog
+    public void sendInvite() {
+        final Dialog dialog = new Dialog(CommunityActivity.this);
+        dialog.setContentView(R.layout.dialog_send_invite);
+        dialog.setTitle("Title");
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        if (dialog.getWindow() != null) {
+            lp.copyFrom(dialog.getWindow().getAttributes());
+        }
+        final Button sendButton = (Button) dialog.findViewById(R.id.sendButton);
+        final EditText email = (EditText) dialog.findViewById(R.id.email);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MainActivity.server) {
+                    JSONObject object = new JSONObject();
+                    try {
+                        object.put("function", "sendInvite");
+                        object.put("googleID", MainActivity.googleID);
+                        object.put("email", email.getText());
+                        MainActivity.connectionSend(object);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -440,14 +447,17 @@ public class CommunityActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //item.setIcon(getResources().getDrawable(R.drawable.cast_ic_notification_play));
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            /*case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
-
+            */
+            case R.id.option_send_invite:
+                sendInvite();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
