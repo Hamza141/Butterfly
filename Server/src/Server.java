@@ -21,7 +21,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -83,8 +87,14 @@ class Server extends Thread {
                         case "addCommunityUser":
                             addCommunityUser(obj);
                             break;
+                        case "addHangoutUser":
+                            addHangoutUser(obj);
+                            break;
                         case "addEvent":
                             addEvent(obj);
+                            break;
+                        case "addHangout":
+                            addHangout(obj);
                             break;
                         case "addMessage":
                             addMessage(obj);
@@ -105,8 +115,7 @@ class Server extends Thread {
                             editEvent(obj);
                             break;
                         case "emailInvite":
-                            emailInvite((String) obj.get("from"), (String) obj.get("fromName"),
-                                    (String) obj.get("to"));
+                            emailInvite("user", (String) obj.get("to"));
                             break;
                         case "genericNotification":
                             genericNotification(getInstanceID((String) obj.get("googleID")),
@@ -133,6 +142,9 @@ class Server extends Thread {
                         case "getUserCommunityEvents":
                             getUserCommunityEvents((String) obj.get("googleID"));
                             break;
+                        case "getUserModerator":
+                            getUserModerator((String) obj.get("googleID"));
+                            break;
                         case "leaveCommunityUser":
                         case "removeCommunityUser":
                             leaveCommunityUser(obj);
@@ -146,6 +158,8 @@ class Server extends Thread {
                         case "updateUserProfile":
                             updateUserProfile(obj);
                             break;
+                        default:
+                            System.out.println("default " + obj.toString());
                     }
                 }
             } catch (ParseException | IOException | SQLException | ClassNotFoundException e) {
@@ -155,7 +169,8 @@ class Server extends Thread {
     }
 
     private void addCommunity(JSONObject obj) {
-        //calls createCommunityBoardTable, createCommunityEventTable, createCommunityUserTable
+        //calls createCommunityBoardTable, createCommunityEventTable
+        //createCommunityUserTable, createHCommunityHangouts
         String neighborhoodID = "purdue";
         String name = (String) obj.get("name");
         try {
@@ -184,8 +199,9 @@ class Server extends Thread {
                     name = name.replaceAll("\\s", "_");
                     createCommunityBoardTable(name);
                     createCommunityEventsTable(name);
-                    createCommunityUsersTable(name);
+                    //createCommunityEventsCheckInTable(name);
                     createCommunityHangoutsTable(name);
+                    createCommunityUsersTable(name);
                 }
             }
         } catch (SQLException e) {
@@ -218,6 +234,15 @@ class Server extends Thread {
                     ps.setString(2, googleID);
                     System.out.println(ps);
                     ps.executeUpdate();
+                    if (Integer.parseInt((String) obj.get("isLeader")) == 1) {
+                        sql = "UPDATE Users SET moderatorOf = " +
+                                "CONCAT(?, moderatorOf) WHERE googleID = ?";
+                        ps = conn.prepareStatement(sql);
+                        ps.setString(1, obj.get("communityName") + ", ");
+                        ps.setString(2, googleID);
+                        System.out.println(ps);
+                        ps.executeUpdate();
+                    }
                     sql = "UPDATE Users SET communitiesList = " +
                             "CONCAT(?, communitiesList) WHERE googleID = ?";
                     ps = conn.prepareStatement(sql);
@@ -266,8 +291,41 @@ class Server extends Thread {
         }
     }
 
+    private void addHangout(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Hangouts";
+        String hangoutName = (String) obj.get("hangoutName");
+        try {
+            sql = "SELECT count(*) FROM " + communityName + " WHERE hangoutName = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, hangoutName);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) == 0) {
+                    sql = "INSERT INTO " + communityName + " (creator, hangoutName, startTime, "
+                    + "endTime, date, address, locationName, listAttendees) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, (String) obj.get("creator"));
+                    ps.setString(2, hangoutName);
+                    ps.setString(3, (String) obj.get("startTime"));
+                    ps.setString(4, (String) obj.get("endTime"));
+                    ps.setString(5, (String) obj.get("date"));
+                    ps.setString(6, (String) obj.get("address"));
+                    ps.setString(7, (String) obj.get("locationName"));
+                    ps.setString(8, (String) obj.get("googleID"));
+                    System.out.println(ps);
+                    ps.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void addHangoutUser(JSONObject obj) {
-        //TODO test
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Hangouts";
@@ -283,7 +341,9 @@ class Server extends Thread {
                 sql = "UPDATE " + communityName + " SET listAttendees = "
                        + "CONCAT(?, listAttendees) WHERE hangoutName = ?";
                 ps = conn.prepareStatement(sql);
+                googleID += ", ";
                 ps.setString(1, googleID);
+                ps.setString(2, hangoutName);
                 System.out.println(ps);
                 ps.executeUpdate();
             }
@@ -297,7 +357,8 @@ class Server extends Thread {
         communityName = communityName.replaceAll("\\s", "_"); communityName += "_Board";
         String name = (String) obj.get("name"); String message = (String) obj.get("message");
         try {
-            sql = "INSERT INTO " + communityName + " (pinned, name, date, message) VALUES(?, ?, ?, ?)";
+            sql = "INSERT INTO " + communityName
+                    + " (pinned, name, date, message) VALUES(?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, (String) obj.get("pinned"));
             ps.setString(2, name);
@@ -308,7 +369,7 @@ class Server extends Thread {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        newBoardNotification(communityName, name, message);
+        newBoardNotification((String) obj.get("communityName"), name, message);
     }
 
     private void addUser(JSONObject obj) {
@@ -322,12 +383,14 @@ class Server extends Thread {
             if (rs.next()) {
                 System.out.println("addUser " + Integer.toString(rs.getInt(1)));
                 if (rs.getInt(1) == 0) {
-                    sql = "INSERT INTO Users (firstName, lastName, googleID) "
-                            + "VALUES (?, ?, ?)";
+                    sql = "INSERT INTO Users (firstName, lastName, googleID, communitiesList, "
+                            + "moderatorOf) VALUES (?, ?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, (String) obj.get("firstName"));
                     ps.setString(2, (String) obj.get("lastName"));
                     ps.setString(3, googleID);
+                    ps.setString(4, "");
+                    ps.setString(5, "");
                     System.out.println(ps);
                     ps.executeUpdate();
                 }
@@ -340,18 +403,17 @@ class Server extends Thread {
     private String communitySearch(String type, String value) {
         StringBuilder communities = new StringBuilder();
         try {
-            sql = "SELECT * FROM communities WHERE ? = ?";
+            sql = "SELECT * FROM Communities WHERE " + type + " = ?";
             ps = conn.prepareStatement(sql);
-            ps.setString(1, type);
-            ps.setString(2, value);
+            ps.setString(1, value);
             System.out.println(ps);
             rs = ps.executeQuery();
             while (rs.next()) {
                 communities.append(rs.getString("name"));
                 communities.append(", ");
             }
-            System.out.println(communities);
             out.writeUTF(communities.toString());
+            System.out.println(communities);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -393,7 +455,7 @@ class Server extends Thread {
         //called by addCommunity
         communityName += "_Board";
         String newTable = "CREATE TABLE " + communityName + " ("
-                + "idEvents INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, "
+                + "idMessage INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, "
                 + "pinned INT(4), name VARCHAR(255), date DATE, "
                 + "message TEXT CHARACTER SET latin1 COLLATE latin1_general_cs)";
         System.out.println(newTable);
@@ -423,6 +485,13 @@ class Server extends Thread {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createCommunityEventsCheckInTable(String communityName) {
+        //called by addCommunity
+        communityName += "_CheckIn";
+        String newTable = "CREATE TABLE " + communityName + " ("
+                + "idCheckIn INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, eventName VARCHAR(255), ";
     }
 
     private void createCommunityHangoutsTable(String communityName) {
@@ -484,96 +553,74 @@ class Server extends Thread {
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
-                if (obj.get("eventName") != null && obj.get("eventName") != rs.getString("eventName")) {
-                    sql = "UPDATE Users SET eventName = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, eventName);
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                sql = "UPDATE Users SET (eventName, description, date, time, city, state, address, "
+                + "zip, locationName, numAttendees) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                + "WHERE eventName = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(11, rs.getString("eventName"));
+                if (obj.get("eventName") != rs.getString("eventName")
+                        && obj.get("eventName") != null) {
+                    ps.setString(1, (String) obj.get("eventName"));
+                } else {
+                    ps.setString(1, rs.getString("eventName"));
                 }
-                if (obj.get("description") != null &&
-                        obj.get("description") != rs.getString("description")) {
-                    sql = "UPDATE Users SET description = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("description"));
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                if (obj.get("description") != rs.getString("description")
+                        && obj.get("description") != null) {
+                    ps.setString(2, (String) obj.get("description"));
+                } else {
+                    ps.setString(2, rs.getString("description"));
                 }
                 if (obj.get("date") != null && obj.get("date") != rs.getString("date")) {
-                    sql = "UPDATE Users SET date = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("date"));
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                    ps.setString(3, (String) obj.get("date"));
+                } else {
+                    ps.setString(3, rs.getString("date"));
                 }
                 if (obj.get("time") != null && obj.get("time") != rs.getString("time")) {
-                    sql = "UPDATE Users SET time = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("time"));
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                    ps.setString(4, (String) obj.get("time"));
+                } else {
+                    ps.setString(4, rs.getString("time"));
                 }
                 if (obj.get("city") != null && obj.get("city") != rs.getString("city")) {
-                    sql = "UPDATE Users SET city = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("city"));
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                    ps.setString(5, (String) obj.get("city"));
+                } else {
+                    ps.setString(5, rs.getString("city"));
                 }
                 if (obj.get("state") != null && obj.get("state") != rs.getString("state")) {
-                    sql = "UPDATE Users SET state = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("state"));
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                    ps.setString(6, (String) obj.get("state"));
+                } else {
+                    ps.setString(6, rs.getString("state"));
                 }
                 if (obj.get("address") != null && obj.get("address") != rs.getString("address")) {
-                    sql = "UPDATE Users SET address = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("address"));
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                    ps.setString(7, (String) obj.get("address"));
+                } else {
+                    ps.setString(7, rs.getString("address"));
                 }
                 if (obj.get("zip") != null && obj.get("zip") != rs.getString("zip")) {
-                    sql = "UPDATE Users SET zip = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("zip"));
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                    ps.setString(8, (String) obj.get("zip"));
+                } else {
+                    ps.setString(8, rs.getString("zip"));
                 }
-                if (obj.get("locationName") != null &&
-                        obj.get("locationName") != rs.getString("locationName")) {
-                    sql = "UPDATE Users SET locationName = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("locationName"));
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                if (obj.get("locationName") != rs.getString("locationName")
+                        && obj.get("locationName") != null) {
+                    ps.setString(9, (String) obj.get("locationName"));
+                } else {
+                    ps.setString(9, rs.getString("locationName"));
                 }
-                if (obj.get("numAttendees") != null &&
-                        obj.get("numAttendees") != rs.getString("numAttendees")) {
-                    sql = "UPDATE Users SET numAttendees = ? WHERE eventName = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("numAttendees"));
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                if (obj.get("numAttendees") != rs.getString("numAttendees")
+                        && obj.get("numAttendees") != null) {
+                    ps.setString(10, (String) obj.get("numAttendees"));
+                } else {
+                    ps.setString(10, rs.getString("numAttendees"));
                 }
+                System.out.println(ps);
+                ps.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void emailInvite(String from, String fromName, String to) {
+    private void emailInvite(String fromName, String to) {
         final String password = appKey;
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -581,19 +628,19 @@ class Server extends Thread {
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-                        return new javax.mail.PasswordAuthentication(from, password);
-                    }
-                });
+            new javax.mail.Authenticator() {
+                protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                    return new javax.mail.PasswordAuthentication("newcdragon@gmail.com", password);
+                }
+            });
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from));
+            message.setFrom(new InternetAddress("newcdragon@gmail.com"));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject("Butterfly Invite");
             message.setText(fromName + " wants you to use Butterfly");
             Transport.send(message);
-            System.out.println("Invite Sent from: " + from + " to: " + to);
+            System.out.println("Invite Sent from: myEmail@gmail.com to: " + to);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -639,9 +686,8 @@ class Server extends Thread {
                 communities.append(rs.getString("name"));
                 communities.append(comma);
             }
-            //communities.setLength(communities.length() - 2);
-            System.out.println(communities);
             out.writeUTF(communities.toString());
+            System.out.println(communities);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -658,8 +704,8 @@ class Server extends Thread {
                 obj = new JSONObject();
                 obj.put("idUsers", rs.getString("idUsers"));
                 obj.put("googleID", rs.getString("googleID"));
-                System.out.println(obj.toString());
                 out.writeUTF(obj.toString());
+                System.out.println(obj.toString());
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
@@ -667,6 +713,7 @@ class Server extends Thread {
     }
 
     private void getEvents(String communityName) {
+        //TODO check if user is in any communities before executing
         String oldName = communityName;
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
@@ -705,7 +752,6 @@ class Server extends Thread {
                     out.writeUTF("0");
                 }
             }
-
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -739,7 +785,8 @@ class Server extends Thread {
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
-                out.write(rs.getInt(1));
+                out.writeUTF(Integer.toString(rs.getInt(1)));
+                System.out.println("total events " + rs.getInt(1));
                 sql = "SELECT * FROM " + communityName;
                 ps = conn.prepareStatement(sql);
                 rs = ps.executeQuery();
@@ -749,8 +796,8 @@ class Server extends Thread {
                     obj.put("name", rs.getString("name"));
                     obj.put("date", rs.getString("date"));
                     obj.put("message", rs.getString("message"));
-                    System.out.println(obj);
                     out.writeUTF(obj.toString());
+                    System.out.println(obj);
                 }
             }
         } catch (SQLException | IOException e) {
@@ -769,7 +816,6 @@ class Server extends Thread {
                 out.write(communities.size());
                 communities.forEach(this::getEvents);
             }
-
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -783,16 +829,15 @@ class Server extends Thread {
             System.out.println(ps);
             rs = ps.executeQuery();
             String list;
-            if (rs.isLast()) {
+            if (rs.next()) {
                 list = rs.getString("communitiesList");
-                System.out.println(list);
                 out.writeUTF(list);
-                System.out.println("sent");
+                System.out.println("sent " + list);
             } else {
                 out.writeUTF("");
             }
-            sleep(50);
-        } catch (SQLException | InterruptedException | IOException e) {
+            //sleep(50);
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -816,15 +861,33 @@ class Server extends Thread {
             } else {
                 out.writeUTF("");
             }
-            //sleep(2000);
-        } catch (SQLException  | IOException e) {
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getUserModerator(String googleID) {
+        try {
+            sql = "SELECT moderatorOf FROM Users WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            String list;
+            if (rs.next()) {
+                list = rs.getString("moderatorOf");
+                out.writeUTF(list);
+                System.out.println("sent " + list);
+            } else {
+                out.writeUTF("");
+            }
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
     private void leaveCommunityUser(JSONObject obj) {
         //TODO call updateUserProfile and update communitiesList
-        //TODO Did this work?
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Users";
@@ -862,6 +925,33 @@ class Server extends Thread {
                             }
                         }
                         sql = "UPDATE Users SET communitiesList = ? WHERE googleID = ?";
+                        ps = conn.prepareStatement(sql);
+                        ps.setString(1, communitiesList.toString());
+                        ps.setString(2, googleID);
+                        System.out.println(ps);
+                        ps.executeUpdate();
+                    }
+                    sql = "SELECT moderatorOf FROM Users WHERE googleID = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, googleID);
+                    System.out.println(ps);
+                    rs = ps.executeQuery();
+                    if (rs.next()) {
+                        list = rs.getString("moderatorOf");
+                        ArrayList<String> communities;
+                        communities = new ArrayList<>(Arrays.asList(list.split(", ")));
+                        StringBuilder communitiesList = new StringBuilder();
+                        for (String community : communities) {
+                            if(community.contains((String) obj.get("communityName"))) {
+                                System.out.println("found " + community);
+                            } else {
+                                communitiesList.append(community);
+                                if (!community.equals(" ")) {
+                                    communitiesList.append(", ");
+                                }
+                            }
+                        }
+                        sql = "UPDATE Users SET moderatorOf = ? WHERE googleID = ?";
                         ps = conn.prepareStatement(sql);
                         ps.setString(1, communitiesList.toString());
                         ps.setString(2, googleID);
@@ -960,10 +1050,12 @@ class Server extends Thread {
         }*/
     }
 
-    private void timeCheckEvents(String communityCalendar) {
+    private void timeCheckEvents(String communityName) {
         // called by upcomingEventNotification
         // TIME: HH:MM:SS, DATE: YYYY-MM-DD
-        //TODO test
+        communityName = communityName.replaceAll("\\s", "_");
+        String communityCalendar = communityName;
+        communityCalendar += "_Calendar";
         try {
             sql = "SELECT * FROM " + communityCalendar;
             ps = conn.prepareStatement(sql);
@@ -978,16 +1070,22 @@ class Server extends Thread {
                 Date date = new Date();
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
+                int currYear = cal.get(Calendar.YEAR);
+                int currMonth = cal.get(Calendar.MONTH);
+                int currDay = cal.get(Calendar.DAY_OF_MONTH);
                 //int hour = cal.get(Calendar.HOUR_OF_DAY);
                 //int minute = cal.get(Calendar.MINUTE);
-                if (cal.get(Calendar.YEAR) == Integer.parseInt(dateSplit.get(0))) {
-                    if (cal.get(Calendar.MONTH) == Integer.parseInt(dateSplit.get(1))) {
-                        if (Integer.parseInt(dateSplit.get(2)) - cal.get(Calendar.DAY_OF_MONTH) == 1) {
-                            genericNotification("/topics/" + communityCalendar,
-                                    "A Community event is upcoming", "Upcoming Event");
-                            //TODO create new entry in eventsCheckIn
-                        }
-                    }
+                int eventYear = Integer.parseInt(dateSplit.get(0));
+                int eventMonth = Integer.parseInt(dateSplit.get(1));
+                if (eventMonth > 0) {
+                    eventMonth--;
+                }
+                int eventDay = Integer.parseInt(dateSplit.get(2));
+                if (currYear == eventYear && currMonth == eventMonth && eventDay - currDay < 2) {
+                    String topic = "/topics/";
+                    topic += communityName;
+                    genericNotification(topic, "A Community event is upcoming", "Upcoming Event");
+                    //TODO create new entry in eventsCheckIn, new table communityNameEventsCheckIn
                 }
             }
         } catch (SQLException e) {
@@ -1018,10 +1116,14 @@ class Server extends Thread {
                 int currMinute = cal.get(Calendar.MINUTE);
                 int hangoutYear = Integer.parseInt(dateSplit.get(0));
                 int hangoutMonth = Integer.parseInt(dateSplit.get(1));
+                if (hangoutMonth > 0) {
+                    hangoutMonth--;
+                }
                 int hangoutDay = Integer.parseInt(dateSplit.get(2));
                 int hangoutHour = Integer.parseInt(timeSplit.get(0));
                 int hangoutMinute = Integer.parseInt(timeSplit.get(1));
-                if (currYear == hangoutYear && currMonth == hangoutMonth && hangoutDay - currDay == 1) {
+                if (currYear == hangoutYear && currMonth == hangoutMonth
+                        && hangoutDay - currDay == 1) {
                     if (currHour - hangoutHour >= 0 && currMinute - hangoutMinute >= 0) {
                         sql = "DELETE FROM " + communityHangout + " WHERE idHangouts = ?";
                         ps = conn.prepareStatement(sql);
@@ -1042,9 +1144,8 @@ class Server extends Thread {
             rs = ps.executeQuery();
             if (rs.next()) {
                 ArrayList<String> communities = new ArrayList<>();
-                String temp = rs.getString("name").replaceAll("\\s", "_");
-                temp += "_Calendar";
-                communities.add(temp);
+                communities.add(rs.getString("name"));
+                System.out.println(rs.getString("name"));
                 communities.forEach(this::timeCheckEvents);
             }
         } catch (SQLException e) {
@@ -1075,37 +1176,37 @@ class Server extends Thread {
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
-                if (obj.get("firstName") != null && obj.get("firstName") != rs.getString("firstName")) {
-                    sql = "UPDATE Users SET firstName = ? WHERE googleID = ?";
-                    ps = conn.prepareStatement(sql);
+                sql = "UPDATE Users SET (firstName, lastName, birthDate) "
+                        + "VALUES (?, ?, ?) WHERE googleID = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(4, googleID);
+                if (obj.get("firstName") != null
+                        && obj.get("firstName") != rs.getString("firstName")) {
                     ps.setString(1, (String) obj.get("firstName"));
-                    ps.setString(2, googleID);
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                } else {
+                    ps.setString(1, rs.getString("firstName"));
                 }
-                if (obj.get("lastName") != null && obj.get("lastName") != rs.getString("lastName")) {
-                    sql = "UPDATE Users SET lastName = ? WHERE googleID = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("lastName"));
-                    ps.setString(2, googleID);
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                if (obj.get("lastName") != null
+                        && obj.get("lastName") != rs.getString("lastName")) {
+                    ps.setString(2, (String) obj.get("lastName"));
+                } else {
+                    ps.setString(2, rs.getString("lastName"));
                 }
-                if (obj.get("birthDate") != null && obj.get("birthDate") != rs.getString("birthDate")) {
-                    sql = "UPDATE Users SET birthDate = ? WHERE googleID = ?";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, (String) obj.get("birthDate"));
-                    ps.setString(2, googleID);
-                    System.out.println(ps);
-                    ps.executeUpdate();
+                if (obj.get("birthDate") != null
+                        && obj.get("birthDate") != rs.getString("birthDate")) {
+                    ps.setString(3, (String) obj.get("birthDate"));
+                } else {
+                    ps.setString(3, rs.getString("birthDate"));
                 }
+                System.out.println(ps);
+                ps.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    /*private boolean checkifLeader(JSONObject obj) {
+    /*private boolean checkIfLeader(JSONObject obj) {
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Users";
