@@ -136,6 +136,9 @@ class Server extends Thread {
                         case "getNeighborhoodEvents":
                             getNeighborhoodEvents();
                             break;
+                        case "getrsvp":
+                            getrsvp((String) obj.get("communityName"), (String) obj.get("eventName"));
+                            break;
                         case "getUserCommunities":
                             getUserCommunities((String) obj.get("googleID"));
                             break;
@@ -155,7 +158,6 @@ class Server extends Thread {
                         case "rsvpCheck":
                             rsvpCheck(obj);
                             break;
-                        //TODO return list of RSVP first and last name
                         case "rsvpEventRemove":
                             rsvpEventRemove(obj);
                             break;
@@ -498,13 +500,6 @@ class Server extends Thread {
         }
     }
 
-    private void createCommunityEventsCheckInTable(String communityName) {
-        //called by addCommunity
-        communityName += "_CheckIn";
-        String newTable = "CREATE TABLE " + communityName + " ("
-                + "idCheckIn INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, eventName VARCHAR(255), ";
-    }
-
     private void createCommunityHangoutsTable(String communityName) {
         //called by addCommunity
         communityName += "_Hangouts";
@@ -641,17 +636,17 @@ class Server extends Thread {
         Session session = Session.getInstance(props,
             new javax.mail.Authenticator() {
                 protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-                    return new javax.mail.PasswordAuthentication("newcdragon@gmail.com", password);
+                    return new javax.mail.PasswordAuthentication("noreply.butterfly@gmail.com", password);
                 }
             });
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("newcdragon@gmail.com"));
+            message.setFrom(new InternetAddress("noreply.butterfly@gmail.com"));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject("Butterfly Invite");
-            message.setText(fromName + " wants you to use Butterfly");
+            message.setText("A wants you to use Butterfly");
             Transport.send(message);
-            System.out.println("Invite Sent from: myEmail@gmail.com to: " + to);
+            System.out.println("Invite Sent from: noreply.butterfly@gmail.com to: " + to);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -786,6 +781,10 @@ class Server extends Thread {
         return "";
     }
 
+    /*
+        Function which writes to client the number of messages stored in the community
+        board table and then all rows in the table in JSON format.
+     */
     private void getMessages(String communityName) {
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Board";
@@ -797,7 +796,7 @@ class Server extends Thread {
             rs = ps.executeQuery();
             if (rs.next()) {
                 out.writeUTF(Integer.toString(rs.getInt(1)));
-                System.out.println("total events " + rs.getInt(1));
+                System.out.println("total messages " + rs.getInt(1));
                 sql = "SELECT * FROM " + communityName;
                 ps = conn.prepareStatement(sql);
                 rs = ps.executeQuery();
@@ -816,6 +815,12 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which loops through every community in the neighborhood table
+        and writes to client number of communities in the neighborhood and then
+        calls a function to write all events from the list of communities.
+        Calls getEvents.
+     */
     private void getNeighborhoodEvents() {
         try {
             sql = "SELECT name FROM Communities";
@@ -832,6 +837,37 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which writes to client string list of users which have rsvp'ed to specified
+        event from specified community. If there are no users who have rsvp'ed then send write
+        back empty string.
+     */
+    private void getrsvp(String communityName, String eventName) {
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Calendar";
+        try {
+            sql = "SELECT listAttendees FROM " + communityName + " WHERE eventName = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, eventName);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            String list;
+            if (rs.next()) {
+                list = rs.getString("listAttendees");
+                out.writeUTF(list);
+                System.out.println("sent " + list);
+            } else {
+                out.writeUTF("");
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /*
+        Function which writes to client string of community names that the user is a part
+        of from the communitiesList column in Users table. If user is not in any communities
+        then write empty string.
+    */
     private void getUserCommunities(String googleID) {
         try {
             sql = "SELECT communitiesList FROM Users WHERE googleID = ?";
@@ -847,12 +883,16 @@ class Server extends Thread {
             } else {
                 out.writeUTF("");
             }
-            //sleep(50);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
+    /*
+        Function which writes to client the number of communities the user is in then
+        the community name and calls a function to get all events of that community.
+        If user is not in any communities then write empty string. Calls getEvents.
+     */
     private void getUserCommunityEvents(String googleID) {
         try {
             sql = "SELECT communitiesList FROM Users WHERE googleID = ?";
@@ -877,6 +917,11 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which writes to client string of community names
+        where the user is a moderator of. Writes an empty string if
+        user is not a moderator of any communities.
+    */
     private void getUserModerator(String googleID) {
         try {
             sql = "SELECT moderatorOf FROM Users WHERE googleID = ?";
@@ -897,8 +942,13 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which removes the user from the community users table,
+        updates the communitiesList for the user in the Users table,
+        if the user was a moderator for the community left, then also updates
+        the moderatorOf for the user in the Users table.
+     */
     private void leaveCommunityUser(JSONObject obj) {
-        //TODO call updateUserProfile and update communitiesList
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Users";
@@ -976,6 +1026,10 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which removes the user from a hangout in the specified community
+        at the specified hangout name.
+     */
     private void leaveHangoutUser(JSONObject obj) {
         //TODO finish
         String communityName = (String) obj.get("communityName");
@@ -1013,8 +1067,11 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which sends a http POST request to FireBaseIO and receives a response
+        JSON back from FireBaseIO. Called by genericNotification and newBoardNotification.
+     */
     private void messageWrite(JSONObject parent) {
-        //called by genericNotification and newBoardNotification
         System.out.println(parent.toString());
         try {
             URL url = new URL("https://fcm.googleapis.com/fcm/send");
@@ -1039,8 +1096,11 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which builds the JSON for notification when a new board message has been
+        added. Uses FireBase topic messaging. Called by addMessage and calls messageWrite.
+     */
     private void newBoardNotification(String community, String name, String message) {
-        // called by addMessage
         JSONObject data = new JSONObject();
         JSONObject notification = new JSONObject();
         JSONObject parent = new JSONObject();
@@ -1052,15 +1112,12 @@ class Server extends Thread {
         parent.put("data", data);
         parent.put("priority", "high");
         messageWrite(parent);
-        /*ArrayList<String> IDs = getSubscribedMembers(community);
-        for (String ID : IDs) {
-            String to = getInstanceID(ID);
-            parent.put("to", to);
-            System.out.println(parent);
-            messageWrite(parent);
-        }*/
     }
 
+    /*
+        Function which adds the user to listAttendees in community calendar
+        table for specified event.
+     */
     private void rsvpEvent(JSONObject obj) {
         //TODO test
         String communityName = (String) obj.get("communityName");
@@ -1089,6 +1146,11 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which selects from the community calendar table and checks
+        whether the user has already rsvp'ed to the specified event. Returns
+        string "1" if found and "0" otherwise.
+     */
     private void rsvpCheck(JSONObject obj) {
         //TODO test
         String communityName = (String) obj.get("communityName");
@@ -1120,6 +1182,10 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Updates listAttendees in the community calendar table
+        for an event if a user removes rsvp from event.
+     */
     private void rsvpEventRemove(JSONObject obj) {
         //TODO test
         String communityName = (String) obj.get("communityName");
@@ -1157,11 +1223,17 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which loops through rows in the community calendar table
+        and if the startDate for an event is within 24 hours then send out
+        a notification to all subscribed members of the community and creates
+        a new row into eventsCheckIn.
+     */
     private void timeCheckEvents(String communityName) {
         // called by upcomingEventNotification
         // TIME: HH:MM:SS, DATE: YYYY-MM-DD
-        communityName = communityName.replaceAll("\\s", "_");
-        String communityCalendar = communityName;
+        String communityReplaced = communityName.replaceAll("\\s", "_");
+        String communityCalendar = communityReplaced;
         communityCalendar += "_Calendar";
         try {
             sql = "SELECT * FROM " + communityCalendar;
@@ -1188,11 +1260,16 @@ class Server extends Thread {
                     eventMonth--;
                 }
                 int eventDay = Integer.parseInt(dateSplit.get(2));
-                if (currYear == eventYear && currMonth == eventMonth && eventDay - currDay < 2) {
+                if (currYear == eventYear && currMonth == eventMonth && eventDay - currDay < 1) {
                     String topic = "/topics/";
-                    topic += communityName;
+                    topic += communityReplaced;
                     genericNotification(topic, "A Community event is upcoming", "Upcoming Event");
-                    //TODO create new entry in eventsCheckIn, new table communityNameEventsCheckIn
+                    sql = "INSERT INTO eventsCheckIn (communityName, eventName) VALUES(?, ?)";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, "communityName");
+                    ps.setString(2, rs.getString("eventName"));
+                    System.out.println(ps);
+                    ps.executeUpdate();
                 }
             }
         } catch (SQLException e) {
@@ -1200,6 +1277,10 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which loops through rows in the community hangouts table
+        and removes the hangouts which have passed.
+     */
     private void timeCheckHangouts(String communityHangout) {
         //TODO test
         try {
@@ -1243,6 +1324,10 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Function which loops through rows in Communities table then sends community name
+        to secondary function to check whether an event is upcoming.
+     */
     private void upcomingEventNotificationCheck() {
         //TODO will have to be always running to be prompt
         try {
@@ -1260,6 +1345,10 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Updates the Users table with the current instanceID provided
+        by FireBaseIO because instanceIDs can change depending on something.
+     */
     private void updateInstanceID(JSONObject obj) {
         try {
             sql = "UPDATE Users SET instanceID = ? WHERE googleID = ?";
@@ -1273,6 +1362,10 @@ class Server extends Thread {
         }
     }
 
+    /*
+        Updates the Users table with any different information from
+        JSON which is sent from client.
+     */
     private void updateUserProfile(JSONObject obj) {
         //TODO other variables for user profile
         String googleID = (String) obj.get("googleID");
