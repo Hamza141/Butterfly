@@ -45,6 +45,8 @@ public class CommunityActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        //Display the communities in the buffer
         int i = 0;
         while (i != MainActivity.buffer.size()) {
             Community community = new Community(MainActivity.buffer.get(i).getName());
