@@ -2,20 +2,14 @@
  * Created by Khanh Tran on 10/9/16.
  */
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -38,148 +32,135 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import static java.lang.Thread.sleep;
+
 @SuppressWarnings({"unchecked", "InfiniteLoopStatement"})
-class Server extends Thread {
-    static final private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final private String DB_URL = "jdbc:mysql://localhost/Butterfly";
-    static final private String USER = "root";
+ class serverStart implements Runnable {
     static private String appKey, PASS, Authorization;
     private Connection conn;
-    private ServerSocket serverSocket;
     private DataOutputStream out;
-    private DataInputStream in;
     private String sql;
     private PreparedStatement ps;
     private ResultSet rs;
-    private JSONParser parser;
+    private JSONObject obj;
 
-    private Server(int port) throws IOException {
-        serverSocket = new ServerSocket(port);
+    serverStart(JSONObject pobj, DataOutputStream pout) throws IOException {
+        obj = pobj;
+        out = pout;
+        FileInputStream fileIn = new FileInputStream("/home/khanh/keys.txt");
+        InputStreamReader isr = new InputStreamReader(fileIn, Charset.forName("UTF-8"));
+        BufferedReader br = new BufferedReader(isr);
+        appKey = br.readLine();
+        PASS = br.readLine();
+        Authorization = br.readLine();
+        br.close();
+        isr.close();
     }
+
     public void run() {
-        //TODO convert to accept connection outside and pass parameters to new threads
-        //TODO send data notification for invitation to private community, title = "you have been invited", body = "youve been invited to COMMUNITY BY", communityName = communityName
-        System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
-        while (true) {
-            try {
-                Socket server = serverSocket.accept();
-                System.out.println("Just connected to " + server.getRemoteSocketAddress());
-                parser = new JSONParser();
-                in = new DataInputStream(server.getInputStream());
-                out = new DataOutputStream(server.getOutputStream());
-            } catch (SocketTimeoutException s) {
-                System.out.println("Socket timed out!");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                Class.forName(JDBC_DRIVER);
-                conn = DriverManager.getConnection(DB_URL, USER, PASS);
-                conn.getMetaData().getCatalogs();
-                conn.createStatement();
-                while (in.available() > 0) {
-                    Date currentDate = Calendar.getInstance().getTime();
-                    Object parsed = parser.parse(in.readUTF());
-                    JSONObject obj = (JSONObject) parsed;
-                    System.out.println("TIMESTAMP " + currentDate + " " + obj.get("function"));
-                    switch ((String) obj.get("function")) {
-                        case "addCommunity":
-                            addCommunity(obj);
-                            break;
-                        case "addCommunityUser":
-                            addCommunityUser(obj);
-                            break;
-                        case "addHangoutUser":
-                            addHangoutUser(obj);
-                            break;
-                        case "addEvent":
-                            addEvent(obj);
-                            break;
-                        case "addHangout":
-                            addHangout(obj);
-                            break;
-                        case "addMessage":
-                            addMessage(obj);
-                            break;
-                        case "addUser":
-                            addUser(obj);
-                            break;
-                        case "communitySearch":
-                            communitySearch((String) obj.get("type"), (String) obj.get("value"));
-                            break;
-                        case "checkIn":
-                            checkIn(obj);
-                            break;
-                        case "deleteEvent":
-                            deleteEvent(obj);
-                            break;
-                        case "editEvent":
-                            editEvent(obj);
-                            break;
-                        case "emailInvite":
-                            emailInvite("user", (String) obj.get("to"));
-                            break;
-                        case "genericNotification":
-                            genericNotification(getInstanceID((String) obj.get("googleID")),
-                                    (String) obj.get("message"), (String) obj.get("title"));
-                            break;
-                        case "getCommunities":
-                            getCommunities();
-                            break;
-                        case "getCommunityUsers":
-                            getCommunityUsers((String) obj.get("communityName"));
-                            break;
-                        case "getEvents":
-                            getEvents((String) obj.get("communityName"));
-                            break;
-                        case "getMessages":
-                            getMessages((String) obj.get("communityName"));
-                            break;
-                        case "getNeighborhoodEvents":
-                            getNeighborhoodEvents();
-                            break;
-                        case "getrsvp":
-                            getrsvp((String) obj.get("communityName"), (String) obj.get("eventName"));
-                            break;
-                        case "getUserCommunities":
-                            getUserCommunities((String) obj.get("googleID"));
-                            break;
-                        case "getUserCommunityEvents":
-                            getUserCommunityEvents((String) obj.get("googleID"));
-                            break;
-                        case "getUserModerator":
-                            getUserModerator((String) obj.get("googleID"));
-                            break;
-                        case "leaveCommunityUser":
-                        case "removeCommunityUser":
-                            leaveCommunityUser(obj);
-                            break;
-                        case "rsvpEvent":
-                            rsvpEvent(obj);
-                            break;
-                        case "rsvpCheck":
-                            rsvpCheck(obj);
-                            break;
-                        case "rsvpEventRemove":
-                            rsvpEventRemove(obj);
-                            break;
-                        case "upcomingEventNotification":
-                            upcomingEventNotificationCheck();
-                            break;
-                        case "updateInstanceID":
-                            updateInstanceID(obj);
-                            break;
-                        case "updateUserProfile":
-                            updateUserProfile(obj);
-                            break;
-                        default:
-                            System.out.println("default " + obj.toString());
-                    }
-                    break;
-                }
-            } catch (ParseException | IOException | SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/Butterfly", "root", PASS);
+            conn.getMetaData().getCatalogs();
+            conn.createStatement();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        switch ((String) obj.get("function")) {
+            case "addCommunity":
+                addCommunity(obj);
+                break;
+            case "addCommunityUser":
+                addCommunityUser(obj);
+                break;
+            case "addHangoutUser":
+                addHangoutUser(obj);
+                break;
+            case "addEvent":
+                addEvent(obj);
+                break;
+            case "addHangout":
+                addHangout(obj);
+                break;
+            case "addMessage":
+                addMessage(obj);
+                break;
+            case "addUser":
+                addUser(obj);
+                break;
+            case "communityInvite":
+                communityInvite(obj);
+                break;
+            case "communitySearch":
+                communitySearch((String) obj.get("type"), (String) obj.get("value"));
+                break;
+            case "checkIn":
+                checkIn(obj);
+                break;
+            case "deleteEvent":
+                deleteEvent(obj);
+                break;
+            case "editEvent":
+                editEvent(obj);
+                break;
+            case "emailInvite":
+                emailInvite("user", (String) obj.get("to"));
+                break;
+            case "genericNotification":
+                genericNotification(getInstanceID((String) obj.get("googleID")),
+                        (String) obj.get("message"), (String) obj.get("title"));
+                break;
+            case "getCommunities":
+                getCommunities();
+                break;
+            case "getCommunityUsers":
+                getCommunityUsers((String) obj.get("communityName"));
+                break;
+            case "getEvents":
+                getEvents((String) obj.get("communityName"));
+                break;
+            case "getMessages":
+                getMessages((String) obj.get("communityName"));
+                break;
+            case "getNeighborhoodEvents":
+                getNeighborhoodEvents();
+                break;
+            case "getrsvp":
+                getrsvp((String) obj.get("communityName"), (String) obj.get("eventName"));
+                break;
+            case "getUserCommunities":
+                getUserCommunities((String) obj.get("googleID"));
+                break;
+            case "getUserCommunityEvents":
+                getUserCommunityEvents((String) obj.get("googleID"));
+                break;
+            case "getUserModerator":
+                getUserModerator((String) obj.get("googleID"));
+                break;
+            case "leaveCommunityUser":
+            case "removeCommunityUser":
+                leaveCommunityUser(obj);
+                break;
+            case "rsvpEvent":
+                rsvpEvent(obj);
+                break;
+            case "rsvpCheck":
+                rsvpCheck(obj);
+                break;
+            case "rsvpEventRemove":
+                rsvpEventRemove(obj);
+                break;
+            case "upcomingEventNotification":
+                upcomingEventNotificationCheck();
+                break;
+            case "updateInstanceID":
+                updateInstanceID(obj);
+                break;
+            case "updateUserProfile":
+                updateUserProfile(obj);
+                break;
+            default:
+                System.out.println("default " + obj.toString());
         }
     }
 
@@ -321,8 +302,8 @@ class Server extends Thread {
             if (rs.next()) {
                 if (rs.getInt(1) == 0) {
                     sql = "INSERT INTO " + communityName + " (creator, hangoutName, startTime, "
-                    + "endTime, date, address, locationName, listAttendees) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                            + "endTime, date, address, locationName, listAttendees) "
+                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, (String) obj.get("creator"));
                     ps.setString(2, hangoutName);
@@ -355,7 +336,7 @@ class Server extends Thread {
             rs = ps.executeQuery();
             if (rs.next()) {
                 sql = "UPDATE " + communityName + " SET listAttendees = "
-                       + "CONCAT(?, listAttendees) WHERE hangoutName = ?";
+                        + "CONCAT(?, listAttendees) WHERE hangoutName = ?";
                 ps = conn.prepareStatement(sql);
                 googleID += ", ";
                 ps.setString(1, googleID);
@@ -402,20 +383,55 @@ class Server extends Thread {
                 System.out.println("addUser " + Integer.toString(rs.getInt(1)));
                 if (rs.getInt(1) == 0) {
                     sql = "INSERT INTO Users (firstName, lastName, googleID, communitiesList, "
-                            + "moderatorOf) VALUES (?, ?, ?, ?, ?)";
+                            + "moderatorOf, picture) VALUES (?, ?, ?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, (String) obj.get("firstName"));
                     ps.setString(2, (String) obj.get("lastName"));
                     ps.setString(3, googleID);
                     ps.setString(4, "");
                     ps.setString(5, "");
+                    File img = new File("/home/khanh/Pictures/images.png");
+                    FileInputStream fin = new FileInputStream(img);
+                    ps.setBinaryStream(6, fin, (int) img.length());
                     System.out.println(ps);
                     ps.executeUpdate();
+
+                    sql = "SELECT picture FROM Users WHERE googleID = 'newcdragon@gmail.com'";
+                    ps = conn.prepareStatement(sql);
+                    rs = ps.executeQuery();
+                    if (rs.next()) {
+                        InputStream in = rs.getBinaryStream(1);
+                        OutputStream f = new FileOutputStream(new File("/home/khanh/Pictures/test.png"));
+                        int c;
+                        while ((c = in.read()) > -1) {
+                            f.write(c);
+                        }
+                        f.close();
+                        in.close();
+                    }
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException | FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void communityInvite(JSONObject obj) {
+        //TODO test
+        JSONObject data = new JSONObject();
+        JSONObject notification = new JSONObject();
+        JSONObject parent = new JSONObject();
+        notification.put("body", "You have received an invitation to join a community");
+        notification.put("title", "New Community Invitation");
+        data.put("body", obj.get("user") + " has invited you to join " + obj.get("communityName"));
+        data.put("title", "New community invitation by " + obj.get("user"));
+        data.put("communityName", obj.get("communityName"));
+        parent.put("notification", notification);
+        parent.put("data", data);
+        parent.put("priority", "high");
+        messageWrite(parent);
     }
 
     private String communitySearch(String type, String value) {
@@ -565,8 +581,8 @@ class Server extends Thread {
             rs = ps.executeQuery();
             if (rs.next()) {
                 sql = "UPDATE Users SET (eventName, description, date, time, city, state, address, "
-                + "zip, locationName, numAttendees) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
-                + "WHERE eventName = ?";
+                        + "zip, locationName, numAttendees) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                        + "WHERE eventName = ?";
                 ps = conn.prepareStatement(sql);
                 ps.setString(11, rs.getString("eventName"));
                 if (obj.get("eventName") != rs.getString("eventName")
@@ -639,11 +655,11 @@ class Server extends Thread {
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         Session session = Session.getInstance(props,
-            new javax.mail.Authenticator() {
-                protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-                    return new javax.mail.PasswordAuthentication("noreply.butterfly@gmail.com", password);
-                }
-            });
+                new javax.mail.Authenticator() {
+                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                        return new javax.mail.PasswordAuthentication("noreply.butterfly@gmail.com", password);
+                    }
+                });
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("noreply.butterfly@gmail.com"));
@@ -687,7 +703,6 @@ class Server extends Thread {
         parent.put("to", to);
         parent.put("notification", notification);
         parent.put("priority", "high");
-        System.out.println("sent " + parent.toString());
         messageWrite(parent);
     }
 
@@ -799,6 +814,7 @@ class Server extends Thread {
         }
         return "0";
     }
+
     private String getInstanceID(String googleID) {
         //function passed to genericNotification
         try {
@@ -893,7 +909,7 @@ class Server extends Thread {
                 StringBuilder namesList = new StringBuilder();
                 ArrayList<String> ids = new ArrayList<>(Arrays.asList(list.split(", ")));
                 //out.writeUTF(Integer.toString(ids.size()));
-                for (String id: ids) {
+                for (String id : ids) {
                     sql = "SELECT * FROM Users WHERE googleID = ?";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, id);
@@ -915,6 +931,7 @@ class Server extends Thread {
             e.printStackTrace();
         }
     }
+
     /*
         Function which writes to client string of community names that the user is a part
         of from the communitiesList column in Users table. If user is not in any communities
@@ -957,7 +974,7 @@ class Server extends Thread {
                 list = rs.getString("communitiesList");
                 ArrayList<String> communities = new ArrayList<>(Arrays.asList(list.split(", ")));
                 out.writeUTF(Integer.toString(communities.size()));
-                for (String community: communities) {
+                for (String community : communities) {
                     out.writeUTF(community);
                     getEvents(community);
                 }
@@ -1030,7 +1047,7 @@ class Server extends Thread {
                         communities = new ArrayList<>(Arrays.asList(list.split(", ")));
                         StringBuilder communitiesList = new StringBuilder();
                         for (String community : communities) {
-                            if(community.contains((String) obj.get("communityName"))) {
+                            if (community.contains((String) obj.get("communityName"))) {
                                 System.out.println("found " + community);
                             } else {
                                 communitiesList.append(community);
@@ -1055,7 +1072,7 @@ class Server extends Thread {
                         communities = new ArrayList<>(Arrays.asList(list.split(", ")));
                         StringBuilder communitiesList = new StringBuilder();
                         for (String community : communities) {
-                            if(community.contains((String) obj.get("communityName"))) {
+                            if (community.contains((String) obj.get("communityName"))) {
                                 System.out.println("found " + community);
                             } else {
                                 communitiesList.append(community);
@@ -1100,7 +1117,7 @@ class Server extends Thread {
                 attendees = new ArrayList<>(Arrays.asList(list.split(", ")));
                 StringBuilder string = new StringBuilder();
                 for (String attendee : attendees) {
-                    if(attendee.contains(googleID)) {
+                    if (attendee.contains(googleID)) {
                         System.out.println("found " + attendee);
                     } else {
                         string.append(rs.getString("name"));
@@ -1220,7 +1237,7 @@ class Server extends Thread {
                 ArrayList<String> attendees;
                 attendees = new ArrayList<>(Arrays.asList(list.split(", ")));
                 for (String attendee : attendees) {
-                    if(attendee.contains(googleID)) {
+                    if (attendee.contains(googleID)) {
                         System.out.println("found " + attendee);
                         out.writeUTF("1");
                         return;
@@ -1255,7 +1272,7 @@ class Server extends Thread {
                 attendees = new ArrayList<>(Arrays.asList(list.split(", ")));
                 StringBuilder string = new StringBuilder();
                 for (String attendee : attendees) {
-                    if(attendee.contains(googleID)) {
+                    if (attendee.contains(googleID)) {
                         System.out.println("found " + attendee);
                     } else {
                         string.append(rs.getString("name"));
@@ -1407,7 +1424,7 @@ class Server extends Thread {
             ps.setString(1, (String) obj.get("instanceID"));
             ps.setString(2, (String) obj.get("googleID"));
             System.out.println(ps);
-            ps.execute();
+            ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1492,27 +1509,41 @@ class Server extends Thread {
         }
         return subscribedGoogleIDs;
     }*/
+}
 
+@SuppressWarnings("InfiniteLoopStatement")
+public class Server {
     public static void main(String[] args) {
         Date currentDate = Calendar.getInstance().getTime();
         System.out.println(currentDate);
         try {
-            FileInputStream fileIn = new FileInputStream("/home/khanh/keys.txt");
-            InputStreamReader isr = new InputStreamReader(fileIn, Charset.forName("UTF-8"));
-            BufferedReader br = new BufferedReader(isr);
-            appKey = br.readLine();
-            PASS = br.readLine();
-            Authorization = br.readLine();
-            br.close();
-            isr.close();
             FirebaseOptions options = new FirebaseOptions.Builder()
                 .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-40ec2c75b546.json"))
                 .setDatabaseUrl("butterfly-145620.firebaseio.com/")
                 .build();
             FirebaseApp.initializeApp(options);
-            Thread t = new Server(3300);
-            System.out.println("new thread");
-            t.start();
+            ServerSocket serverSocket = new ServerSocket(3300);
+            while (true) {
+                System.out.println("Waiting on port " + serverSocket.getLocalPort() + "...");
+                try {
+                    Socket server = serverSocket.accept();
+                    System.out.println("Just connected to " + server.getRemoteSocketAddress());
+                    JSONParser parser = new JSONParser();
+                    DataInputStream in = new DataInputStream(server.getInputStream());
+                    DataOutputStream out = new DataOutputStream(server.getOutputStream());
+                    sleep(100);
+                    if (in.available() > 0) {
+                        Object parsed = parser.parse(in.readUTF());
+                        JSONObject obj = (JSONObject) parsed;
+                        System.out.println("TIMESTAMP " + currentDate + " " + obj.get("function"));
+                        new serverStart(obj, out).run();
+                    }
+                } catch (SocketTimeoutException s) {
+                    System.out.println("Socket timed out!");
+                } catch (ParseException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

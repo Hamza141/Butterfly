@@ -154,17 +154,17 @@ public class Client {
             obj.put("to", "newcdragon@hotmail.com"); obj.put("fromName", "Khanh");
             out.writeUTF(obj.toString());*/
 
-            /*obj2 = new JSONObject();
-            obj2.put("function", "getCommunities");
-            out.writeUTF(obj2.toString());
-            System.out.println("Server says " + in.readUTF());*/
-
             obj = new JSONObject();
+            obj.put("function", "getCommunities");
+            out.writeUTF(obj.toString());
+            System.out.println("Server says " + in.readUTF());
+
+            /*obj = new JSONObject();
             obj.put("function", "genericNotification");
             obj.put("googleID", "hamzafarrukh141@gmail.com");
             obj.put("message", "ready for spam??");
             obj.put("title", "random title");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
             obj.put("function", "addHangout");
@@ -191,7 +191,7 @@ public class Client {
             obj.put("value", "hockey");
             out.writeUTF(obj.toString());*/
 
-            //System.out.println("Server says 1 " + in.readUTF());
+            //System.out.println("Server says " + in.readUTF() + "!");
             //System.out.println("Server says 2 " + in.readUTF());
             //System.out.println("Server says " + in.readUTF());
             client.close();
