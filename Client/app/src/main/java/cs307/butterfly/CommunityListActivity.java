@@ -85,16 +85,19 @@ public class CommunityListActivity extends AppCompatActivity {
                 }
             }).start();
 
-            android.os.SystemClock.sleep(500);
+            android.os.SystemClock.sleep(700);
 
-            String[] name = names[0].split(", ");
-            //Create buttons for each Community
-            for (String aName : name) {
-                if (Objects.equals(aName, "")) {
-                    continue;
+            String[] name;
+            if (names[0] != null) {
+                name = names[0].split(", ");
+                //Create buttons for each Community
+                for (String aName : name) {
+                    if (Objects.equals(aName, "")) {
+                        continue;
+                    }
+                    Community community = new Community(aName);
+                    addButton(community);
                 }
-                Community community = new Community(aName);
-                addButton(community);
             }
         } else {
             //If running app in Offline mode, list myCommunities

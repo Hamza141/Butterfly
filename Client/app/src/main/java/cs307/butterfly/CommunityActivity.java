@@ -45,6 +45,8 @@ public class CommunityActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        //Display the communities in the buffer
         int i = 0;
         while (i != MainActivity.buffer.size()) {
             Community community = new Community(MainActivity.buffer.get(i).getName());
@@ -84,6 +86,7 @@ public class CommunityActivity extends AppCompatActivity {
             int length = (int) file.length();
             byte[] bytes = new byte[length];
 
+
             try {
                 fileInputStream = new FileInputStream(file);
                 //noinspection ResultOfMethodCallIgnored
@@ -109,11 +112,41 @@ public class CommunityActivity extends AppCompatActivity {
                     addButton(community);
                 }
             }
+
+            //Read a file to see which communities the user is a moderator of
+            file = new File(context.getFilesDir(), "iModerator");
+            fileInputStream = null;
+            length = (int) file.length();
+            bytes = new byte[length];
+
+            try {
+                fileInputStream = new FileInputStream(file);
+                //noinspection ResultOfMethodCallIgnored
+                fileInputStream.read(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fileInputStream != null)
+                        fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            content = new String(bytes);
+            contents = content.split("\n");
+            for (String cont : contents) {
+                result = cont;
+                if (!result.equals("")) {
+                    MainActivity.iModerator.add(result);
+                }
+            }
         }
 
         //Check with server to see which communities is the user a part of
         if (MainActivity.server) {
-            final String[] name = new String[1];
+            final String[] name = new String[2];
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -125,13 +158,14 @@ public class CommunityActivity extends AppCompatActivity {
                         DataOutputStream dataOutputStream;
                         DataInputStream dataInputStream;
                         JSONObject object = new JSONObject();
+                        JSONObject object2 = new JSONObject();
 
                         //Connect to server
                         socket = new Socket(MainActivity.ip, 3300);
                         outputStream = socket.getOutputStream();
                         dataOutputStream = new DataOutputStream(outputStream);
 
-                        //Send community name to server
+                        //Send function and google ID to server
                         object.put("function", "getUserCommunities");
                         object.put("googleID", MainActivity.googleID);
                         dataOutputStream.writeUTF(object.toString());
@@ -140,12 +174,36 @@ public class CommunityActivity extends AppCompatActivity {
                         inputStream = socket.getInputStream();
                         dataInputStream = new DataInputStream(inputStream);
 
-                        //Save the input stream from the server to the communities arraylist
+                        //Save the input stream from the server
                         name[0] = dataInputStream.readUTF();
 
-                        //TODO check whether user is a moderator of these communities
+                        //Close everything
+                        dataInputStream.close();
+                        inputStream.close();
+                        dataOutputStream.close();
+                        outputStream.close();
+                        socket.close();
+
+                        //Connect to server again
+                        socket = new Socket(MainActivity.ip, MainActivity.port);
+                        outputStream = socket.getOutputStream();
+                        dataOutputStream = new DataOutputStream(outputStream);
+
+                        //Send function and google ID to server
+                        object2.put("function", "getUserModerator");
+                        object2.put("googleID", MainActivity.googleID);
+                        dataOutputStream.writeUTF(object2.toString());
+
+                        //Receive all the names of the communities that the user is a moderator of from the server
+                        inputStream = socket.getInputStream();
+                        dataInputStream = new DataInputStream(inputStream);
+
+                        //Save the input stream from the server
+                        name[1] = dataInputStream.readUTF();
 
                         //close everything
+                        dataInputStream.close();
+                        inputStream.close();
                         outputStream.close();
                         dataOutputStream.close();
                         socket.close();
@@ -160,6 +218,7 @@ public class CommunityActivity extends AppCompatActivity {
             if (name[0] != null) {
                 String[] names = name[0].split(", ");
                 MainActivity.myCommunities.clear();
+                deleteFile("myCommunities");
                 //Create buttons for each Community
                 for (String aName : names) {
                     if (Objects.equals(aName, "")) {
@@ -177,36 +236,23 @@ public class CommunityActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-            }
-        }
 
-        //Read a file to see which communities the user is a moderator of
-        File file = new File(context.getFilesDir(), "iModerator");
-        FileInputStream fileInputStream = null;
-        int length = (int) file.length();
-        byte[] bytes = new byte[length];
-
-        try {
-            fileInputStream = new FileInputStream(file);
-            //noinspection ResultOfMethodCallIgnored
-            fileInputStream.read(bytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fileInputStream != null)
-                    fileInputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        String content = new String(bytes);
-        String[] contents = content.split("\n");
-        for (String cont : contents) {
-            result = cont;
-            if (!result.equals("")) {
-                MainActivity.iModerator.add(result);
+                if (name[1] != null) {
+                    names = name[1].split(", ");
+                    MainActivity.iModerator.clear();
+                    deleteFile("iModerator");
+                    for (String aName : names) {
+                        MainActivity.iModerator.add(aName);
+                        try {
+                            String result = aName + '\n';
+                            FileOutputStream fileOutputStream = openFileOutput("iModerator", MODE_APPEND);
+                            fileOutputStream.write(result.getBytes());
+                            fileOutputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         }
 
@@ -214,7 +260,7 @@ public class CommunityActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("My Groups");
         }
 
-        ImageButton fab = (ImageButton) findViewById(R.id.fab);
+        final ImageButton fab = (ImageButton) findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -363,6 +409,36 @@ public class CommunityActivity extends AppCompatActivity {
         });
     }
 
+    //Send Invite dialog
+    public void sendInvite() {
+        final Dialog dialog = new Dialog(CommunityActivity.this);
+        dialog.setContentView(R.layout.dialog_send_invite);
+        dialog.setTitle("Title");
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        if (dialog.getWindow() != null) {
+            lp.copyFrom(dialog.getWindow().getAttributes());
+        }
+        final Button sendButton = (Button) dialog.findViewById(R.id.sendButton);
+        final EditText email = (EditText) dialog.findViewById(R.id.email);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MainActivity.server) {
+                    JSONObject object = new JSONObject();
+                    try {
+                        object.put("function", "sendInvite");
+                        object.put("googleID", MainActivity.googleID);
+                        object.put("email", email.getText());
+                        MainActivity.connectionSend(object);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -371,19 +447,21 @@ public class CommunityActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //item.setIcon(getResources().getDrawable(R.drawable.cast_ic_notification_play));
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            /*case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
-
+            */
+            case R.id.option_send_invite:
+                sendInvite();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 

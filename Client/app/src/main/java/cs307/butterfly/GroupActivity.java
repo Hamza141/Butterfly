@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,22 +35,28 @@ public class GroupActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        ArrayList<Community> communities = MainActivity.myCommunities;
+        //Check whether the user is already in the community or not
+        //If the user is in the community already, only display the leave button and vice versa
+        join.setVisibility(View.VISIBLE);
+        leave.setVisibility(View.GONE);
 
-        if (MainActivity.buffer.size() != 0) {
-            communities = MainActivity.buffer;
-        }
-
-        for (int i = 0; i < communities.size(); i++) {
-            if (communities.get(i).getName().equals(CalendarActivity.community.getName())) {
+        for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
+            if (MainActivity.myCommunities.get(i).getName().equals(CalendarActivity.community.getName())) {
                 leave.setVisibility(View.VISIBLE);
                 join.setVisibility(View.GONE);
-                return;
+                break;
             }
         }
 
-        join.setVisibility(View.VISIBLE);
-        leave.setVisibility(View.GONE);
+        if (join.getVisibility() == View.VISIBLE) {
+            for (int i = 0; i < MainActivity.buffer.size(); i++) {
+                if (MainActivity.buffer.get(i).getName().equals(CalendarActivity.community.getName())) {
+                    leave.setVisibility(View.VISIBLE);
+                    join.setVisibility(View.GONE);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -152,68 +160,34 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
 
-        join.setVisibility(View.GONE);
+        //Check whether the user is already in the community or not
+        //If the user is in the community already, only display the leave button and vice versa
+        join.setVisibility(View.VISIBLE);
         leave.setVisibility(View.GONE);
-        if (!MainActivity.myCommunities.contains(CalendarActivity.community)) {
-            join.setVisibility(View.VISIBLE);
+
+        for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
+            if (MainActivity.myCommunities.get(i).getName().equals(CalendarActivity.community.getName())) {
+                leave.setVisibility(View.VISIBLE);
+                join.setVisibility(View.GONE);
+                break;
+            }
         }
-        if (MainActivity.myCommunities.contains(CalendarActivity.community)) {
-            leave.setVisibility(View.VISIBLE);
+
+        if (join.getVisibility() == View.VISIBLE) {
+            for (int i = 0; i < MainActivity.buffer.size(); i++) {
+                if (MainActivity.buffer.get(i).getName().equals(CalendarActivity.community.getName())) {
+                    leave.setVisibility(View.VISIBLE);
+                    join.setVisibility(View.GONE);
+                    break;
+                }
+            }
         }
 
         //Join
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Create stuff for the client to connect to the app
-                final Socket[] socket = new Socket[1];
-                final OutputStream[] outputStream = new OutputStream[1];
-                final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
-                final JSONObject object = new JSONObject();
-
-                //Add user to community
-                if (MainActivity.server) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                //Connect to server
-                                socket[0] = new Socket(MainActivity.ip, MainActivity.port);
-                                outputStream[0] = socket[0].getOutputStream();
-                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-
-                                object.put("function", "addCommunityUser");
-                                object.put("communityName", CalendarActivity.community.getName());
-                                object.put("isLeader", "0");
-                                object.put("googleID", MainActivity.googleID);
-                                dataOutputStream[0].writeUTF(object.toString());
-
-                                //close everything
-                                outputStream[0].close();
-                                dataOutputStream[0].close();
-                                socket[0].close();
-
-                            } catch (IOException | JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                }
-
-                //Save community in buffer
-                MainActivity.buffer.add(CalendarActivity.community);
-
-                //Save community in myCommunities file
-                try {
-                    String result = CalendarActivity.community.getName() + '\n';
-                    FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
-                    fileOutputStream.write(result.getBytes());
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                android.os.SystemClock.sleep(500);
+                join();
 
                 //Change visibility of Join and Gone buttons
                 join.setVisibility(View.GONE);
@@ -225,80 +199,8 @@ public class GroupActivity extends AppCompatActivity {
         leave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Create stuff for the client to connect to the app
-                final Socket[] socket = new Socket[1];
-                final OutputStream[] outputStream = new OutputStream[1];
-                final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
-                final JSONObject object = new JSONObject();
-                int index = -1;
+                leave();
 
-                //Remove user to community
-                if (MainActivity.server) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                //Connect to server
-                                socket[0] = new Socket(MainActivity.ip, MainActivity.port);
-                                outputStream[0] = socket[0].getOutputStream();
-                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-
-                                object.put("function", "leaveCommunityUser");
-                                object.put("communityName", CalendarActivity.community.getName());
-                                object.put("googleID", MainActivity.googleID);
-                                dataOutputStream[0].writeUTF(object.toString());
-
-                                //close everything
-                                outputStream[0].close();
-                                dataOutputStream[0].close();
-                                socket[0].close();
-
-                            } catch (IOException | JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                }
-
-                //Get index of Community in myCommunities
-                ArrayList<Community> communities = MainActivity.myCommunities;
-
-                if (MainActivity.buffer.size() != 0) {
-                    communities = MainActivity.buffer;
-                }
-
-                for (int i = 0; i < communities.size(); i++) {
-                    if (communities.get(i).getName().equals(CalendarActivity.community.getName())) {
-                        index = i;
-                        break;
-                    }
-                }
-
-                //Remove community from myCommunities arraylist
-                communities.remove(index);
-
-                //Save new community list in myCommunities file
-                deleteFile("myCommunities");
-                try {
-                    for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
-                        String name = MainActivity.myCommunities.get(i).getName();
-                        String result = name + '\n';
-                        FileOutputStream fileOutputStream;
-                        fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
-                        fileOutputStream.write(result.getBytes());
-                        fileOutputStream.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                android.os.SystemClock.sleep(500);
-
-                if (communities == MainActivity.myCommunities) {
-                    //Remove button from buttons arraylist
-                    CommunityActivity.buttons.get(index).setVisibility(View.GONE);
-                    CommunityActivity.buttons.remove(index);
-                }
                 //Change visibility of Join and Gone buttons
                 leave.setVisibility(View.GONE);
                 join.setVisibility(View.VISIBLE);
@@ -314,5 +216,118 @@ public class GroupActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    void join() {
+        //Add user to community
+        JSONObject object = new JSONObject();
+        if (MainActivity.server) {
+            try {
+                object.put("function", "addCommunityUser");
+                object.put("communityName", CalendarActivity.community.getName());
+                object.put("isLeader", "0");
+                object.put("googleID", MainActivity.googleID);
+                MainActivity.connectionSend(object);
+
+                //Subscribe to topic
+                String topic = CalendarActivity.community.getName();
+                topic = topic.replaceAll("\\s", "_");
+                FirebaseMessaging.getInstance().subscribeToTopic(topic);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //Save community in buffer
+        MainActivity.buffer.add(CalendarActivity.community);
+
+        //Save community in myCommunities file
+        try {
+            String result = CalendarActivity.community.getName() + '\n';
+            FileOutputStream fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
+            fileOutputStream.write(result.getBytes());
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //android.os.SystemClock.sleep(500);
+    }
+
+    void leave() {
+        //Remove user from community
+        JSONObject object = new JSONObject();
+        int index = -1;
+        if (MainActivity.server) {
+            try {
+                object.put("function", "leaveCommunityUser");
+                object.put("communityName", CalendarActivity.community.getName());
+                object.put("googleID", MainActivity.googleID);
+                MainActivity.connectionSend(object);
+
+                //Unsubscribe from topic
+                String topic = CalendarActivity.community.getName();
+                topic = topic.replaceAll("\\s", "_");
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //Get index of Community in myCommunities
+        ArrayList<Community> communities = MainActivity.myCommunities;
+
+        if (MainActivity.buffer.size() != 0) {
+            communities = MainActivity.buffer;
+        }
+
+        for (int i = 0; i < communities.size(); i++) {
+            if (communities.get(i).getName().equals(CalendarActivity.community.getName())) {
+                index = i;
+                break;
+            }
+        }
+
+        //Remove community from myCommunities or buffer arraylist
+        communities.remove(index);
+
+        //Save new community list in myCommunities file
+        deleteFile("myCommunities");
+        try {
+            for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
+                String name = MainActivity.myCommunities.get(i).getName();
+                String result = name + '\n';
+                FileOutputStream fileOutputStream;
+                fileOutputStream = openFileOutput("myCommunities", MODE_APPEND);
+                fileOutputStream.write(result.getBytes());
+                fileOutputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //android.os.SystemClock.sleep(300);
+
+        //Remove community from iModerator arraylist
+        MainActivity.iModerator.remove(CalendarActivity.community.getName());
+
+        //Save new community list in iModerator file
+        deleteFile("iModerator");
+        try {
+            for (int i = 0; i < MainActivity.iModerator.size(); i++) {
+                String name = MainActivity.iModerator.get(i);
+                String result = name + '\n';
+                FileOutputStream fileOutputStream;
+                fileOutputStream = openFileOutput("iModerator", MODE_APPEND);
+                fileOutputStream.write(result.getBytes());
+                fileOutputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (communities == MainActivity.myCommunities) {
+            //Remove button from buttons arraylist
+            CommunityActivity.buttons.get(index).setVisibility(View.GONE);
+            CommunityActivity.buttons.remove(index);
+        }
     }
 }

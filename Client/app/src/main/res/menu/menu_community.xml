@@ -2,10 +2,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="cs307.butterfly.CommunityActivity">
-    <item
+
+    <!--<item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="Save Image"
+        android:title="Menu"
         app:showAsAction="always" />
+    -->
+    <item
+        android:id="@+id/option_send_invite"
+        android:title="Send Invite"/>
 </menu>

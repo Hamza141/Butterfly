@@ -90,9 +90,15 @@ public class EventsActivity extends AppCompatActivity {
             }
         });
 
+        if (!MainActivity.iModerator.contains(CalendarActivity.community.getName())) {
+            fab.hide();
+        }
+
+        /*
         if (CalendarActivity.isUser) {
             fab.hide();
         }
+        */
     }
 
     public void addEvent() {
