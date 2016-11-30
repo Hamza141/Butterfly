@@ -3,6 +3,7 @@ package cs307.butterfly;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
@@ -38,6 +39,12 @@ public class CalendarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
 
         isUser = false;
+
+        String title = community.getName();
+        title = title.concat(" Community Calendar");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
 
         //get current community's events from server
         final Socket[] socket = new Socket[1];
@@ -99,7 +106,7 @@ public class CalendarActivity extends AppCompatActivity {
                 }
             }).start();
 
-            android.os.SystemClock.sleep(1000);
+            android.os.SystemClock.sleep(500);
         }
 
         /*try {

@@ -2,6 +2,7 @@ package cs307.butterfly;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -59,6 +61,16 @@ public class EventViewerActivity extends AppCompatActivity {
                 }
             }
         }
+
+        ImageButton usersButton = (ImageButton) findViewById(R.id.view_all);
+        usersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserListActivity.isEvent = true;
+                Intent intent = new Intent(EventViewerActivity.this, UserListActivity.class);
+                startActivity(intent);
+            }
+        });
 
         Button rsvpButton = (Button) findViewById(R.id.rsvpButton);
         rsvpButton.setOnClickListener(new View.OnClickListener() {
@@ -342,34 +354,4 @@ public class EventViewerActivity extends AppCompatActivity {
     }
 }
 
-/*
-    public void editEvent(){
-        final Dialog dialog = new Dialog(EventViewerActivity.this);
-        dialog.setContentView(R.layout.dialog2);
-        dialog.setTitle("Title");
-
-        Button b = (Button) dialog.findViewById(R.id.ok1);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText nameEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput);
-                String name=nameEdit.getText().toString();
-             //   EditText timeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInputTime);
-             //   String time=timeEdit.getText().toString();
-                EditText placeEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput11);
-                String place=placeEdit.getText().toString();
-                EditText descriptionEdit=(EditText)dialog.findViewById(R.id.editTextDialogUserInput222);
-                String description=descriptionEdit.getText().toString();
-                EventViewerActivity.event.editInfo(name, place, description, "10:30 am");
-                CharSequence eventSequence = event.toString().subSequence(0, event.toString().length());
-                TextView textView = (TextView) findViewById(R.id.textView);
-                textView.setText(eventSequence);
-                getSupportActionBar().setTitle(event.getName());
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
-}
-*/
 

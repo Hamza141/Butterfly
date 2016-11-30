@@ -88,7 +88,7 @@ public class BoardActivity extends AppCompatActivity {
         }
 
         for (int i = 0; i < messages.size(); i++) {
-            addMessage(messages.get(i));
+            addMessage(messages.get(i) + "\n");
         }
 
         final ImageButton sendButton = (ImageButton) findViewById(R.id.sendButton);
@@ -159,7 +159,8 @@ public class BoardActivity extends AppCompatActivity {
                         android.os.SystemClock.sleep(300);
 
                     }
-                    addMessage(finalPost);
+                    fullPost = fullPost.concat("\n");
+                    addMessage(fullPost);
 
                     //clear text from EditText
                     editBoardPost.setText("");
