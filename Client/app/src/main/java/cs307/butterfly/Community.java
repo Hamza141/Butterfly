@@ -9,7 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 class Community {
-    private ArrayList<CommunityEvent> communityEvents;
+    ArrayList<CommunityEvent> communityEvents;
     private String name;
 
     Community(String name) {
