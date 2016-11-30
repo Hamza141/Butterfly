@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="cs307.butterfly.BoardActivity">
+    tools:context="cs307.butterfly.UserListActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -18,11 +18,29 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Community Board"
             app:titleTextColor="@color/cast_expanded_controller_background_color" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_board" />
+    <include layout="@layout/content_user_list" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Button" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

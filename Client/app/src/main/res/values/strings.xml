@@ -44,4 +44,5 @@
     <string name="discover">Discover</string>
     <string name="leave">Leave</string>
     <string name="welcome_to_the_community_board">Welcome to the community board!</string>
+    <string name="title_activity_user_list">UserListActivity</string>
 </resources>
