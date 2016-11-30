@@ -57,6 +57,8 @@ class Server extends Thread {
         serverSocket = new ServerSocket(port);
     }
     public void run() {
+        //TODO convert to accept connection outside and pass parameters to new threads
+        //TODO send data notification for invitation to private community, title = "you have been invited", body = "youve been invited to COMMUNITY BY", communityName = communityName
         System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
         while (true) {
             try {
@@ -173,6 +175,7 @@ class Server extends Thread {
                         default:
                             System.out.println("default " + obj.toString());
                     }
+                    break;
                 }
             } catch (ParseException | IOException | SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -367,8 +370,10 @@ class Server extends Thread {
 
     private void addMessage(JSONObject obj) {
         String communityName = (String) obj.get("communityName");
-        communityName = communityName.replaceAll("\\s", "_"); communityName += "_Board";
-        String name = (String) obj.get("name"); String message = (String) obj.get("message");
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Board";
+        String message = (String) obj.get("message");
+        String name = message.split(":")[0];
         try {
             sql = "INSERT INTO " + communityName
                     + " (pinned, name, date, message) VALUES(?, ?, ?, ?)";
@@ -672,6 +677,11 @@ class Server extends Thread {
     private void genericNotification(String to, String message, String title) {
         JSONObject notification = new JSONObject();
         JSONObject parent = new JSONObject();
+        JSONObject data = new JSONObject();
+        data.put("body", "aiuosdfhuiashdfuioasduiof");
+        data.put("title", title);
+        data.put("communityName", "Hahahaha ");
+        parent.put("data", data);
         notification.put("body", message);
         notification.put("title", title);
         parent.put("to", to);
@@ -700,18 +710,28 @@ class Server extends Thread {
     }
 
     private void getCommunityUsers(String communityName) {
+        //TODO test
         communityName += "_Users";
         try {
-            sql = "SELECT * FROM " + communityName;
+            sql = "SELECT COUNT(*) FROM " + communityName;
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            JSONObject obj;
-            while (rs.next()) {
-                obj = new JSONObject();
-                obj.put("idUsers", rs.getString("idUsers"));
-                obj.put("googleID", rs.getString("googleID"));
-                out.writeUTF(obj.toString());
-                System.out.println(obj.toString());
+            if (rs.next()) {
+                if (rs.getInt(1) > 0) {
+                    System.out.println("Users in community " + Integer.toString(rs.getInt(1)));
+                    out.writeUTF(Integer.toString(rs.getInt(1)));
+                    sql = "SELECT * FROM " + communityName;
+                    ps = conn.prepareStatement(sql);
+                    rs = ps.executeQuery();
+                    JSONObject obj;
+                    while (rs.next()) {
+                        obj = new JSONObject();
+                        obj.put("firstName", rs.getString("firstName"));
+                        obj.put("lastName", rs.getString("lastName"));
+                        out.writeUTF(obj.toString());
+                        System.out.println(obj.toString());
+                    }
+                }
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
@@ -763,6 +783,22 @@ class Server extends Thread {
         }
     }
 
+    private String getIdUsers(String googleID) {
+        try {
+            sql = "SELECT idUsers FROM Users WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println(rs.getString("idUsers"));
+                return rs.getString("idUsers");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "0";
+    }
     private String getInstanceID(String googleID) {
         //function passed to genericNotification
         try {
@@ -854,7 +890,23 @@ class Server extends Thread {
             String list;
             if (rs.next()) {
                 list = rs.getString("listAttendees");
-                out.writeUTF(list);
+                StringBuilder namesList = new StringBuilder();
+                ArrayList<String> ids = new ArrayList<>(Arrays.asList(list.split(", ")));
+                //out.writeUTF(Integer.toString(ids.size()));
+                for (String id: ids) {
+                    sql = "SELECT * FROM Users WHERE googleID = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, id);
+                    System.out.println(ps);
+                    rs = ps.executeQuery();
+                    if (rs.next()) {
+                        namesList.append(rs.getString("firstName"));
+                        namesList.append(" ");
+                        namesList.append(rs.getString("lastName"));
+                        namesList.append(", ");
+                    }
+                }
+                out.writeUTF(namesList.toString());
                 System.out.println("sent " + list);
             } else {
                 out.writeUTF("");
@@ -1105,8 +1157,10 @@ class Server extends Thread {
         JSONObject notification = new JSONObject();
         JSONObject parent = new JSONObject();
         notification.put("body", name + " has posted a new message");
-        notification.put("title", "New Message");
+        notification.put("title", "New Message in " + community + " by " + name);
         data.put("body", message);
+        data.put("title", "New Message in " + community + " by " + name);
+        data.put("communityName", community);
         parent.put("to", "/topics/" + community);
         parent.put("notification", notification);
         parent.put("data", data);
@@ -1119,7 +1173,6 @@ class Server extends Thread {
         table for specified event.
      */
     private void rsvpEvent(JSONObject obj) {
-        //TODO test
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
@@ -1152,7 +1205,6 @@ class Server extends Thread {
         string "1" if found and "0" otherwise.
      */
     private void rsvpCheck(JSONObject obj) {
-        //TODO test
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
@@ -1187,7 +1239,6 @@ class Server extends Thread {
         for an event if a user removes rsvp from event.
      */
     private void rsvpEventRemove(JSONObject obj) {
-        //TODO test
         String communityName = (String) obj.get("communityName");
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
@@ -1455,11 +1506,12 @@ class Server extends Thread {
             br.close();
             isr.close();
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-40ec2c75b546.json"))
-                    .setDatabaseUrl("butterfly-145620.firebaseio.com/")
-                    .build();
+                .setServiceAccount(new FileInputStream("/home/khanh/Butterfly-40ec2c75b546.json"))
+                .setDatabaseUrl("butterfly-145620.firebaseio.com/")
+                .build();
             FirebaseApp.initializeApp(options);
             Thread t = new Server(3300);
+            System.out.println("new thread");
             t.start();
         } catch (IOException e) {
             e.printStackTrace();
