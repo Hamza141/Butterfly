@@ -13,4 +13,7 @@
     <item
         android:id="@+id/option_send_invite"
         android:title="Send Invite"/>
+    <item
+        android:id="@+id/option_sign_in_again"
+        android:title="Sign in again"/>
 </menu>

@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    String [] connectionReceiveStrings() {
-        String [] strings;
+    String[] connectionReceiveStrings() {
+        String[] strings;
         final String[] string = new String[1];
         final Socket[] socket = new Socket[1];
         final InputStream[] inputStream = new InputStream[1];
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         return strings;
     }
 
-    static ArrayList <JSONObject> connectionReceiveJSONObjects() {
+    static ArrayList<JSONObject> connectionReceiveJSONObjects() {
         final ArrayList<JSONObject> jsonObjects = new ArrayList<>();
         final InputStream[] inputStream = new InputStream[1];
         final DataInputStream[] dataInputStream = new DataInputStream[1];
@@ -169,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
         return jsonObjects;
     }
 
-    String [] readFile(String string) {
-        String [] strings;
+    String[] readFile(String string) {
+        String[] strings;
         File file = new File(this.getFilesDir(), string);
         FileInputStream fileInputStream = null;
         int length = (int) file.length();
@@ -180,8 +180,7 @@ public class MainActivity extends AppCompatActivity {
             fileInputStream = new FileInputStream(file);
             fileInputStream.read(bytes);
             fileInputStream.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

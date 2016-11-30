@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -181,6 +182,16 @@ public class LoginActivity extends AppCompatActivity implements
                 personPhoto = acct.getPhotoUrl();
                 Picasso.with(this).load(personPhoto).into((ImageView) findViewById(R.id.imageView3));
 
+                try {
+                    //Store googleID in file
+                    deleteFile("googleID");
+                    FileOutputStream fileOutputStream = openFileOutput("googleID", MODE_APPEND);
+                    fileOutputStream.write(MainActivity.googleID.getBytes());
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 //Set status to "Signed in as ..."
                 status.setText(getString(R.string.signed_in_fmt, personName));
                 status.setVisibility(View.VISIBLE);
@@ -245,7 +256,7 @@ public class LoginActivity extends AppCompatActivity implements
         //Google Sign in Failed
         status.setText(R.string.google_sign_in_error);
         status.setVisibility(View.VISIBLE);
-     //   findViewById(R.id.imageView2).setVisibility(View.GONE);
+        //   findViewById(R.id.imageView2).setVisibility(View.GONE);
         findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
         findViewById(R.id.sign_out_button).setVisibility(View.GONE);
     }
@@ -282,18 +293,20 @@ public class LoginActivity extends AppCompatActivity implements
             //Check if app is in online mode and if everything was successful
             if ((MainActivity.server && !failed) || (failed && !MainActivity.server)) {
                 Intent intent = new Intent(this, CommunityActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                finish();
             } else {
                 //Either server was offline or the connection to the server failed
                 status.setText(R.string.server_not_found);
             }
-          //  findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
+            findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         } else {
             status.setText(R.string.signed_out);
             status.setVisibility(View.VISIBLE);
-          //  findViewById(R.id.imageView2).setVisibility(View.GONE);
+            findViewById(R.id.imageView2).setVisibility(View.GONE);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }

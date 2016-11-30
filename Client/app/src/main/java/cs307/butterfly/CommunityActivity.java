@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,6 +61,37 @@ public class CommunityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        //Check whether the user has a googleID stored locally
+        File file = new File(context.getFilesDir(), "googleID");
+        FileInputStream fileInputStream = null;
+        int length = (int) file.length();
+        byte[] bytes = new byte[length];
+        try {
+            fileInputStream = new FileInputStream(file);
+            //noinspection ResultOfMethodCallIgnored
+            fileInputStream.read(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fileInputStream != null)
+                    fileInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        String content = new String(bytes);
+        String[] contents = content.split("\n");
+
+        if (contents[0].isEmpty()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            MainActivity.googleID = contents[0];
+        }
+
         setContentView(R.layout.activity_community);
 
         if (getSupportActionBar() != null) {
@@ -81,11 +113,10 @@ public class CommunityActivity extends AppCompatActivity {
 
         if (!MainActivity.server) {
             //Read a file to see which communities the user is already a part of
-            File file = new File(context.getFilesDir(), "myCommunities");
-            FileInputStream fileInputStream = null;
-            int length = (int) file.length();
-            byte[] bytes = new byte[length];
-
+            file = new File(context.getFilesDir(), "myCommunities");
+            fileInputStream = null;
+            length = (int) file.length();
+            bytes = new byte[length];
 
             try {
                 fileInputStream = new FileInputStream(file);
@@ -102,8 +133,8 @@ public class CommunityActivity extends AppCompatActivity {
                 }
             }
 
-            String content = new String(bytes);
-            String[] contents = content.split("\n");
+            content = new String(bytes);
+            contents = content.split("\n");
             for (String cont : contents) {
                 result = cont;
                 if (!result.equals("")) {
@@ -208,7 +239,8 @@ public class CommunityActivity extends AppCompatActivity {
                         dataOutputStream.close();
                         socket.close();
                     } catch (IOException | JSONException e) {
-                        Log.d("Exception", "I knew it");
+                        errorToast();
+                        Log.d("Exception", "Error: Server might be offline");
                         e.printStackTrace();
                     }
                 }
@@ -381,6 +413,15 @@ public class CommunityActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void errorToast() {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast toast = Toast.makeText(context, "Error: Server might be offline", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+    }
+
     public void addButton(final Community community) {
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -391,7 +432,7 @@ public class CommunityActivity extends AppCompatActivity {
         buttons.add(b1);
         b1.setLayoutParams(params);
         b1.setBackgroundColor(Color.rgb(255 - randomno.nextInt(50), 255 - randomno.nextInt(30), 255));
-        b1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.cake, 0, 0, 0);
+        b1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_home, 0, 0, 0);
         b1.setPadding(150, 0, 0, 0);
         b1.setText(community.getName());
         b1.setTextSize(18);
@@ -458,11 +499,13 @@ public class CommunityActivity extends AppCompatActivity {
             case R.id.option_send_invite:
                 sendInvite();
                 return true;
+            case R.id.option_sign_in_again:
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivityForResult(intent, 0);
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }
