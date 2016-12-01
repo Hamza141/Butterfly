@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements
         //Sign in to Google was successful
         if (result.isSuccess()) {
 
-            GoogleSignInAccount acct = result.getSignInAccount();
+            final GoogleSignInAccount acct = result.getSignInAccount();
             //Google account is not null
 
             if (acct != null) {
@@ -218,6 +218,7 @@ public class LoginActivity extends AppCompatActivity implements
                                 object.put("firstName", personGivenName);
                                 object.put("lastName", personFamilyName);
                                 object.put("googleID", MainActivity.googleID);
+                                object.put("pictureURL", acct.getPhotoUrl());
                                 dataOutputStream[0].writeUTF(object.toString());
 
                                 //android.os.SystemClock.sleep(300);
