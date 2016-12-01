@@ -3,12 +3,15 @@ package cs307.butterfly;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -21,11 +24,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GroupActivity extends AppCompatActivity {
     final Context context = this;
     @SuppressWarnings("SpellCheckingInspection")
     public static String theguy;
+    Random randomno = new Random();
+    Dialog dialog;
     Button profile4, profile3, profile2, profile1, profile;
     //Join and Leave
     Button join;
@@ -39,6 +45,8 @@ public class GroupActivity extends AppCompatActivity {
         //If the user is in the community already, only display the leave button and vice versa
         join.setVisibility(View.VISIBLE);
         leave.setVisibility(View.GONE);
+
+
 
         for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
             if (MainActivity.myCommunities.get(i).getName().equals(CalendarActivity.community.getName())) {
@@ -73,6 +81,8 @@ public class GroupActivity extends AppCompatActivity {
         join = (Button) findViewById(R.id.join);
         leave = (Button) findViewById(R.id.leave);
 
+
+
         //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         ImageButton button12 = (ImageButton) findViewById(R.id.tocalender);
         // fab.setImageResource(R.drawable.calendar);
@@ -89,7 +99,7 @@ public class GroupActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Dialog dialog = new Dialog(GroupActivity.this);
+                dialog = new Dialog(GroupActivity.this);
 
                 dialog.setContentView(R.layout.dialog3);
                 dialog.setTitle("Title");
@@ -102,63 +112,31 @@ public class GroupActivity extends AppCompatActivity {
                 lp.height = WindowManager.LayoutParams.MATCH_PARENT;
 
                 dialog.getWindow().setAttributes(lp);
-                profile = (Button) dialog.findViewById(R.id.button3);
+                //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-                profile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        GroupActivity.theguy = profile.getText().toString();
-                        Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
-                        startActivity(intent);
-                    }
-                });
-                profile1 = (Button) dialog.findViewById(R.id.button4);
-
-                profile1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        GroupActivity.theguy = profile1.getText().toString();
-                        Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
-                        startActivity(intent);
-                    }
-                });
-
-                profile2 = (Button) dialog.findViewById(R.id.button5);
-
-                profile2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        GroupActivity.theguy = profile2.getText().toString();
-                        Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
-                        startActivity(intent);
-                    }
-                });
-
-
-                profile3 = (Button) dialog.findViewById(R.id.button6);
-
-                profile3.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        GroupActivity.theguy = profile3.getText().toString();
-                        Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
-                        startActivity(intent);
-                    }
-                });
-
-                profile4 = (Button) dialog.findViewById(R.id.button8);
-
-                profile4.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        GroupActivity.theguy = profile4.getText().toString();
-                        Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
-                        startActivity(intent);
-                    }
-                });
                 dialog.show();
+                addButton("derp");
+                addButton("derp1");
+                addButton("derp21");
+                addButton("derp13");
+                addButton("derp41");
+                addButton("derp11");
+                addButton("derp11");
+
+
+                ImageButton check = (ImageButton) dialog.findViewById(R.id.check);
+                // fab.setImageResource(R.drawable.calendar);
+
+                check.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
             }
         });
+
+
 
         //Check whether the user is already in the community or not
         //If the user is in the community already, only display the leave button and vice versa
@@ -329,5 +307,36 @@ public class GroupActivity extends AppCompatActivity {
             CommunityActivity.buttons.get(index).setVisibility(View.GONE);
             CommunityActivity.buttons.remove(index);
         }
+    }
+
+
+
+    public void addButton(final String namex ) {
+        LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.linearfriend);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                Toolbar.LayoutParams.MATCH_PARENT, 220);
+        params.setMargins(0, 0, 0, 8);
+
+        final Button b1 = new Button(this);
+       // buttons.add(b1);
+        b1.setLayoutParams(params);
+        b1.setBackgroundColor(Color.rgb(255 - randomno.nextInt(50), 255 - randomno.nextInt(30), 255));
+        b1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.person, 0, 0, 0);
+        b1.setPadding(150, 0, 0, 0);
+        b1.setText(namex);
+        b1.setTextSize(18);
+        b1.setTextColor(Color.rgb(0, 0, 0));
+        //android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
+
+        ll.addView(b1);
+        final Intent intent = new Intent(this, GroupActivity.class);
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               GroupActivity.theguy = namex;
+                Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
