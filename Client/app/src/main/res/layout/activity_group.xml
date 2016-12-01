@@ -27,10 +27,14 @@
         android:layout_height="match_parent"
         android:layout_marginTop="60dp"
         android:layout_marginBottom="130dp"
-        android:background="@color/wallet_dim_foreground_holo_dark"
+        android:background="@color/wallet_bright_foreground_holo_dark"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:paddingLeft="10dp">
+        android:paddingLeft="10dp"
+        android:elevation="5dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <LinearLayout
             android:id="@+id/boardLayout2"
@@ -108,7 +112,8 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="78dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:elevation="5dp" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -122,6 +127,7 @@
         android:layout_alignBottom="@+id/editBoardPost"
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="74dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:elevation="5dp" />
 
 </android.support.design.widget.CoordinatorLayout>
