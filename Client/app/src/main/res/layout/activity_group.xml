@@ -108,7 +108,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/send"
         android:id="@+id/sendButton"
-        android:backgroundTint="#fff081"
+        android:backgroundTint="#ffffff"
         android:backgroundTintMode="src_atop"
         android:layout_alignTop="@+id/editBoardPost"
         android:layout_alignEnd="@+id/editBoardPost"
