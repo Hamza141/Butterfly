@@ -734,5 +734,4 @@ public class GroupActivity extends AppCompatActivity {
 
         dialog.show();
     }
-
 }
