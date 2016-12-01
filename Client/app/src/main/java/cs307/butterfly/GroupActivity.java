@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Calendar;
 
@@ -117,6 +118,17 @@ public class GroupActivity extends AppCompatActivity {
                 Context context = getApplicationContext();
                 CharSequence text = "Group Notified!";
                 int duration = Toast.LENGTH_SHORT;
+
+                JSONObject object = new JSONObject();
+                try {
+                    object.put("function", "groupNotification");
+                    object.put("communityName", CalendarActivity.community.getName());
+                    object.put("name", MainActivity.fullName);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                MainActivity.connectionSend(object);
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
@@ -702,19 +714,20 @@ public class GroupActivity extends AppCompatActivity {
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
-                /*
+
                 if (MainActivity.server) {
                     JSONObject object = new JSONObject();
                     try {
-                        object.put("function", "sendInvite");
-                        object.put("googleID", MainActivity.googleID);
-                        object.put("email", email.getText());
+                        object.put("function", "inviteNotification");
+                        object.put("name", MainActivity.fullName);
+                        object.put("communityName", CalendarActivity.community.getName());
+                        object.put("googleID", email.getText());
                         MainActivity.connectionSend(object);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                */
+
                 dialog.dismiss();
             }
         });
