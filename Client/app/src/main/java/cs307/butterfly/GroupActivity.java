@@ -532,4 +532,66 @@ public class GroupActivity extends AppCompatActivity {
         textView.setLayoutParams(layoutParams);
         linearLayout.addView(textView);
     }
+
+    private void refreshMessages() {
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.boardLayout2);
+        if (linearLayout.getChildCount() > 0) {
+            linearLayout.removeAllViews();
+        }
+        messages = new ArrayList<>();
+
+        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        Log.d("BoardActivity", "created");
+
+        final Socket[] socket = new Socket[1];
+        final OutputStream[] outputStream = new OutputStream[1];
+        final InputStream[] inputStream = new InputStream[1];
+        final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
+        final DataInputStream[] dataInputStream = new DataInputStream[1];
+        final JSONObject object = new JSONObject();
+
+        if (MainActivity.server) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        socket[0] = new Socket(MainActivity.ip, 3300);
+                        outputStream[0] = socket[0].getOutputStream();
+                        dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                        object.put("function", "getMessages");
+                        object.put("communityName", CalendarActivity.community.getName());
+                        dataOutputStream[0].writeUTF(object.toString());
+
+                        inputStream[0] = socket[0].getInputStream();
+                        dataInputStream[0] = new DataInputStream(inputStream[0]);
+
+                        int numMessages = Integer.parseInt(dataInputStream[0].readUTF());
+
+                        for (int i = 0; i < numMessages; i++) {
+                            JSONObject jsonMessage = new JSONObject(dataInputStream[0].readUTF());
+                            String message = (String) jsonMessage.get("message");
+                            Log.d("MESSAGE", message);
+                            messages.add(message);
+                        }
+
+                        outputStream[0].close();
+                        dataOutputStream[0].close();
+                        inputStream[0].close();
+                        dataInputStream[0].close();
+                        socket[0].close();
+
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+            android.os.SystemClock.sleep(300);
+
+        }
+
+        for (int i = 0; i < messages.size(); i++) {
+            addMessage(messages.get(i) + "\n");
+        }
+    }
 }
