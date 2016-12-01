@@ -53,16 +53,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         JSONObject object = new JSONObject(remoteMessage.getData());
         String title = "";
-        String communtiyName = "";
+        String communityName = "";
         try {
             title = (String) object.get("title");
-            communtiyName = (String) object.get("communityName");
+            communityName = (String) object.get("communityName");
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        sendNotification(title, remoteMessage.getNotification().getBody(), communtiyName);
+        if (title.equals("New Message")) {
+            //todo make new function
+            //sendNotification(title, );
+        }
+
+        sendNotification(title, remoteMessage.getNotification().getBody(), communityName);
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
