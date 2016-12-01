@@ -37,6 +37,7 @@ public class GroupActivity extends AppCompatActivity {
     final Context context = this;
     @SuppressWarnings("SpellCheckingInspection")
     public static String theguy;
+    public static ArrayList<String> userNames;
     Random randomno = new Random();
     Dialog dialog;
     Button profile4, profile3, profile2, profile1, profile;
@@ -49,6 +50,7 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        userNames = new ArrayList<>();
 
         //Check whether the user is already in the community or not
         //If the user is in the community already, only display the leave button and vice versa
@@ -79,6 +81,8 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        userNames = new ArrayList<>();
 
         setContentView(R.layout.activity_group);
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -124,13 +128,55 @@ public class GroupActivity extends AppCompatActivity {
                 //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
                 dialog.show();
-                addButton("derp");
-                addButton("derp1");
-                addButton("derp21");
-                addButton("derp13");
-                addButton("derp41");
-                addButton("derp11");
-                addButton("derp11");
+                if (MainActivity.server) {
+                    final Socket[] socket = new Socket[1];
+                    final OutputStream[] outputStream = new OutputStream[1];
+                    final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
+                    final InputStream[] inputStream = new InputStream[1];
+                    final DataInputStream[] dataInputStream = new DataInputStream[1];
+                    final JSONObject object = new JSONObject();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                socket[0] = new Socket(MainActivity.ip, 3300);
+                                outputStream[0] = socket[0].getOutputStream();
+                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+
+                                object.put("function", "getCommunityUsers");
+                                object.put("communityName", CalendarActivity.community.getName());
+
+                                dataOutputStream[0].writeUTF(object.toString());
+
+                                inputStream[0] = socket[0].getInputStream();
+                                dataInputStream[0] = new DataInputStream(inputStream[0]);
+
+                                Integer numMembers = Integer.parseInt(dataInputStream[0].readUTF());
+
+                                for (int i = 0; i < numMembers; i++) {
+                                    JSONObject jsonUser = new JSONObject(dataInputStream[0].readUTF());
+                                    String firstName = jsonUser.getString("firstName");
+                                    String lastName = jsonUser.getString("lastName");
+                                    String userName = firstName + " " + lastName;
+                                    userNames.add(userName);
+                                }
+
+                                socket[0].close();
+                                outputStream[0].close();
+                                dataOutputStream[0].close();
+                                inputStream[0].close();
+                                dataInputStream[0].close();
+
+                            } catch (JSONException | IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }
+
+                for (int i = 0; i < userNames.size(); i++) {
+                    addButton(userNames.get(i));
+                }
 
 
                 ImageButton check = (ImageButton) dialog.findViewById(R.id.check);
