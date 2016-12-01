@@ -7,48 +7,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="1">
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="75dp"
+        android:id="@+id/nestedScrollView">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/linearfriend"
             android:layout_width="match_parent"
-            android:layout_height="454dp"
-            android:weightSum="1">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <Button
-                android:text="Jon Scott"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/button3"
-                android:drawableStart="@drawable/person"/>
-
-            <Button
-                android:text="Joe Smith"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/button4"
-                android:drawableStart="@drawable/person"/>
-
-            <Button
-                android:text="Jane Doe"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/button5"
-                android:drawableStart="@drawable/person"/>
-
-            <Button
-                android:text="Brandon Guy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/button6"
-                android:drawableStart="@drawable/person"/>
-
-            <Button
-                android:text="Blue Man"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/button8"
-                android:drawableStart="@drawable/person"/>
         </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <ImageButton
         android:src="@drawable/add1"
@@ -58,22 +30,25 @@
         android:id="@+id/invite"
         android:layout_gravity="bottom|left"
         android:layout_alignParentTop="true"
+        android:background="@android:color/holo_blue_dark"
 
         android:drawablePadding="-15sp"/>
 
-    <ImageButton
+        <ImageButton
 
-        android:layout_width="103dp"
-        android:layout_height="71dp"
-        android:id="@+id/check"
-        android:text="Alerts"
-        android:layout_gravity="bottom|right"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/check"
-
-
-        />
+            android:layout_width="103dp"
+            android:layout_height="71dp"
+            android:id="@+id/check"
+            android:text="Alerts"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/check"
+            android:background="@android:color/holo_blue_dark"
 
 
-</android.support.design.widget.CoordinatorLayout>
+            app:layout_anchor="@+id/nestedScrollView"
+            app:layout_anchorGravity="bottom|right" />
+
+
+    </android.support.design.widget.CoordinatorLayout>
 

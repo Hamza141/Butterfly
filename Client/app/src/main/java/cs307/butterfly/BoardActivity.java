@@ -22,12 +22,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class BoardActivity extends AppCompatActivity {
 
+    public static ArrayList<String> messages;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        messages = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -63,7 +67,8 @@ public class BoardActivity extends AppCompatActivity {
                         for (int i = 0; i < numMessages; i++) {
                             JSONObject jsonMessage = new JSONObject(dataInputStream[0].readUTF());
                             String message = (String) jsonMessage.get("message");
-                            addMessage(message);
+                            Log.d("MESSAGE", message);
+                            messages.add(message);
                         }
 
                         outputStream[0].close();
@@ -82,6 +87,10 @@ public class BoardActivity extends AppCompatActivity {
 
         }
 
+        for (int i = 0; i < messages.size(); i++) {
+            addMessage(messages.get(i) + "\n");
+        }
+
         final ImageButton sendButton = (ImageButton) findViewById(R.id.sendButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +99,7 @@ public class BoardActivity extends AppCompatActivity {
                 String postString = editBoardPost.getText().toString();
                 if (!postString.equals("")) {
 
-                    String fullPost = MainActivity.firstName;
+                    String fullPost = MainActivity.fullName;
                     fullPost = fullPost.concat(": ");
                     fullPost = fullPost.concat(postString);
 
@@ -119,15 +128,16 @@ public class BoardActivity extends AppCompatActivity {
                                     String minute = String.valueOf(calendar.get(Calendar.MINUTE));
 
                                     String date = year;
-                                    date.concat("-");
-                                    date.concat(month);
-                                    date.concat("-");
-                                    date.concat(day);
+                                    date = date.concat("-");
+                                    date = date.concat(month);
+                                    date = date.concat("-");
+                                    date = date.concat(day);
 
                                     String time = hour;
-                                    time.concat(":");
-                                    time.concat(minute);
+                                    time = time.concat(":");
+                                    time = time.concat(minute);
 
+                                    object.put("function", "addMessage");
                                     object.put("message", finalPost);
                                     object.put("date", date);
                                     object.put("time", time);
@@ -138,8 +148,6 @@ public class BoardActivity extends AppCompatActivity {
 
                                     outputStream[0].close();
                                     dataOutputStream[0].close();
-                                    inputStream[0].close();
-                                    dataInputStream[0].close();
                                     socket[0].close();
 
                                 } catch (IOException | JSONException e) {
@@ -151,7 +159,8 @@ public class BoardActivity extends AppCompatActivity {
                         android.os.SystemClock.sleep(300);
 
                     }
-                    addMessage(finalPost);
+                    fullPost = fullPost.concat("\n");
+                    addMessage(fullPost);
 
                     //clear text from EditText
                     editBoardPost.setText("");
@@ -168,6 +177,7 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     private void addMessage(String message) {
+        Log.d("GET MESSAGES", "working");
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.boardLayout);
         TextView textView = new TextView(this);
         textView.setText(message);

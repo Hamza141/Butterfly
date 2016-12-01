@@ -65,24 +65,13 @@
         android:layout_above="@+id/logTokenButton"
         android:layout_alignParentStart="true" />
 
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/status"
-        android:layout_alignBaseline="@+id/ip"
-        android:layout_alignBottom="@+id/ip"
-        android:layout_alignParentEnd="true" />
-
     <Button
-        android:text="Token"
+        android:text="@string/change"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/logTokenButton"
-        android:layout_above="@+id/check_server"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/setIP" />
+        android:id="@+id/ipButton"
+        android:layout_alignTop="@+id/setIP"
+        android:layout_toStartOf="@+id/imageView3" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -92,16 +81,27 @@
         android:ems="10"
         android:id="@+id/setIP"
         tools:ignore="LabelFor"
+        android:maxLength="15"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/check_server" />
+        android:layout_toEndOf="@+id/ipButton"
+        android:phoneNumber="false" />
 
-    <Button
-        android:text="@string/change"
+    <TextView
+        android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ipButton"
-        android:layout_alignTop="@+id/setIP"
-        android:layout_toStartOf="@+id/imageView3" />
+        android:gravity="center"
+        android:text="@string/status"
+        android:layout_above="@+id/logTokenButton"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Token"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logTokenButton"
+        android:layout_above="@+id/check_server"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

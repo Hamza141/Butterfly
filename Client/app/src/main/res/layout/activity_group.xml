@@ -24,40 +24,26 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="437dp"
-        android:layout_marginTop="60dp">
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="130dp"
+        android:background="@color/wallet_bright_foreground_holo_dark"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingLeft="10dp"
+        android:elevation="5dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <LinearLayout
-            android:id="@+id/linear"
+            android:id="@+id/boardLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_to_the_community_board" />
-
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapview"
-                android:layout_width="match_parent"
-                android:layout_height="232dp" />
-
         </LinearLayout>
     </ScrollView>
-
-    <ImageButton
-        android:id="@+id/view_all"
-        android:layout_width="105dp"
-        android:layout_height="71dp"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="bottom|left"
-        android:background="@android:color/holo_red_light"
-        android:drawablePadding="-15sp"
-        android:src="@drawable/buddy"
-        android:text="@string/discover"
-        tools:ignore="RtlHardcoded" />
 
     <ImageButton
         android:id="@+id/tocalender"
@@ -71,23 +57,17 @@
 
     <ImageButton
 
-        android:id="@+id/view_all1"
+        android:id="@+id/notify"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_gravity="bottom|center"
-        android:background="@android:color/darker_gray"
+        android:background="@android:color/holo_red_light"
         android:drawablePadding="-15sp"
         android:src="@drawable/alertx"
         android:text="@string/alerts"
 
         />
-
-    <Button
-        android:id="@+id/uglyAssButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
 
     <Button
         android:text="@string/leave"
@@ -104,6 +84,50 @@
         android:layout_height="wrap_content"
         android:text="@string/join"
         android:layout_gravity="top|center_horizontal" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+        android:ems="10"
+        android:paddingEnd="55dp"
+        android:paddingStart="10dp"
+        android:background="@android:color/background_light"
+        android:hint="Write a new post"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:id="@+id/editBoardPost"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="78dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:elevation="5dp" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/send"
+        android:id="@+id/sendButton"
+        android:backgroundTint="#fff081"
+        android:backgroundTintMode="src_atop"
+        android:layout_alignTop="@+id/editBoardPost"
+        android:layout_alignEnd="@+id/editBoardPost"
+        android:layout_alignBottom="@+id/editBoardPost"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="74dp"
+        android:layout_marginRight="10dp"
+        android:elevation="5dp" />
+
+    <ImageButton
+        android:id="@+id/view_all"
+        android:layout_width="105dp"
+        android:layout_height="71dp"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="bottom|left"
+        android:background="@android:color/holo_blue_dark"
+        android:drawablePadding="-15sp"
+        android:src="@drawable/buddy"
+        android:text="@string/discover"
+        tools:ignore="RtlHardcoded" />
 
 </android.support.design.widget.CoordinatorLayout>

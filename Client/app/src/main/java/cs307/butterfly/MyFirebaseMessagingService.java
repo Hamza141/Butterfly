@@ -1,5 +1,6 @@
 package cs307.butterfly;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -11,6 +12,9 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
@@ -47,6 +51,31 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
+        JSONObject object = new JSONObject(remoteMessage.getData());
+        String title = "";
+        String communityName = "";
+        try {
+            title = (String) object.get("title");
+            communityName = (String) object.get("communityName");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        /*if (title.equals("New Message")) {
+            String body = "";
+            try {
+                body = (String) object.get("body");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            sendData(title, body, communityName);
+        }*/
+
+        if (!remoteMessage.getNotification().getBody().contains(MainActivity.fullName)) {
+            sendNotification(title, remoteMessage.getNotification().getBody(), communityName);
+        }
+
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
@@ -57,16 +86,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+    private void sendNotification(String messageTitle, String messageBody, String communityName) {
+        Intent intent = null;
+        PendingIntent pendingIntent = null;
+        if (communityName.isEmpty()) {
+            intent = new Intent(this, MainActivity.class);
+            pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */,
+                    intent, PendingIntent.FLAG_ONE_SHOT);
+        }
+        else {
+            CalendarActivity.community = new Community(communityName);
+            intent = new Intent(this, GroupActivity.class);
+            pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */,
+                    intent, PendingIntent.FLAG_ONE_SHOT);
+        }
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+        //        PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.cast_ic_notification_small_icon)
-                .setContentTitle("FCM Message")
+                .setSmallIcon(R.drawable.butterfly)
+                .setContentTitle(messageTitle)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)

@@ -1,5 +1,6 @@
 package cs307.butterfly;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,14 +11,12 @@ import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.*;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +28,7 @@ public class CalendarActivity extends AppCompatActivity {
     public static Date date;
     public static ArrayList<SpannableString> eventsButtons = new ArrayList<>();
     public static Community community;
+    @SuppressLint("StaticFieldLeak")
     public static EventCalendarView ecv;
     public static boolean isUser;
 
@@ -38,7 +38,13 @@ public class CalendarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
 
         isUser = false;
-/*
+
+        String title = community.getName();
+        title = title.concat(" Calendar");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+
         //get current community's events from server
         final Socket[] socket = new Socket[1];
         final OutputStream[] outputStream = new OutputStream[1];
@@ -46,8 +52,7 @@ public class CalendarActivity extends AppCompatActivity {
         final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
         final DataInputStream[] dataInputStream = new DataInputStream[1];
         final JSONObject object = new JSONObject();
-*/
-        /*
+
         if (MainActivity.server) {
             community.communityEvents.clear();
             new Thread(new Runnable() {
@@ -100,16 +105,17 @@ public class CalendarActivity extends AppCompatActivity {
                 }
             }).start();
 
-            android.os.SystemClock.sleep(1000);
+            android.os.SystemClock.sleep(500);
         }
-*/
-        try {
+
+        /*try {
             JSONObject object = new JSONObject();
             object.put("function", "getEvents");
             object.put("communityName", community.getName());
             MainActivity.connectionSend(object);
             if (!MainActivity.failed) {
                 ArrayList<JSONObject> objects = MainActivity.connectionReceiveJSONObjects();
+                //noinspection ConstantConditions
                 for (int i = 0; i < objects.size(); i++) {
                     JSONObject jsonEvent = objects.get(i);
                     Calendar calendar = Calendar.getInstance();
@@ -132,7 +138,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
         ecv = ((EventCalendarView) findViewById(R.id.calendar_view));
         ecv.setEvents(community.getCommunityEvents());
@@ -181,5 +187,54 @@ public class CalendarActivity extends AppCompatActivity {
             }
         }
         startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setContentView(R.layout.activity_calendar);
+
+        isUser = false;
+
+        try {
+            JSONObject object = new JSONObject();
+            object.put("function", "getEvents");
+            object.put("communityName", community.getName());
+            MainActivity.connectionSend(object);
+            if (!MainActivity.failed) {
+                ArrayList<JSONObject> objects = MainActivity.connectionReceiveJSONObjects();
+                for (int i = 0; i < objects.size(); i++) {
+                    JSONObject jsonEvent = objects.get(i);
+                    Calendar calendar = Calendar.getInstance();
+                    String date = jsonEvent.getString("date");
+                    String[] split = date.split("-");
+                    String year = split[0];
+                    String month = split[1];
+                    String day = split[2];
+                    calendar.set(Calendar.YEAR, Integer.valueOf(year));
+                    calendar.set(Calendar.MONTH, Integer.valueOf(month) - 1);
+                    calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(day));
+                    String eventName = jsonEvent.getString("eventName");
+                    String eventTime = jsonEvent.getString("time");
+                    String place = jsonEvent.getString("locationName");
+                    String description = jsonEvent.getString("description");
+                    CommunityEvent event = new CommunityEvent(calendar, eventName, eventTime, place, description);
+                    community.addEvent(event);
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ecv = ((EventCalendarView) findViewById(R.id.calendar_view));
+        ecv.setEvents(community.getCommunityEvents());
+        ecv.setEventHandler(new EventCalendarView.EventHandler() {
+            @Override
+            public void onClick(Date date) {
+                CalendarActivity.date = date;
+                openEvent(ecv);
+            }
+        });
     }
 }

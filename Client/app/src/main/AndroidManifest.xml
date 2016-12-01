@@ -18,13 +18,7 @@
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
@@ -36,9 +30,14 @@
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".CommunityActivity"
-            android:label="CommunityActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:theme="@style/Theme.AppCompat.Light">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".DiscoverActivity"
             android:label="@string/title_activity_discover"
@@ -63,7 +62,7 @@
         <activity
             android:name=".CommunityListActivity"
             android:label="@string/title_activity_community_list"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light" />
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -91,6 +90,11 @@
             android:name=".PersonalCalendarActivity"
             android:label="@string/title_activity_personal_calendar"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".UserListActivity"
+            android:label="@string/title_activity_user_list"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".UserProfile"></activity>
     </application>
 
 </manifest>

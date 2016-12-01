@@ -7,28 +7,21 @@
     android:fitsSystemWindows="true"
     tools:context="cs307.butterfly.CommunityActivity">
 
+    <include layout="@layout/content_community" />
 
-    <RelativeLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="75dp">
 
-        <ScrollView
+        <LinearLayout
+            android:id="@+id/linear"
             android:layout_width="match_parent"
-            android:layout_height="439dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/linear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-        </ScrollView>
-    </RelativeLayout>
-
-
-
-
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <ImageButton
         android:src="@drawable/searching"
@@ -37,7 +30,8 @@
         android:id="@+id/view_all"
         android:layout_gravity="bottom|left"
         android:layout_alignParentTop="true"
-        android:scaleType="fitCenter"
+        android:background="@android:color/holo_blue_dark"
+
         />
 
 
@@ -49,6 +43,7 @@
         android:id="@+id/fab"
         android:layout_gravity="bottom|right"
         android:layout_alignParentTop="true"
+        android:background="@android:color/holo_blue_dark"
 
 
 
@@ -63,13 +58,11 @@
         android:text="Alerts"
         android:layout_gravity="bottom"
         android:layout_alignParentTop="true"
-        android:src="@drawable/dark"
-        android:scaleType="fitCenter"
+        android:src="@drawable/a1234"
+        android:background="@android:color/holo_blue_dark"
 
 
      />
-
-    <include layout="@layout/content_community" />
 
 
 </android.support.design.widget.CoordinatorLayout>
