@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -323,7 +324,7 @@ public class CommunityActivity extends AppCompatActivity {
         }
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-        dialog.show();
+        //dialog.show();
         dialog.getWindow().setAttributes(lp);
 
         b = (Button) dialog.findViewById(R.id.ok);
@@ -338,13 +339,23 @@ public class CommunityActivity extends AppCompatActivity {
                 final JSONObject object2 = new JSONObject();
 
                 EditText edit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput);
+                CheckBox checkPrivate = (CheckBox) dialog.findViewById(R.id.checkPrivate);
+
                 final String text = edit.getText().toString();
+
                 dialog.dismiss();
                 result = text;
                 Community community = new Community(text);
                 //Add the community to the myCommunities list
                 MainActivity.myCommunities.add(community);
                 addButton(community);
+                final String [] ckPrivate = new String[1];
+                ckPrivate[0] = "0";
+
+                if (checkPrivate.isChecked()) {
+                    ckPrivate[0] = "1";
+                }
+
 
                 //Add the community to the iModerator list
                 MainActivity.iModerator.add(result);
@@ -379,6 +390,7 @@ public class CommunityActivity extends AppCompatActivity {
                                 //Send community name to server
                                 object.put("function", "addCommunity");
                                 object.put("name", text);
+                                object.put("private", ckPrivate[0]);
                                 dataOutputStream[0].writeUTF(object.toString());
 
                                 //Close everything
