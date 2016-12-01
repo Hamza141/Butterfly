@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     static boolean server = true;
     static boolean failed = true;
 
-    static String firstName = "";
+    static String fullName = "";
     static String googleID = "";
 
     static ArrayList<Community> myCommunities;

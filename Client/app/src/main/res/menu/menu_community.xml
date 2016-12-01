@@ -11,6 +11,9 @@
         app:showAsAction="always" />
     -->
     <item
+        android:id="@+id/option_my_profile"
+        android:title="My Profile"/>
+    <item
         android:id="@+id/option_send_invite"
         android:title="Send Invite"/>
     <item

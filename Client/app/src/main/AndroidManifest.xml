@@ -18,9 +18,7 @@
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
@@ -36,6 +34,7 @@
             android:theme="@style/Theme.AppCompat.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -94,7 +93,8 @@
         <activity
             android:name=".UserListActivity"
             android:label="@string/title_activity_user_list"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".UserProfile"></activity>
     </application>
 
 </manifest>

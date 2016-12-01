@@ -356,7 +356,6 @@ public class CommunityActivity extends AppCompatActivity {
                     ckPrivate[0] = "1";
                 }
 
-
                 //Add the community to the iModerator list
                 MainActivity.iModerator.add(result);
 
@@ -514,6 +513,11 @@ public class CommunityActivity extends AppCompatActivity {
             case R.id.option_sign_in_again:
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, 0);
+                return true;
+            case R.id.option_my_profile:
+                Intent intent2 = new Intent(this, UserProfile.class);
+                startActivity(intent2);
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

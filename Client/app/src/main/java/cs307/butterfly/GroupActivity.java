@@ -258,7 +258,7 @@ public class GroupActivity extends AppCompatActivity {
                 String postString = editBoardPost.getText().toString();
                 if (!postString.equals("")) {
 
-                    String fullPost = MainActivity.firstName;
+                    String fullPost = MainActivity.fullName;
                     fullPost = fullPost.concat(": ");
                     fullPost = fullPost.concat(postString);
 
