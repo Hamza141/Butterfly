@@ -301,13 +301,13 @@ public class LoginActivity extends AppCompatActivity implements
                 //Either server was offline or the connection to the server failed
                 status.setText(R.string.server_not_found);
             }
-            findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
+            findViewById(R.id.imageView3).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         } else {
             status.setText(R.string.signed_out);
             status.setVisibility(View.VISIBLE);
-            findViewById(R.id.imageView2).setVisibility(View.GONE);
+            findViewById(R.id.imageView3).setVisibility(View.GONE);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
