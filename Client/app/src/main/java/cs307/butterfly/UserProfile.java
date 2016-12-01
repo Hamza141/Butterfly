@@ -95,7 +95,12 @@ public class UserProfile extends AppCompatActivity {
         }
 
         try {
-            userPic = Uri.parse(userInfo[0].getString("pictureURL"));
+            String picURL = userInfo[0].getString("pictureURL");
+            if (!picURL.equals("null")) {
+                userPic = Uri.parse(picURL);
+            }else {
+                userPic = null;
+            }
             fullName = userInfo[0].getString("firstName");
             fullName = fullName.concat(" ");
             fullName = fullName.concat(userInfo[0].getString("lastName"));
@@ -107,7 +112,9 @@ public class UserProfile extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Picasso.with(this).load(userPic).into((ImageView) findViewById(R.id.userPic));
+        if (userPic != null) {
+            Picasso.with(this).load(userPic).into((ImageView) findViewById(R.id.userPic));
+        }
 
         TextView uName = (TextView) findViewById(R.id.userName);
         TextView email = (TextView) findViewById(R.id.userEmail);

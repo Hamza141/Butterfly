@@ -39,6 +39,7 @@ public class GroupActivity extends AppCompatActivity {
     @SuppressWarnings("SpellCheckingInspection")
     public static String theguy;
     public static ArrayList<String> userNames;
+    public static ArrayList<String> googleIDs;
     Random randomno = new Random();
     Dialog dialog;
     Button profile4, profile3, profile2, profile1, profile;
@@ -51,7 +52,6 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        userNames = new ArrayList<>();
 
         //Check whether the user is already in the community or not
         //If the user is in the community already, only display the leave button and vice versa
@@ -83,6 +83,7 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         userNames = new ArrayList<>();
+        googleIDs = new ArrayList<>();
 
         setContentView(R.layout.activity_group);
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -144,6 +145,7 @@ public class GroupActivity extends AppCompatActivity {
                 LinearLayout vv = (LinearLayout) dialog.findViewById(R.id.linearfriend);
                 vv.removeAllViews();
                 userNames.clear();
+                googleIDs.clear();
 
                 new Thread(new Runnable() {
                     @Override
@@ -156,7 +158,7 @@ public class GroupActivity extends AppCompatActivity {
                             DataInputStream dataInputStream = new DataInputStream(inputStream);
 
                             JSONObject object = new JSONObject();
-                            object.put("function", "getCommunityUsers");
+                            object.put("function", "getCommunityUsersWithID");
                             object.put("communityName", CalendarActivity.community.getName());
                             dataOutputStream.writeUTF(object.toString());
 
@@ -167,9 +169,10 @@ public class GroupActivity extends AppCompatActivity {
                                 String firstName = jsonUser.getString("firstName");
                                 String lastName = jsonUser.getString("lastName");
                                 String userName = firstName + " " + lastName;
-                                if (userNames.contains(userName)) {
-                                } else {
+                                String id = jsonUser.getString("googleID");
+                                if (!userNames.contains(userName)) {
                                     userNames.add(userName);
+                                    googleIDs.add(id);
                                 }
                             }
 
@@ -198,7 +201,7 @@ public class GroupActivity extends AppCompatActivity {
 
 
                 dialog.show();
-                if (MainActivity.server) {
+                /* if (MainActivity.server) {
                     final Socket[] socket = new Socket[1];
                     final OutputStream[] outputStream = new OutputStream[1];
                     final DataOutputStream[] dataOutputStream = new DataOutputStream[1];
@@ -244,7 +247,7 @@ public class GroupActivity extends AppCompatActivity {
                             }
                         }
                     }).start();
-                }
+                } */
 
 
                 ImageButton check = (ImageButton) dialog.findViewById(R.id.check);
@@ -597,8 +600,9 @@ public class GroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 GroupActivity.theguy = namex;
-                Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
-                //TODO
+                Intent intent = new Intent(GroupActivity.this, UserProfile.class);
+                int index = userNames.indexOf(namex);
+                intent.putExtra("googleID", googleIDs.get(index));
                 startActivity(intent);
             }
         });
