@@ -444,7 +444,7 @@ public class CommunityActivity extends AppCompatActivity {
         buttons.add(b1);
         b1.setLayoutParams(params);
         b1.setBackgroundColor(Color.rgb(255 - randomno.nextInt(50), 255 - randomno.nextInt(30), 255));
-        b1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_home, 0, 0, 0);
+        b1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.home1, 0, 0, 0);
         b1.setPadding(150, 0, 0, 0);
         b1.setText(community.getName());
         b1.setTextSize(18);
