@@ -2,6 +2,7 @@ package cs307.butterfly;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -134,50 +136,65 @@ public class EventsActivity extends AppCompatActivity {
                 EditText descriptionEdit = (EditText) dialog.findViewById(R.id.editTextDialogUserInput222);
                 final String description = descriptionEdit.getText().toString();
 
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(CalendarActivity.date);
-
-                TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker6);
-                //noinspection deprecation
-                int hour = timePicker.getCurrentHour();
-                //noinspection deprecation
-                int minute = timePicker.getCurrentMinute();
-                String time = String.valueOf(hour);
-                time = time.concat(":");
-                time = time.concat(String.valueOf(minute));
-                final String finalTime = time;
-                Log.d("EventTime", finalTime);
-
-                CommunityEvent event = new CommunityEvent(calendar, name, time, place, description);
-                final CommunityEvent finalEvent = event;
-                CalendarActivity.community.addEvent(event);
-                dialog.dismiss();
-                result = name;
-                addButton();
-                CalendarActivity.ecv.setEvents(CalendarActivity.community.getCommunityEvents());
-
-                if (MainActivity.server) {
-                    new Thread(new Runnable() {
+                if (name.equals("") || place.equals("") || description.equals("")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EventsActivity.this);
+                    builder.setMessage("All fields must be filled");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
-                        public void run() {
-                            try {
-                                socket[0] = new Socket(MainActivity.ip, 3300);
-                                outputStream[0] = socket[0].getOutputStream();
-                                dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                                object.put("function", "addEvent");
-                                object.put("communityName", CalendarActivity.community.getName());
-                                object.put("eventName", name);
-                                object.put("time", finalEvent.getTimeString());
-                                object.put("date", finalEvent.getDateForServer());
-                                object.put("description", description);
-                                object.put("locationName", place);
-                                dataOutputStream[0].writeUTF(object.toString());
-                            } catch (JSONException | IOException e) {
-                                e.printStackTrace();
-                            }
                         }
-                    }).start();
+                    });
+                    AlertDialog warning = builder.create();
+                    warning.show();
+                }
+                else {
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(CalendarActivity.date);
+
+                    TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker6);
+                    //noinspection deprecation
+                    int hour = timePicker.getCurrentHour();
+                    //noinspection deprecation
+                    int minute = timePicker.getCurrentMinute();
+                    String time = String.valueOf(hour);
+                    time = time.concat(":");
+                    time = time.concat(String.valueOf(minute));
+                    final String finalTime = time;
+                    Log.d("EventTime", finalTime);
+
+                    CommunityEvent event = new CommunityEvent(calendar, name, time, place, description);
+                    final CommunityEvent finalEvent = event;
+                    CalendarActivity.community.addEvent(event);
+                    dialog.dismiss();
+                    result = name;
+                    addButton();
+                    CalendarActivity.ecv.setEvents(CalendarActivity.community.getCommunityEvents());
+
+                    if (MainActivity.server) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    socket[0] = new Socket(MainActivity.ip, 3300);
+                                    outputStream[0] = socket[0].getOutputStream();
+                                    dataOutputStream[0] = new DataOutputStream(outputStream[0]);
+
+                                    object.put("function", "addEvent");
+                                    object.put("communityName", CalendarActivity.community.getName());
+                                    object.put("eventName", name);
+                                    object.put("time", finalEvent.getTimeString());
+                                    object.put("date", finalEvent.getDateForServer());
+                                    object.put("description", description);
+                                    object.put("locationName", place);
+                                    dataOutputStream[0].writeUTF(object.toString());
+                                } catch (JSONException | IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
                 }
             }
         });
