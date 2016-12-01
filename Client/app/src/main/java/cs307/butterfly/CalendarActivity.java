@@ -40,7 +40,7 @@ public class CalendarActivity extends AppCompatActivity {
         isUser = false;
 
         String title = community.getName();
-        title = title.concat(" Community Calendar");
+        title = title.concat(" Calendar");
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }

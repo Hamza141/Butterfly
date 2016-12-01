@@ -69,7 +69,7 @@
 
     <ImageButton
 
-        android:id="@+id/view_all1"
+        android:id="@+id/notify"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"

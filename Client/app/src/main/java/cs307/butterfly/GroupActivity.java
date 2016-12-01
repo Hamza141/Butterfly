@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -105,6 +106,21 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(context, CalendarActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        ImageButton notifyGroup = (ImageButton) findViewById(R.id.notify);
+        // fab.setImageResource(R.drawable.calendar);
+
+       notifyGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = getApplicationContext();
+                CharSequence text = "Group Notified!";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 
@@ -202,6 +218,7 @@ public class GroupActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         sendInvite();
+
                     }
                 });
 
@@ -626,6 +643,12 @@ public class GroupActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Context context = getApplicationContext();
+                CharSequence text = "Invite Sent!";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
                 /*
                 if (MainActivity.server) {
                     JSONObject object = new JSONObject();
