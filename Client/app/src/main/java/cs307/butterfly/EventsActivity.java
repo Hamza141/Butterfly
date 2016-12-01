@@ -30,6 +30,7 @@ import java.util.Calendar;
 
 public class EventsActivity extends AppCompatActivity {
     final Context context = this;
+    final EventsActivity ea = this;
 
     private String result;
     Button b;
@@ -212,6 +213,7 @@ public class EventsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 EventViewerActivity.name = b.getText().toString();
                 Intent intent1 = new Intent(context, EventViewerActivity.class);
+                EventViewerActivity.previousActivity = ea;
                 startActivity(intent1);
             }
         });
@@ -232,6 +234,7 @@ public class EventsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 EventViewerActivity.name = b.getText().toString();
                 Intent intent1 = new Intent(context, EventViewerActivity.class);
+                EventViewerActivity.previousActivity = ea;
                 startActivity(intent1);
             }
         });

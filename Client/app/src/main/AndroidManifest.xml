@@ -91,6 +91,10 @@
             android:name=".PersonalCalendarActivity"
             android:label="@string/title_activity_personal_calendar"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".UserListActivity"
+            android:label="@string/title_activity_user_list"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>
