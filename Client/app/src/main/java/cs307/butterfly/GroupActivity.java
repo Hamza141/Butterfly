@@ -367,7 +367,7 @@ public class GroupActivity extends AppCompatActivity {
                 }
             }).start();
 
-            android.os.SystemClock.sleep(300);
+            android.os.SystemClock.sleep(500);
 
         }
 

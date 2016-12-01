@@ -62,12 +62,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             e.printStackTrace();
         }
 
-        if (title.equals("New Message")) {
-            //todo make new function
-            //sendNotification(title, );
-        }
+        /*if (title.equals("New Message")) {
+            String body = "";
+            try {
+                body = (String) object.get("body");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            sendData(title, body, communityName);
+        }*/
 
-        sendNotification(title, remoteMessage.getNotification().getBody(), communityName);
+        if (!remoteMessage.getNotification().getBody().contains(MainActivity.fullName)) {
+            sendNotification(title, remoteMessage.getNotification().getBody(), communityName);
+        }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
