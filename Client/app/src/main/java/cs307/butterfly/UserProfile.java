@@ -127,11 +127,13 @@ public class UserProfile extends AppCompatActivity {
         for (String community : userCommunities) {
             found = false;
             for (String moderator : userModerator) {
-                if (moderator.contains(community)) {
-                    String output = community + " - MOD";
-                    addCommunityToList(output);
-                    found = true;
-                    break;
+                if (!moderator.isEmpty()) {
+                    if (moderator.contains(community)) {
+                        String output = community + " - MOD";
+                        addCommunityToList(output);
+                        found = true;
+                        break;
+                    }
                 }
             }
             if (!found) {
