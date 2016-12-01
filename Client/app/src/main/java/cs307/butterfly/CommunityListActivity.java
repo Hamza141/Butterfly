@@ -1,6 +1,7 @@
 package cs307.butterfly;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -19,25 +20,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Objects;
+import java.util.Random;
 
 public class CommunityListActivity extends AppCompatActivity {
+    Random randomno = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("All Communities");
         }
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
 
         addGroup();
     }
@@ -110,10 +105,21 @@ public class CommunityListActivity extends AppCompatActivity {
 
     public void addButton(final Community community) {
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear_list);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                Toolbar.LayoutParams.MATCH_PARENT, 300);
+        params.setMargins(0, 0, 0, 8);
+
         final Button b1 = new Button(this);
+     //   buttons.add(b1);
+        b1.setLayoutParams(params);
+        b1.setBackgroundColor(Color.rgb(255 - randomno.nextInt(50), 255 - randomno.nextInt(30), 255));
+        b1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.home1, 0, 0, 0);
+        b1.setPadding(150, 0, 0, 0);
         b1.setText(community.getName());
-        android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
-        b1.setLayoutParams(lp);
+        b1.setTextSize(18);
+        b1.setTextColor(Color.rgb(0, 0, 0));
+        //android.widget.LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 320); // 60 is height you can set it as u need
+
         ll.addView(b1);
         final Intent intent = new Intent(this, GroupActivity.class);
         b1.setOnClickListener(new View.OnClickListener() {
