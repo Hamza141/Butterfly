@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7d6835fa-2bcb-47b0-86dd-26257637aa89" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/mysql_connector_java_3_0_17_ga_bin.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../.gitignore" afterPath="$PROJECT_DIR$/../.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client.java" afterPath="$PROJECT_DIR$/src/Client.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server.java" afterPath="$PROJECT_DIR$/src/Server.java" />
@@ -29,12 +29,11 @@
       <file leaf-file-name="Server.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="389" column="46" selection-start-line="389" selection-start-column="46" selection-end-line="389" selection-end-column="46" />
+            <state relative-caret-position="-1226">
+              <caret line="151" column="22" selection-start-line="151" selection-start-column="22" selection-end-line="151" selection-end-column="22" />
               <folding>
-                <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-                <element signature="e#5682#5742#0" expanded="false" />
-                <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+                <element signature="e#0#75225#0" expanded="true" />
+                <element signature="e#6570#6630#0" expanded="false" />
                 <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
                 <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
                 <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -43,39 +42,29 @@
                 <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
                 <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
                 <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-                <element signature="e#20783#20807#0" expanded="false" />
+                <element signature="e#20795#20819#0" expanded="false" />
                 <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
                 <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
                 <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
                 <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
                 <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-                <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-                <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-                <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-                <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-                <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
                 <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
                 <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
                 <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
                 <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
                 <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
                 <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-                <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-                <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
                 <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
                 <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-                <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
                 <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
                 <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-                <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
                 <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-                <element signature="e#54864#54902#0" expanded="false" />
-                <element signature="e#55558#55588#0" expanded="false" />
-                <element signature="e#55993#56036#0" expanded="false" />
+                <element signature="e#63197#63235#0" expanded="false" />
+                <element signature="e#63891#63921#0" expanded="false" />
+                <element signature="e#64326#64369#0" expanded="false" />
                 <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
                 <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
                 <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-                <element signature="e#63933#63975#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -84,8 +73,8 @@
       <file leaf-file-name="Client.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="431">
-              <caret line="161" column="14" selection-start-line="161" selection-start-column="14" selection-end-line="161" selection-end-column="14" />
+            <state relative-caret-position="458">
+              <caret line="230" column="40" selection-start-line="230" selection-start-column="40" selection-end-line="230" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -117,7 +106,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="33" />
+    <option name="x" value="976" />
     <option name="y" value="52" />
     <option name="width" value="944" />
     <option name="height" value="1028" />
@@ -506,7 +495,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="33" y="52" width="944" height="1028" extended-state="4" />
+    <frame x="976" y="52" width="944" height="1028" extended-state="4" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -516,7 +505,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2875131" sideWeight="0.5148305" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29590765" sideWeight="0.4851695" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28961176" sideWeight="0.4851695" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3376344" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3282365" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -598,7 +587,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="16" />
+      <option name="time" value="19" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -620,9 +609,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -631,39 +619,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -681,9 +659,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -692,39 +669,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -742,9 +709,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -753,39 +719,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -803,9 +759,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -814,39 +769,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -864,9 +809,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -875,39 +819,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -925,9 +859,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -936,39 +869,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -986,9 +909,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -997,39 +919,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1047,9 +959,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1058,39 +969,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1108,9 +1009,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1119,39 +1019,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1169,9 +1059,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1180,39 +1069,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1230,9 +1109,8 @@
         <state relative-caret-position="1494">
           <caret line="83" column="34" selection-start-line="83" selection-start-column="34" selection-end-line="83" selection-end-column="34" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1241,39 +1119,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1291,9 +1159,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1302,39 +1169,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1352,9 +1209,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1363,39 +1219,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1413,9 +1259,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1424,39 +1269,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1474,9 +1309,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1485,39 +1319,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1535,9 +1359,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1546,39 +1369,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1596,9 +1409,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1607,39 +1419,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1657,9 +1459,8 @@
         <state relative-caret-position="8334">
           <caret line="463" column="0" selection-start-line="463" selection-start-column="0" selection-end-line="463" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1668,39 +1469,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1718,9 +1509,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1729,39 +1519,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1779,9 +1559,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1790,39 +1569,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1840,9 +1609,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1851,39 +1619,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1901,9 +1659,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1912,39 +1669,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1962,9 +1709,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -1973,39 +1719,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2025,29 +1761,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/mysql-connector-java-3.0.17-ga-bin.jar!/com/mysql/jdbc/MysqlIO.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="426">
-          <caret line="158" column="0" selection-start-line="158" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/mysql-connector-java-3.0.17-ga-bin.jar!/com/mysql/jdbc/MysqlIO.class" />
     <entry file="file://$PROJECT_DIR$/src/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="161" column="14" selection-start-line="161" selection-start-column="14" selection-end-line="161" selection-end-column="14" />
+        <state relative-caret-position="458">
+          <caret line="230" column="40" selection-start-line="230" selection-start-column="40" selection-end-line="230" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="389" column="46" selection-start-line="389" selection-start-column="46" selection-end-line="389" selection-end-column="46" />
+        <state relative-caret-position="-1226">
+          <caret line="151" column="22" selection-start-line="151" selection-start-column="22" selection-end-line="151" selection-end-column="22" />
           <folding>
-            <element signature="method#addCommunity#0;class#serverStart#0" expanded="false" />
-            <element signature="e#5682#5742#0" expanded="false" />
-            <element signature="method#addCommunityUser#0;class#serverStart#0" expanded="false" />
+            <element signature="e#0#75225#0" expanded="true" />
+            <element signature="e#6570#6630#0" expanded="false" />
             <element signature="method#addEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangout#0;class#serverStart#0" expanded="false" />
             <element signature="method#addHangoutUser#0;class#serverStart#0" expanded="false" />
@@ -2056,39 +1785,29 @@
             <element signature="method#checkIn#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityBoardTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityEventsTable#0;class#serverStart#0" expanded="false" />
-            <element signature="e#20783#20807#0" expanded="false" />
+            <element signature="e#20795#20819#0" expanded="false" />
             <element signature="method#createCommunityHangoutsTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#createCommunityUsersTable#0;class#serverStart#0" expanded="false" />
             <element signature="method#deleteEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#editEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#emailInvite#0;class#serverStart#0" expanded="false" />
-            <element signature="method#endedHangoutsCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#genericNotification#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getCommunityUsers#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getIdUsers#0;class#serverStart#0" expanded="false" />
             <element signature="method#getInstanceID#0;class#serverStart#0" expanded="false" />
             <element signature="method#getMessages#0;class#serverStart#0" expanded="false" />
             <element signature="method#getNeighborhoodEvents#0;class#serverStart#0" expanded="false" />
             <element signature="method#getrsvp#0;class#serverStart#0" expanded="false" />
             <element signature="method#getUserCommunities#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserCommunityEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="method#getUserModerator#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveCommunityUser#0;class#serverStart#0" expanded="false" />
             <element signature="method#leaveHangoutUser#0;class#serverStart#0" expanded="false" />
-            <element signature="method#newBoardNotification#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpEvent#0;class#serverStart#0" expanded="false" />
             <element signature="method#rsvpCheck#0;class#serverStart#0" expanded="false" />
-            <element signature="method#rsvpEventRemove#0;class#serverStart#0" expanded="false" />
             <element signature="method#timeCheckEvents#0;class#serverStart#0" expanded="false" />
-            <element signature="e#54864#54902#0" expanded="false" />
-            <element signature="e#55558#55588#0" expanded="false" />
-            <element signature="e#55993#56036#0" expanded="false" />
+            <element signature="e#63197#63235#0" expanded="false" />
+            <element signature="e#63891#63921#0" expanded="false" />
+            <element signature="e#64326#64369#0" expanded="false" />
             <element signature="method#timeCheckHangouts#0;class#serverStart#0" expanded="false" />
             <element signature="method#upcomingEventNotificationCheck#0;class#serverStart#0" expanded="false" />
             <element signature="method#updateUserProfile#0;class#serverStart#0" expanded="false" />
-            <element signature="e#63933#63975#0" expanded="true" />
           </folding>
         </state>
       </provider>

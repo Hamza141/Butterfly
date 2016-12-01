@@ -14,16 +14,17 @@ import org.json.simple.JSONObject;
 public class Client {
     public static void main(String[] args) {
         //String serverName = "128.211.225.79";
-        String serverName = "10.186.88.55";
+        //String serverName = "128.10.120.226";
+        String serverName = "10.186.90.81";
         int port = 3300;
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
             Socket client = new Socket(serverName, port);
             System.out.println("Just connected to " + client.getRemoteSocketAddress());
-            OutputStream outToServer = client.getOutputStream();
-            DataOutputStream out = new DataOutputStream(outToServer);
-            InputStream inFromServer = client.getInputStream();
-            DataInputStream in = new DataInputStream(inFromServer);
+            OutputStream outToServer;
+            DataOutputStream out;
+            InputStream inFromServer;
+            DataInputStream in;
             JSONObject obj;
 
             /*obj = new JSONObject();
@@ -95,7 +96,11 @@ public class Client {
             obj.put("private", "0");
             out.writeUTF(obj.toString());*/
 
-            /*obj = new JSONObject();
+            /*client = new Socket(serverName, port);
+            System.out.println("Just connected to " + client.getRemoteSocketAddress());
+            outToServer = client.getOutputStream();
+            out = new DataOutputStream(outToServer);
+            obj = new JSONObject();
             obj.put("function", "addCommunity");
             obj.put("category", "sports");
             obj.put("subCategory", "hockey");
@@ -105,20 +110,34 @@ public class Client {
             obj.put("private", "0");
             out.writeUTF(obj.toString());*/
 
+            /*client = new Socket(serverName, port);
+            System.out.println("Just connected to " + client.getRemoteSocketAddress());
+            outToServer = client.getOutputStream();
+            out = new DataOutputStream(outToServer);
+            obj = new JSONObject();
+            obj.put("function", "removeCommunity");
+            obj.put("communityName", "Chelsea");
+            out.writeUTF(obj.toString());*/
+
             /*obj = new JSONObject();
-            obj.put("function", "addCommunity"); obj.put("category", "Academic");
-            obj.put("subCategory", "CS"); obj.put("name", "CS307");
-            obj.put("description", "project class"); obj.put("dateCreated", "2016-10-28");
+            obj.put("function", "addCommunity");
+            obj.put("category", "Academic");
+            obj.put("subCategory", "CS");
+            obj.put("name", "CS307");
+            obj.put("description", "project class");
+            obj.put("dateCreated", "2016-10-28");
             obj.put("private", "0");
             out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
-            obj.put("function", "deleteEvent"); obj.put("communityName", "hahaha");
+            obj.put("function", "deleteEvent");
+            obj.put("communityName", "hahaha");
             obj.put("eventName", "hahaha");
             out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
-            obj.put("function", "getCommunityUsers"); obj.put("communityName", "hahaha");
+            obj.put("function", "getCommunityUsers");
+            obj.put("communityName", "hahaha");
             out.writeUTF(obj.toString());*/
 
             /*obj = new JSONObject();
@@ -154,10 +173,16 @@ public class Client {
             obj.put("to", "newcdragon@hotmail.com"); obj.put("fromName", "Khanh");
             out.writeUTF(obj.toString());*/
 
+            /*client = new Socket(serverName, port);
+            System.out.println("Just connected to " + client.getRemoteSocketAddress());
+            outToServer = client.getOutputStream();
+            out = new DataOutputStream(outToServer);
+            inFromServer = client.getInputStream();
+            in = new DataInputStream(inFromServer);
             obj = new JSONObject();
             obj.put("function", "getCommunities");
             out.writeUTF(obj.toString());
-            System.out.println("Server says " + in.readUTF());
+            System.out.println("Server says " + in.readUTF());*/
 
             /*obj = new JSONObject();
             obj.put("function", "genericNotification");
@@ -185,11 +210,26 @@ public class Client {
             obj.put("googleID", "test@gmail.com");
             out.writeUTF(obj.toString());*/
 
-            /*obj = new JSONObject();
+            /*client = new Socket(serverName, port);
+            System.out.println("Just connected to " + client.getRemoteSocketAddress());
+            outToServer = client.getOutputStream();
+            out = new DataOutputStream(outToServer);
+            inFromServer = client.getInputStream();
+            in = new DataInputStream(inFromServer);
+            obj = new JSONObject();
             obj.put("function", "communitySearch");
             obj.put("type", "subcategory");
             obj.put("value", "hockey");
-            out.writeUTF(obj.toString());*/
+            out.writeUTF(obj.toString());
+            System.out.println("Server says " + in.readUTF());*/
+
+            client = new Socket(serverName, port);
+            System.out.println("Just connected to " + client.getRemoteSocketAddress());
+            outToServer = client.getOutputStream();
+            out = new DataOutputStream(outToServer);
+            obj = new JSONObject();
+            obj.put("function", "wipe");
+            out.writeUTF(obj.toString());
 
             //System.out.println("Server says " + in.readUTF() + "!");
             //System.out.println("Server says 2 " + in.readUTF());

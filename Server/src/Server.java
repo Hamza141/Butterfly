@@ -1,3 +1,4 @@
+//TODO check all SELECT name statements work correctly with rs.next, want all names at once into arraylist
 /*
  * Created by Khanh Tran on 10/9/16.
  */
@@ -116,6 +117,9 @@ import static java.lang.Thread.sleep;
             case "getCommunityUsers":
                 getCommunityUsers((String) obj.get("communityName"));
                 break;
+            case "getCommunityUsersWithID":
+                getCommunityUsersWithID((String) obj.get("communityName"));
+                break;
             case "getEvents":
                 getEvents((String) obj.get("communityName"));
                 break;
@@ -134,12 +138,27 @@ import static java.lang.Thread.sleep;
             case "getUserCommunityEvents":
                 getUserCommunityEvents((String) obj.get("googleID"));
                 break;
+            case "getUserName":
+                getUserName((String) obj.get("googleID"));
+                break;
             case "getUserModerator":
                 getUserModerator((String) obj.get("googleID"));
+                break;
+            case "getUserProfile":
+                getUserProfile((String) obj.get("googleID"));
+                break;
+            case "groupNotification":
+                groupNotification(obj);
                 break;
             case "leaveCommunityUser":
             case "removeCommunityUser":
                 leaveCommunityUser(obj);
+                break;
+            case "removeAllCommunities":
+                removeAllCommunities();
+                break;
+            case "removeCommunity":
+                removeCommunity((String) obj.get("communityName"));
                 break;
             case "rsvpEvent":
                 rsvpEvent(obj);
@@ -158,6 +177,9 @@ import static java.lang.Thread.sleep;
                 break;
             case "updateUserProfile":
                 updateUserProfile(obj);
+                break;
+            case "wipe":
+                wipe();
                 break;
             default:
                 System.out.println("default " + obj.toString());
@@ -383,37 +405,19 @@ import static java.lang.Thread.sleep;
                 System.out.println("addUser " + Integer.toString(rs.getInt(1)));
                 if (rs.getInt(1) == 0) {
                     sql = "INSERT INTO Users (firstName, lastName, googleID, communitiesList, "
-                            + "moderatorOf, picture) VALUES (?, ?, ?, ?, ?, ?)";
+                            + "moderatorOf, pictureURL) VALUES (?, ?, ?, ?, ?, ?)";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, (String) obj.get("firstName"));
                     ps.setString(2, (String) obj.get("lastName"));
                     ps.setString(3, googleID);
                     ps.setString(4, "");
                     ps.setString(5, "");
-                    File img = new File("/home/khanh/Pictures/images.png");
-                    FileInputStream fin = new FileInputStream(img);
-                    ps.setBinaryStream(6, fin, (int) img.length());
+                    ps.setString(6, (String) obj.get("pictureURL"));
                     System.out.println(ps);
                     ps.executeUpdate();
-
-                    sql = "SELECT picture FROM Users WHERE googleID = 'newcdragon@gmail.com'";
-                    ps = conn.prepareStatement(sql);
-                    rs = ps.executeQuery();
-                    if (rs.next()) {
-                        InputStream in = rs.getBinaryStream(1);
-                        OutputStream f = new FileOutputStream(new File("/home/khanh/Pictures/test.png"));
-                        int c;
-                        while ((c = in.read()) > -1) {
-                            f.write(c);
-                        }
-                        f.close();
-                        in.close();
-                    }
                 }
             }
-        } catch (SQLException | FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -707,15 +711,17 @@ import static java.lang.Thread.sleep;
     }
 
     private void getCommunities() {
-        String comma = ", ";
         StringBuilder communities = new StringBuilder();
         try {
             sql = "SELECT * FROM Communities";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                communities.append(rs.getString("name"));
-                communities.append(comma);
+                System.out.println(rs.getString("name") + " " + rs.getInt("private"));
+                if (rs.getInt("private") == 0) {
+                    communities.append(rs.getString("name"));
+                    communities.append(", ");
+                }
             }
             out.writeUTF(communities.toString());
             System.out.println(communities);
@@ -726,6 +732,7 @@ import static java.lang.Thread.sleep;
 
     private void getCommunityUsers(String communityName) {
         //TODO test
+        communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Users";
         try {
             sql = "SELECT COUNT(*) FROM " + communityName;
@@ -740,11 +747,54 @@ import static java.lang.Thread.sleep;
                     rs = ps.executeQuery();
                     JSONObject obj;
                     while (rs.next()) {
-                        obj = new JSONObject();
-                        obj.put("firstName", rs.getString("firstName"));
-                        obj.put("lastName", rs.getString("lastName"));
-                        out.writeUTF(obj.toString());
-                        System.out.println(obj.toString());
+                        sql = "SELECT * FROM Users WHERE googleID = ?";
+                        ps = conn.prepareStatement(sql);
+                        ps.setString(1, rs.getString("googleID"));
+                        ResultSet result = ps.executeQuery();
+                        if (result.next()) {
+                            obj = new JSONObject();
+                            obj.put("firstName", result.getString("firstName"));
+                            obj.put("lastName", result.getString("lastName"));
+                            out.writeUTF(obj.toString());
+                            System.out.println(obj.toString());
+                        }
+                    }
+                }
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getCommunityUsersWithID(String communityName) {
+        //TODO test
+        communityName = communityName.replaceAll("\\s", "_");
+        communityName += "_Users";
+        try {
+            sql = "SELECT COUNT(*) FROM " + communityName;
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) > 0) {
+                    System.out.println("Users in community " + Integer.toString(rs.getInt(1)));
+                    out.writeUTF(Integer.toString(rs.getInt(1)));
+                    sql = "SELECT * FROM " + communityName;
+                    ps = conn.prepareStatement(sql);
+                    rs = ps.executeQuery();
+                    JSONObject obj;
+                    while (rs.next()) {
+                        sql = "SELECT * FROM Users WHERE googleID = ?";
+                        ps = conn.prepareStatement(sql);
+                        ps.setString(1, rs.getString("googleID"));
+                        ResultSet result = ps.executeQuery();
+                        if (result.next()) {
+                            obj = new JSONObject();
+                            obj.put("firstName", result.getString("firstName"));
+                            obj.put("lastName", result.getString("lastName"));
+                            obj.put("googleID", result.getString("googleID"));
+                            out.writeUTF(obj.toString());
+                            System.out.println(obj.toString());
+                        }
                     }
                 }
             }
@@ -986,6 +1036,24 @@ import static java.lang.Thread.sleep;
         }
     }
 
+    private void getUserName(String googleID) {
+        try {
+            sql = "SELECT * FROM Users WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("firstName");
+                name += " ";
+                name += rs.getString("lastName");
+                out.writeUTF(name);
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
         Function which writes to client string of community names
         where the user is a moderator of. Writes an empty string if
@@ -1009,6 +1077,51 @@ import static java.lang.Thread.sleep;
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getUserProfile(String googleID) {
+        try {
+            sql = "SELECT * FROM Users WHERE googleID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, googleID);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                JSONObject returnJSON = new JSONObject();
+                returnJSON.put("firstName", rs.getString("firstName"));
+                returnJSON.put("lastName", rs.getString("lastName"));
+                returnJSON.put("googleID", rs.getString("googleID"));
+                returnJSON.put("communitiesList", rs.getString("communitiesList"));
+                returnJSON.put("moderatorOf", rs.getString("moderatorOf"));
+                returnJSON.put("pictureURL", rs.getString("pictureURL"));
+                out.writeUTF(returnJSON.toString());
+                System.out.println("sent " + returnJSON.toString());
+            } else {
+                out.writeUTF("");
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void groupNotification(JSONObject obj) {
+        String name = (String) obj.get("name");
+        String community = (String) obj.get("communityName");
+        String message = (String) obj.get("message");
+        JSONObject data = new JSONObject();
+        JSONObject notification = new JSONObject();
+        JSONObject parent = new JSONObject();
+        notification.put("body", name + " pinged the group");
+        notification.put("title", "New ping in " + community + " by " + name);
+        //data.put("body", message);
+        data.put("title", "New ping in " + community + " by " + name);
+        data.put("communityName", community);
+        community.replaceAll("\\s", "_");
+        parent.put("to", "/topics/" + community);
+        parent.put("notification", notification);
+        parent.put("data", data);
+        parent.put("priority", "high");
+        messageWrite(parent);
     }
 
     /*
@@ -1175,14 +1288,93 @@ import static java.lang.Thread.sleep;
         JSONObject parent = new JSONObject();
         notification.put("body", name + " has posted a new message");
         notification.put("title", "New Message in " + community + " by " + name);
-        data.put("body", message);
+        //data.put("body", message);
         data.put("title", "New Message in " + community + " by " + name);
         data.put("communityName", community);
+        community.replaceAll("\\s", "_");
         parent.put("to", "/topics/" + community);
         parent.put("notification", notification);
         parent.put("data", data);
         parent.put("priority", "high");
         messageWrite(parent);
+    }
+
+    private void removeAllCommunities() {
+        try {
+            sql = "SELECT name FROM Communities";
+            ps = conn.prepareStatement(sql);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String communityName = rs.getString("name");
+                sql = "DROP TABLE " + communityName + "_Board, " + communityName + "_Calendar, "
+                        + communityName + "_Hangouts, " + communityName + "_Users";
+                ps = conn.prepareStatement(sql);
+                System.out.println(ps);
+                ps.executeUpdate();
+            }
+            sql = "SELECT * FROM Users";
+            ps = conn.prepareStatement(sql);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                sql = "UPDATE Users SET (communitiesList, moderatorOf) VALUES (?, ?) WHERE googleID = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, "");
+                ps.setString(2, "");
+                ps.setString(3, rs.getString("googleID"));
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeCommunity(String communityName) {
+        String name = communityName;
+        try {
+            sql = "DELETE FROM Communities WHERE name = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, communityName);
+            System.out.println(ps);
+            ps.executeUpdate();
+            communityName = communityName.replaceAll("\\s", "_");
+            sql = "SELECT googleID FROM " + communityName + "_Users";
+            ps = conn.prepareStatement(sql);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                sql = "SELECT communitiesList FROM Users WHERE googleID = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, rs.getString("googleID"));
+                ResultSet result = ps.executeQuery();
+                if (result.next()) {
+                    ArrayList<String> communities = new ArrayList<>(
+                            Arrays.asList(result.getString("communitiesList").split(", ")));
+                    StringBuilder string = new StringBuilder();
+                    for (String community : communities) {
+                        if (community.contains(name)) {
+                            System.out.println("found " + community);
+                        } else {
+                            string.append(community);
+                            string.append(", ");
+                        }
+                    }
+                    sql = "UPDATE Users SET communitiesList = ? WHERE googleID = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, string.toString());
+                    ps.setString(2, rs.getString("googleID"));
+                    ps.executeUpdate();
+                }
+            }
+            sql = "DROP TABLE " + communityName + "_Board, " + communityName + "_Calendar, "
+                    + communityName + "_Hangouts, " + communityName + "_Users";
+            ps = conn.prepareStatement(sql);
+            System.out.println(ps);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -1469,6 +1661,34 @@ import static java.lang.Thread.sleep;
                 System.out.println(ps);
                 ps.executeUpdate();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void wipe() {
+        try {
+            sql = "SELECT name FROM Communities";
+            ps = conn.prepareStatement(sql);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String communityName = rs.getString("name");
+                communityName = communityName.replaceAll("\\s", "_");
+                sql = "DROP TABLE " + communityName + "_Board, " + communityName + "_Calendar, "
+                        + communityName + "_Hangouts, " + communityName + "_Users";
+                ps = conn.prepareStatement(sql);
+                System.out.println(ps);
+                ps.executeUpdate();
+            }
+            /*sql = "TRUNCATE TABLE Users";
+            ps = conn.prepareStatement(sql);
+            System.out.println(ps);
+            ps.executeUpdate();*/
+            /*sql = "TRUNCATE TABLE Communities";
+            ps = conn.prepareStatement(sql);
+            System.out.println(ps);
+            ps.executeUpdate();*/
         } catch (SQLException e) {
             e.printStackTrace();
         }
