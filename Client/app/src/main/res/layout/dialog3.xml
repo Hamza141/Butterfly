@@ -30,6 +30,7 @@
         android:id="@+id/invite"
         android:layout_gravity="bottom|left"
         android:layout_alignParentTop="true"
+        android:background="@android:color/holo_blue_dark"
 
         android:drawablePadding="-15sp"/>
 
@@ -42,6 +43,7 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_alignParentTop="true"
             android:src="@drawable/check"
+            android:background="@android:color/holo_blue_dark"
 
 
             app:layout_anchor="@+id/nestedScrollView"

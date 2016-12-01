@@ -30,7 +30,8 @@
         android:id="@+id/view_all"
         android:layout_gravity="bottom|left"
         android:layout_alignParentTop="true"
-        android:scaleType="fitCenter"
+        android:background="@android:color/holo_blue_dark"
+
         />
 
 
@@ -42,6 +43,7 @@
         android:id="@+id/fab"
         android:layout_gravity="bottom|right"
         android:layout_alignParentTop="true"
+        android:background="@android:color/holo_blue_dark"
 
 
 
@@ -56,8 +58,8 @@
         android:text="Alerts"
         android:layout_gravity="bottom"
         android:layout_alignParentTop="true"
-        android:src="@drawable/dark"
-        android:scaleType="fitCenter"
+        android:src="@drawable/a1234"
+        android:background="@android:color/holo_blue_dark"
 
 
      />

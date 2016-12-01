@@ -126,6 +126,12 @@ public class GroupActivity extends AppCompatActivity {
 
                 dialog.getWindow().setAttributes(lp);
                 //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                addButton("this1");
+                addButton("this3");
+
+                addButton("this2");
+
+                addButton("this4");
 
                 dialog.show();
                 if (MainActivity.server) {
@@ -188,6 +194,17 @@ public class GroupActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
+
+                ImageButton invite = (ImageButton) dialog.findViewById(R.id.invite);
+                // fab.setImageResource(R.drawable.calendar);
+
+              invite.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendInvite();
+                    }
+                });
+
             }
         });
 
@@ -594,4 +611,39 @@ public class GroupActivity extends AppCompatActivity {
             addMessage(messages.get(i) + "\n");
         }
     }
+
+
+    public void sendInvite() {
+        final Dialog dialog = new Dialog(GroupActivity.this);
+        dialog.setContentView(R.layout.dialog_send_invite);
+        dialog.setTitle("Title");
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        if (dialog.getWindow() != null) {
+            lp.copyFrom(dialog.getWindow().getAttributes());
+        }
+        final Button sendButton = (Button) dialog.findViewById(R.id.sendButton);
+        final EditText email = (EditText) dialog.findViewById(R.id.email);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*
+                if (MainActivity.server) {
+                    JSONObject object = new JSONObject();
+                    try {
+                        object.put("function", "sendInvite");
+                        object.put("googleID", MainActivity.googleID);
+                        object.put("email", email.getText());
+                        MainActivity.connectionSend(object);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                */
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
 }
