@@ -46,18 +46,6 @@
     </ScrollView>
 
     <ImageButton
-        android:id="@+id/view_all"
-        android:layout_width="105dp"
-        android:layout_height="71dp"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="bottom|left"
-        android:background="@android:color/holo_blue_dark"
-        android:drawablePadding="-15sp"
-        android:src="@drawable/buddy"
-        android:text="@string/discover"
-        tools:ignore="RtlHardcoded" />
-
-    <ImageButton
         android:id="@+id/tocalender"
         android:layout_width="105dp"
         android:layout_height="71dp"
@@ -129,5 +117,17 @@
         android:layout_marginBottom="74dp"
         android:layout_marginRight="10dp"
         android:elevation="5dp" />
+
+    <ImageButton
+        android:id="@+id/view_all"
+        android:layout_width="105dp"
+        android:layout_height="71dp"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="bottom|left"
+        android:background="@android:color/holo_blue_dark"
+        android:drawablePadding="-15sp"
+        android:src="@drawable/buddy"
+        android:text="@string/discover"
+        tools:ignore="RtlHardcoded" />
 
 </android.support.design.widget.CoordinatorLayout>

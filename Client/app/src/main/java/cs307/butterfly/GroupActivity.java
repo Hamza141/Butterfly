@@ -59,7 +59,6 @@ public class GroupActivity extends AppCompatActivity {
         leave.setVisibility(View.GONE);
 
 
-
         for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
             if (MainActivity.myCommunities.get(i).getName().equals(CalendarActivity.community.getName())) {
                 leave.setVisibility(View.VISIBLE);
@@ -96,7 +95,6 @@ public class GroupActivity extends AppCompatActivity {
         leave = (Button) findViewById(R.id.leave);
 
 
-
         //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         ImageButton button12 = (ImageButton) findViewById(R.id.tocalender);
         // fab.setImageResource(R.drawable.calendar);
@@ -112,7 +110,7 @@ public class GroupActivity extends AppCompatActivity {
         ImageButton notifyGroup = (ImageButton) findViewById(R.id.notify);
         // fab.setImageResource(R.drawable.calendar);
 
-       notifyGroup.setOnClickListener(new View.OnClickListener() {
+        notifyGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context context = getApplicationContext();
@@ -128,8 +126,8 @@ public class GroupActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog = new Dialog(GroupActivity.this);
 
+                dialog = new Dialog(GroupActivity.this);
                 dialog.setContentView(R.layout.dialog3);
                 dialog.setTitle("Title");
 
@@ -142,12 +140,62 @@ public class GroupActivity extends AppCompatActivity {
 
                 dialog.getWindow().setAttributes(lp);
                 //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                addButton("this1");
-                addButton("this3");
 
-                addButton("this2");
+                LinearLayout vv = (LinearLayout) dialog.findViewById(R.id.linearfriend);
+                vv.removeAllViews();
+                userNames.clear();
 
-                addButton("this4");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Socket socket = new Socket(MainActivity.ip, 3300);
+                            OutputStream outputStream = socket.getOutputStream();
+                            InputStream inputStream = socket.getInputStream();
+                            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+                            DataInputStream dataInputStream = new DataInputStream(inputStream);
+
+                            JSONObject object = new JSONObject();
+                            object.put("function", "getCommunityUsers");
+                            object.put("communityName", CalendarActivity.community.getName());
+                            dataOutputStream.writeUTF(object.toString());
+
+                            Integer numMembers = Integer.parseInt(dataInputStream.readUTF());
+
+                            for (int i = 0; i < numMembers; i++) {
+                                JSONObject jsonUser = new JSONObject(dataInputStream.readUTF());
+                                String firstName = jsonUser.getString("firstName");
+                                String lastName = jsonUser.getString("lastName");
+                                String userName = firstName + " " + lastName;
+                                if (userNames.contains(userName)) {
+                                } else {
+                                    userNames.add(userName);
+                                }
+                            }
+
+                            //addButton(userName);
+
+
+                            socket.close();
+                            outputStream.close();
+                            dataOutputStream.close();
+                            inputStream.close();
+                            dataInputStream.close();
+
+                        } catch (JSONException | IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }).start();
+
+                android.os.SystemClock.sleep(500);
+
+
+                for (int i = 0; i < userNames.size(); i++) {
+                    addButton(userNames.get(i));
+                }
+
 
                 dialog.show();
                 if (MainActivity.server) {
@@ -180,7 +228,9 @@ public class GroupActivity extends AppCompatActivity {
                                     String firstName = jsonUser.getString("firstName");
                                     String lastName = jsonUser.getString("lastName");
                                     String userName = firstName + " " + lastName;
+
                                     userNames.add(userName);
+
                                 }
 
                                 socket[0].close();
@@ -194,10 +244,6 @@ public class GroupActivity extends AppCompatActivity {
                             }
                         }
                     }).start();
-                }
-
-                for (int i = 0; i < userNames.size(); i++) {
-                    addButton(userNames.get(i));
                 }
 
 
@@ -214,7 +260,7 @@ public class GroupActivity extends AppCompatActivity {
                 ImageButton invite = (ImageButton) dialog.findViewById(R.id.invite);
                 // fab.setImageResource(R.drawable.calendar);
 
-              invite.setOnClickListener(new View.OnClickListener() {
+                invite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         sendInvite();
@@ -224,7 +270,6 @@ public class GroupActivity extends AppCompatActivity {
 
             }
         });
-
 
 
         //Check whether the user is already in the community or not
@@ -528,13 +573,14 @@ public class GroupActivity extends AppCompatActivity {
         }
     }
 
-    public void addButton(final String namex ) {
+
+    public void addButton(final String namex) {
         LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.linearfriend);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 Toolbar.LayoutParams.MATCH_PARENT, 220);
         params.setMargins(0, 0, 0, 8);
 
-        final Button b1 = new Button(this);
+        Button b1 = new Button(this);
         // buttons.add(b1);
         b1.setLayoutParams(params);
         b1.setBackgroundColor(Color.rgb(255 - randomno.nextInt(50), 255 - randomno.nextInt(30), 255));
@@ -552,6 +598,7 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 GroupActivity.theguy = namex;
                 Intent intent = new Intent(GroupActivity.this, ProfileActivity.class);
+                //TODO
                 startActivity(intent);
             }
         });
@@ -634,6 +681,8 @@ public class GroupActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(GroupActivity.this);
         dialog.setContentView(R.layout.dialog_send_invite);
         dialog.setTitle("Title");
+
+
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         if (dialog.getWindow() != null) {
             lp.copyFrom(dialog.getWindow().getAttributes());
