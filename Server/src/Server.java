@@ -150,6 +150,9 @@ import static java.lang.Thread.sleep;
             case "groupNotification":
                 groupNotification(obj);
                 break;
+            case "inviteNotification":
+                inviteNotification(obj);
+                break;
             case "leaveCommunityUser":
             case "removeCommunityUser":
                 leaveCommunityUser(obj);
@@ -1118,6 +1121,28 @@ import static java.lang.Thread.sleep;
         data.put("communityName", community);
         community.replaceAll("\\s", "_");
         parent.put("to", "/topics/" + community);
+        parent.put("notification", notification);
+        parent.put("data", data);
+        parent.put("priority", "high");
+        messageWrite(parent);
+    }
+
+    private void inviteNotification(JSONObject obj) {
+        String name = (String) obj.get("name");
+        String community = (String) obj.get("communityName");
+        String message = (String) obj.get("message");
+        String googleID = (String) obj.get("googleID");
+        System.out.println(googleID);
+        JSONObject data = new JSONObject();
+        JSONObject notification = new JSONObject();
+        JSONObject parent = new JSONObject();
+        notification.put("body", name + " wants you to join " + community);
+        notification.put("title", "Community Invite");
+        //data.put("body", message);
+        data.put("title", "Community Invite");
+        data.put("communityName", community);
+        community.replaceAll("\\s", "_");
+        parent.put("to", getInstanceID(googleID));
         parent.put("notification", notification);
         parent.put("data", data);
         parent.put("priority", "high");
