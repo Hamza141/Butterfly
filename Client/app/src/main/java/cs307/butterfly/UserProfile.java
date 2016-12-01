@@ -32,7 +32,7 @@ public class UserProfile extends AppCompatActivity {
 
     Uri userPic;
     String fullName;
-    String googleID;
+    String gID;
     ArrayList <String> userCommunities;
     ArrayList <String> userModerator;
     boolean fail = true;
@@ -42,6 +42,15 @@ public class UserProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        if (getIntent().getStringExtra("googleID") == null) {
+            user(MainActivity.googleID);
+            return;
+        }
+
+        user(getIntent().getStringExtra("googleID"));
+    }
+
+    void user(final String googleID) {
         final JSONObject[] userInfo = new JSONObject[1];
 
         new Thread(new Runnable() {
@@ -54,7 +63,7 @@ public class UserProfile extends AppCompatActivity {
 
                     JSONObject object = new JSONObject();
                     object.put("function", "getUserProfile");
-                    object.put("googleID", MainActivity.googleID);
+                    object.put("googleID", googleID);
                     dataOutputStream.writeUTF(object.toString());
 
                     InputStream inputStream = socket.getInputStream();
@@ -90,7 +99,7 @@ public class UserProfile extends AppCompatActivity {
             fullName = userInfo[0].getString("firstName");
             fullName = fullName.concat(" ");
             fullName = fullName.concat(userInfo[0].getString("lastName"));
-            googleID = userInfo[0].getString("googleID");
+            gID = userInfo[0].getString("googleID");
             userCommunities = new ArrayList<>(Arrays.asList(userInfo[0].getString("communitiesList").split(", ")));
             userModerator = new ArrayList<>(Arrays.asList(userInfo[0].getString("moderatorOf").split(", ")));
         }
@@ -104,10 +113,23 @@ public class UserProfile extends AppCompatActivity {
         TextView email = (TextView) findViewById(R.id.userEmail);
 
         uName.setText(fullName);
-        email.setText(googleID);
+        email.setText(gID);
+
+        boolean found;
 
         for (String community : userCommunities) {
-            addCommunityToList(community);
+            found = false;
+            for (String moderator : userModerator) {
+                if (moderator.contains(community)) {
+                    String output = community + " - MOD";
+                    addCommunityToList(output);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                addCommunityToList(community);
+            }
         }
     }
 

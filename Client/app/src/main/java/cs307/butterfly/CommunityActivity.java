@@ -93,6 +93,52 @@ public class CommunityActivity extends AppCompatActivity {
             MainActivity.googleID = contents[0];
         }
 
+        //Get user name from server
+        if (MainActivity.server) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //Create stuff for the client to connect to the app
+                        Socket socket;
+                        OutputStream outputStream;
+                        InputStream inputStream;
+                        DataOutputStream dataOutputStream;
+                        DataInputStream dataInputStream;
+                        JSONObject object = new JSONObject();
+
+                        //Connect to server
+                        socket = new Socket(MainActivity.ip, 3300);
+                        outputStream = socket.getOutputStream();
+                        dataOutputStream = new DataOutputStream(outputStream);
+
+                        //Send function and google ID to server
+                        object.put("function", "getUserName");
+                        object.put("googleID", MainActivity.googleID);
+                        dataOutputStream.writeUTF(object.toString());
+
+                        //Receive the name from the server
+                        inputStream = socket.getInputStream();
+                        dataInputStream = new DataInputStream(inputStream);
+
+                        //Save the input stream from the server
+                        MainActivity.fullName = dataInputStream.readUTF();
+
+                        //close everything
+                        dataInputStream.close();
+                        inputStream.close();
+                        outputStream.close();
+                        dataOutputStream.close();
+                        socket.close();
+                    } catch (IOException | JSONException e) {
+                        errorToast();
+                        Log.d("Exception", "Error: Server might be offline");
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
         setContentView(R.layout.activity_community);
 
         if (getSupportActionBar() != null) {
