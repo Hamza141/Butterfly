@@ -23,18 +23,6 @@
     </android.support.v4.widget.NestedScrollView>
 
     <ImageButton
-        android:src="@drawable/add1"
-        android:layout_width="105dp"
-        android:text="Discover"
-        android:layout_height="71dp"
-        android:id="@+id/invite"
-        android:layout_gravity="bottom|left"
-        android:layout_alignParentTop="true"
-        android:background="@android:color/holo_blue_dark"
-
-        android:drawablePadding="-15sp"/>
-
-        <ImageButton
 
             android:layout_width="103dp"
             android:layout_height="71dp"
@@ -49,6 +37,20 @@
             app:layout_anchor="@+id/nestedScrollView"
             app:layout_anchorGravity="bottom|right" />
 
+    <ImageButton
+        android:src="@drawable/add1"
+        android:layout_width="105dp"
+        android:text="Discover"
+        android:layout_height="71dp"
+        android:id="@+id/invite"
+        android:layout_gravity="center_vertical|right"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/holo_blue_dark"
 
-    </android.support.design.widget.CoordinatorLayout>
+        android:drawablePadding="-15sp"
+        app:layout_anchor="@+id/nestedScrollView"
+        app:layout_anchorGravity="bottom|left" />
+
+
+</android.support.design.widget.CoordinatorLayout>
 
