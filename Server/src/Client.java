@@ -15,7 +15,7 @@ public class Client {
     public static void main(String[] args) {
         //String serverName = "128.211.225.79";
         //String serverName = "128.10.120.226";
-        String serverName = "10.186.90.81";
+        String serverName = "10.186.84.106";
         int port = 3300;
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);

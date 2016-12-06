@@ -45,17 +45,12 @@ import static java.lang.Thread.sleep;
     private ResultSet rs;
     private JSONObject obj;
 
-    serverStart(JSONObject pobj, DataOutputStream pout) throws IOException {
+    serverStart(JSONObject pobj, DataOutputStream pout, String key, String pass, String auth) throws IOException {
         obj = pobj;
         out = pout;
-        FileInputStream fileIn = new FileInputStream("/home/khanh/keys.txt");
-        InputStreamReader isr = new InputStreamReader(fileIn, Charset.forName("UTF-8"));
-        BufferedReader br = new BufferedReader(isr);
-        appKey = br.readLine();
-        PASS = br.readLine();
-        Authorization = br.readLine();
-        br.close();
-        isr.close();
+        appKey = key;
+        PASS = pass;
+        Authorization = auth;
     }
 
     public void run() {
@@ -106,10 +101,6 @@ import static java.lang.Thread.sleep;
                 break;
             case "emailInvite":
                 emailInvite("user", (String) obj.get("to"));
-                break;
-            case "genericNotification":
-                genericNotification(getInstanceID((String) obj.get("googleID")),
-                        (String) obj.get("message"), (String) obj.get("title"));
                 break;
             case "getCommunities":
                 getCommunities();
@@ -171,9 +162,6 @@ import static java.lang.Thread.sleep;
                 break;
             case "rsvpEventRemove":
                 rsvpEventRemove(obj);
-                break;
-            case "upcomingEventNotification":
-                upcomingEventNotificationCheck();
                 break;
             case "updateInstanceID":
                 updateInstanceID(obj);
@@ -680,39 +668,6 @@ import static java.lang.Thread.sleep;
         }
     }
 
-    private void endedHangoutsCheck() {
-        try {
-            sql = "SELECT name FROM Communities";
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                ArrayList<String> communities = new ArrayList<>();
-                String temp = rs.getString("name").replaceAll("\\s", "_");
-                temp += "_Hangouts";
-                communities.add(temp);
-                communities.forEach(this::timeCheckHangouts);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void genericNotification(String to, String message, String title) {
-        JSONObject notification = new JSONObject();
-        JSONObject parent = new JSONObject();
-        JSONObject data = new JSONObject();
-        data.put("body", "aiuosdfhuiashdfuioasduiof");
-        data.put("title", title);
-        data.put("communityName", "Hahahaha ");
-        parent.put("data", data);
-        notification.put("body", message);
-        notification.put("title", title);
-        parent.put("to", to);
-        parent.put("notification", notification);
-        parent.put("priority", "high");
-        messageWrite(parent);
-    }
-
     private void getCommunities() {
         StringBuilder communities = new StringBuilder();
         try {
@@ -769,6 +724,9 @@ import static java.lang.Thread.sleep;
         }
     }
 
+    /*
+
+     */
     private void getCommunityUsersWithID(String communityName) {
         //TODO test
         communityName = communityName.replaceAll("\\s", "_");
@@ -806,9 +764,13 @@ import static java.lang.Thread.sleep;
         }
     }
 
+    /*
+        Function which writes to client a string number of how many events in the
+        community table then JSON strings of all rows in the provided community's
+        calendar table.
+     */
     private void getEvents(String communityName) {
-        //TODO check if user is in any communities before executing
-        String oldName = communityName;
+        String community = communityName;
         communityName = communityName.replaceAll("\\s", "_");
         communityName += "_Calendar";
         try {
@@ -835,7 +797,7 @@ import static java.lang.Thread.sleep;
                         obj.put("state", rs.getString("state"));
                         obj.put("zip", rs.getString("zip"));
                         obj.put("description", rs.getString("description"));
-                        obj.put("communityName", oldName);
+                        obj.put("communityName", community);
                         obj.put("locationName", rs.getString("locationName"));
                         obj.put("numAttendees", rs.getString("numAttendees"));
                         System.out.println(obj.toString());
@@ -851,6 +813,10 @@ import static java.lang.Thread.sleep;
         }
     }
 
+    /*
+        Function which writes to client a string containing the primary key idUsers
+        associated with the googleID.
+     */
     private String getIdUsers(String googleID) {
         try {
             sql = "SELECT idUsers FROM Users WHERE googleID = ?";
@@ -868,6 +834,10 @@ import static java.lang.Thread.sleep;
         return "0";
     }
 
+    /*
+        Function which writes to client a string containing the Firebase provided instanceID
+        associated with the googleID.
+     */
     private String getInstanceID(String googleID) {
         //function passed to genericNotification
         try {
@@ -1039,6 +1009,10 @@ import static java.lang.Thread.sleep;
         }
     }
 
+    /*
+        Function which writes to client a string that contains the first and last
+        name of the user associated with the provided googleID.
+     */
     private void getUserName(String googleID) {
         try {
             sql = "SELECT * FROM Users WHERE googleID = ?";
@@ -1082,6 +1056,10 @@ import static java.lang.Thread.sleep;
         }
     }
 
+    /*
+        Function which writes to client a JSON which holds all variable fields
+        for a user in the Users table.
+     */
     private void getUserProfile(String googleID) {
         try {
             sql = "SELECT * FROM Users WHERE googleID = ?";
@@ -1107,6 +1085,11 @@ import static java.lang.Thread.sleep;
         }
     }
 
+    /*
+        Function which builds the Firebase JSON for a notification that a user
+        hahs pinged members of the community.
+        Calls messageWrite.
+     */
     private void groupNotification(JSONObject obj) {
         String name = (String) obj.get("name");
         String community = (String) obj.get("communityName");
@@ -1127,6 +1110,11 @@ import static java.lang.Thread.sleep;
         messageWrite(parent);
     }
 
+    /*
+        Function which builds the Firebase JSON for inviting a user who
+        uses the app to the community.
+        Calls messageWrite.
+     */
     private void inviteNotification(JSONObject obj) {
         String name = (String) obj.get("name");
         String community = (String) obj.get("communityName");
@@ -1138,7 +1126,7 @@ import static java.lang.Thread.sleep;
         JSONObject parent = new JSONObject();
         notification.put("body", name + " wants you to join " + community);
         notification.put("title", "Community Invite");
-        //data.put("body", message);
+        data.put("body", message);
         data.put("title", "Community Invite");
         data.put("communityName", community);
         community.replaceAll("\\s", "_");
@@ -1313,17 +1301,23 @@ import static java.lang.Thread.sleep;
         JSONObject parent = new JSONObject();
         notification.put("body", name + " has posted a new message");
         notification.put("title", "New Message in " + community + " by " + name);
-        //data.put("body", message);
+        data.put("body", message);
         data.put("title", "New Message in " + community + " by " + name);
         data.put("communityName", community);
-        community.replaceAll("\\s", "_");
-        parent.put("to", "/topics/" + community);
+        parent.put("to", "/topics/" + community.replaceAll("\\s", "_"));
         parent.put("notification", notification);
         parent.put("data", data);
         parent.put("priority", "high");
         messageWrite(parent);
     }
 
+    /*
+        Function which removes all communities from the database.
+        Loops through the Communities table and drops all created tables
+        associated with community name.
+        Loops through Users table and truncates the rows for communitiesList and
+        moderatorOf.
+     */
     private void removeAllCommunities() {
         try {
             sql = "SELECT name FROM Communities";
@@ -1354,6 +1348,14 @@ import static java.lang.Thread.sleep;
             e.printStackTrace();
         }
     }
+
+    /*
+        Function which removes a community from the database.
+        Removes the community from the Communities table.
+        Loops through any users still in the community and removes the community
+        from respective communitiesList.
+        Drops all created tables associated from database.
+     */
 
     private void removeCommunity(String communityName) {
         String name = communityName;
@@ -1509,128 +1511,6 @@ import static java.lang.Thread.sleep;
     }
 
     /*
-        Function which loops through rows in the community calendar table
-        and if the startDate for an event is within 24 hours then send out
-        a notification to all subscribed members of the community and creates
-        a new row into eventsCheckIn.
-     */
-    private void timeCheckEvents(String communityName) {
-        // called by upcomingEventNotification
-        // TIME: HH:MM:SS, DATE: YYYY-MM-DD
-        String communityReplaced = communityName.replaceAll("\\s", "_");
-        String communityCalendar = communityReplaced;
-        communityCalendar += "_Calendar";
-        try {
-            sql = "SELECT * FROM " + communityCalendar;
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                String eventDate = rs.getString("date");
-                //String eventTime = rs.getString("time");
-                ArrayList<String> dateSplit;
-                dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
-                //ArrayList<String> timeSplit;
-                //timeSplit = new ArrayList<>(Arrays.asList(eventTime.split(":")));
-                Date date = new Date();
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(date);
-                int currYear = cal.get(Calendar.YEAR);
-                int currMonth = cal.get(Calendar.MONTH);
-                int currDay = cal.get(Calendar.DAY_OF_MONTH);
-                //int hour = cal.get(Calendar.HOUR_OF_DAY);
-                //int minute = cal.get(Calendar.MINUTE);
-                int eventYear = Integer.parseInt(dateSplit.get(0));
-                int eventMonth = Integer.parseInt(dateSplit.get(1));
-                if (eventMonth > 0) {
-                    eventMonth--;
-                }
-                int eventDay = Integer.parseInt(dateSplit.get(2));
-                if (currYear == eventYear && currMonth == eventMonth && eventDay - currDay < 1) {
-                    String topic = "/topics/";
-                    topic += communityReplaced;
-                    genericNotification(topic, "A Community event is upcoming", "Upcoming Event");
-                    sql = "INSERT INTO eventsCheckIn (communityName, eventName) VALUES(?, ?)";
-                    ps = conn.prepareStatement(sql);
-                    ps.setString(1, "communityName");
-                    ps.setString(2, rs.getString("eventName"));
-                    System.out.println(ps);
-                    ps.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /*
-        Function which loops through rows in the community hangouts table
-        and removes the hangouts which have passed.
-     */
-    private void timeCheckHangouts(String communityHangout) {
-        //TODO test
-        try {
-            sql = "SELECT * FROM " + communityHangout;
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                String eventDate = rs.getString("date");
-                String eventTime = rs.getString("endTime");
-                ArrayList<String> dateSplit;
-                dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
-                ArrayList<String> timeSplit;
-                timeSplit = new ArrayList<>(Arrays.asList(eventTime.split(":")));
-                Date date = new Date();
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(date);
-                int currYear = cal.get(Calendar.YEAR);
-                int currMonth = cal.get(Calendar.MONTH);
-                int currDay = cal.get(Calendar.DAY_OF_MONTH);
-                int currHour = cal.get(Calendar.HOUR_OF_DAY);
-                int currMinute = cal.get(Calendar.MINUTE);
-                int hangoutYear = Integer.parseInt(dateSplit.get(0));
-                int hangoutMonth = Integer.parseInt(dateSplit.get(1));
-                if (hangoutMonth > 0) {
-                    hangoutMonth--;
-                }
-                int hangoutDay = Integer.parseInt(dateSplit.get(2));
-                int hangoutHour = Integer.parseInt(timeSplit.get(0));
-                int hangoutMinute = Integer.parseInt(timeSplit.get(1));
-                if (currYear == hangoutYear && currMonth == hangoutMonth
-                        && hangoutDay - currDay == 1) {
-                    if (currHour - hangoutHour >= 0 && currMinute - hangoutMinute >= 0) {
-                        sql = "DELETE FROM " + communityHangout + " WHERE idHangouts = ?";
-                        ps = conn.prepareStatement(sql);
-                        ps.setString(1, rs.getString("idHangouts"));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /*
-        Function which loops through rows in Communities table then sends community name
-        to secondary function to check whether an event is upcoming.
-     */
-    private void upcomingEventNotificationCheck() {
-        //TODO will have to be always running to be prompt
-        try {
-            sql = "SELECT name FROM Communities";
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                ArrayList<String> communities = new ArrayList<>();
-                communities.add(rs.getString("name"));
-                System.out.println(rs.getString("name"));
-                communities.forEach(this::timeCheckEvents);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /*
         Updates the Users table with the current instanceID provided
         by FireBaseIO because instanceIDs can change depending on something.
      */
@@ -1706,14 +1586,14 @@ import static java.lang.Thread.sleep;
                 System.out.println(ps);
                 ps.executeUpdate();
             }
-            /*sql = "TRUNCATE TABLE Users";
+            sql = "TRUNCATE TABLE Users";
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
-            ps.executeUpdate();*/
-            /*sql = "TRUNCATE TABLE Communities";
+            ps.executeUpdate();
+            sql = "TRUNCATE TABLE Communities";
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
-            ps.executeUpdate();*/
+            ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1757,6 +1637,248 @@ import static java.lang.Thread.sleep;
 }
 
 @SuppressWarnings("InfiniteLoopStatement")
+class eventCheck implements Runnable {
+    static private String Authorization;
+    private Connection conn;
+    private String sql;
+    private PreparedStatement ps;
+    private ResultSet rs;
+
+    eventCheck(String PASS, String auth) {
+        Authorization = auth;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/Butterfly", "root", PASS);
+            conn.getMetaData().getCatalogs();
+            conn.createStatement();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run() {
+        // called by upcomingEventNotification
+        // TIME: HH:MM:SS, DATE: YYYY-MM-DD
+        while (true) {
+            try {
+                sql = "SELECT name FROM Communities";
+                ps = conn.prepareStatement(sql);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    ArrayList<String> communities = new ArrayList<>();
+                    communities.add(rs.getString("name"));
+                    System.out.println(rs.getString("name"));
+                    communities.forEach(this::timeCheckEvents);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /*
+        Function which loops through rows in the community calendar table
+        and if the startDate for an event is within 24 hours then send out
+        a notification to all subscribed members of the community and creates
+        a new row into eventsCheckIn.
+     */
+    private void timeCheckEvents(String communityName) {
+        // called by upcomingEventNotification
+        // TIME: HH:MM:SS, DATE: YYYY-MM-DD
+        String communityReplaced = communityName.replaceAll("\\s", "_");
+        String communityCalendar = communityReplaced;
+        communityCalendar += "_Calendar";
+        try {
+            sql = "SELECT * FROM " + communityCalendar;
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String eventDate = rs.getString("date");
+                //String eventTime = rs.getString("time");
+                ArrayList<String> dateSplit;
+                dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
+                //ArrayList<String> timeSplit;
+                //timeSplit = new ArrayList<>(Arrays.asList(eventTime.split(":")));
+                Date date = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                int currYear = cal.get(Calendar.YEAR);
+                int currMonth = cal.get(Calendar.MONTH);
+                int currDay = cal.get(Calendar.DAY_OF_MONTH);
+                //int hour = cal.get(Calendar.HOUR_OF_DAY);
+                //int minute = cal.get(Calendar.MINUTE);
+                int eventYear = Integer.parseInt(dateSplit.get(0));
+                int eventMonth = Integer.parseInt(dateSplit.get(1));
+                if (eventMonth > 0) {
+                    eventMonth--;
+                }
+                int eventDay = Integer.parseInt(dateSplit.get(2));
+                if (currYear == eventYear && currMonth == eventMonth && eventDay - currDay < 1) {
+                    String topic = "/topics/";
+                    topic += communityReplaced;
+                    eventNotification(topic, "A Community event is upcoming", "Upcoming Event", communityName);
+                    //TODO change table name sql = "INSERT INTO eventsCheckIn (communityName, eventName) VALUES(?, ?)";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, "communityName");
+                    ps.setString(2, rs.getString("eventName"));
+                    System.out.println(ps);
+                    ps.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void eventNotification(String to, String message, String title, String community) {
+        JSONObject parent = new JSONObject();
+        JSONObject notification = new JSONObject();
+        JSONObject data = new JSONObject();
+        data.put("body", "message");
+        data.put("title", title);
+        data.put("communityName", community);
+        parent.put("data", data);
+        notification.put("body", message);
+        notification.put("title", title);
+        parent.put("to", to);
+        parent.put("notification", notification);
+        parent.put("priority", "high");
+        messageWrite(parent);
+    }
+    private void messageWrite(JSONObject parent) {
+        System.out.println(parent.toString());
+        try {
+            URL url = new URL("https://fcm.googleapis.com/fcm/send");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDoOutput(true);
+            http.setRequestMethod("POST");
+            http.setRequestProperty("Content-Type", "application/json");
+            http.setRequestProperty("Authorization", Authorization);
+            OutputStream os = http.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+            osw.write(parent.toString());
+            osw.flush();
+            osw.close();
+            BufferedReader is = new BufferedReader(new InputStreamReader(http.getInputStream()));
+            String response;
+            while ((response = is.readLine()) != null) {
+                System.out.println(response);
+            }
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+@SuppressWarnings("InfiniteLoopStatement")
+class hangoutCheck implements Runnable {
+    static private String Authorization;
+    private Connection conn;
+    private String sql;
+    private PreparedStatement ps;
+    private ResultSet rs;
+    hangoutCheck(String PASS, String auth) {
+        Authorization = auth;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/Butterfly", "root", PASS);
+            conn.getMetaData().getCatalogs();
+            conn.createStatement();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void run() {
+        while (true) {
+            try {
+                sql = "SELECT name FROM Communities";
+                ps = conn.prepareStatement(sql);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    ArrayList<String> communities = new ArrayList<>();
+                    String temp = rs.getString("name").replaceAll("\\s", "_");
+                    temp += "_Hangouts";
+                    communities.add(temp);
+                    communities.forEach(this::timeCheckHangouts);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /*
+        Function which loops through rows in the community hangouts table
+        and removes the hangouts which have passed.
+     */
+    private void timeCheckHangouts(String communityHangout) {
+        //TODO test
+        try {
+            sql = "SELECT * FROM " + communityHangout;
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String eventDate = rs.getString("date");
+                String eventTime = rs.getString("endTime");
+                ArrayList<String> dateSplit;
+                dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
+                ArrayList<String> timeSplit;
+                timeSplit = new ArrayList<>(Arrays.asList(eventTime.split(":")));
+                Date date = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                int currYear = cal.get(Calendar.YEAR);
+                int currMonth = cal.get(Calendar.MONTH);
+                int currDay = cal.get(Calendar.DAY_OF_MONTH);
+                int currHour = cal.get(Calendar.HOUR_OF_DAY);
+                int currMinute = cal.get(Calendar.MINUTE);
+                int hangoutYear = Integer.parseInt(dateSplit.get(0));
+                int hangoutMonth = Integer.parseInt(dateSplit.get(1));
+                if (hangoutMonth > 0) {
+                    hangoutMonth--;
+                }
+                int hangoutDay = Integer.parseInt(dateSplit.get(2));
+                int hangoutHour = Integer.parseInt(timeSplit.get(0));
+                int hangoutMinute = Integer.parseInt(timeSplit.get(1));
+                if (currYear == hangoutYear && currMonth == hangoutMonth
+                        && hangoutDay - currDay == 1) {
+                    if (currHour - hangoutHour >= 0 && currMinute - hangoutMinute >= 0) {
+                        sql = "DELETE FROM " + communityHangout + " WHERE idHangouts = ?";
+                        ps = conn.prepareStatement(sql);
+                        ps.setString(1, rs.getString("idHangouts"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void messageWrite(JSONObject parent) {
+        System.out.println(parent.toString());
+        try {
+            URL url = new URL("https://fcm.googleapis.com/fcm/send");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDoOutput(true);
+            http.setRequestMethod("POST");
+            http.setRequestProperty("Content-Type", "application/json");
+            http.setRequestProperty("Authorization", Authorization);
+            OutputStream os = http.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+            osw.write(parent.toString());
+            osw.flush();
+            osw.close();
+            BufferedReader is = new BufferedReader(new InputStreamReader(http.getInputStream()));
+            String response;
+            while ((response = is.readLine()) != null) {
+                System.out.println(response);
+            }
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+@SuppressWarnings("InfiniteLoopStatement")
 public class Server {
     public static void main(String[] args) {
         Date currentDate = Calendar.getInstance().getTime();
@@ -1768,12 +1890,23 @@ public class Server {
                 .build();
             FirebaseApp.initializeApp(options);
             ServerSocket serverSocket = new ServerSocket(3300);
+            JSONParser parser = new JSONParser();
+            String appKey, PASS, Authorization;
+            FileInputStream fileIn = new FileInputStream("/home/khanh/keys.txt");
+            InputStreamReader isr = new InputStreamReader(fileIn, Charset.forName("UTF-8"));
+            BufferedReader br = new BufferedReader(isr);
+            appKey = br.readLine();
+            PASS = br.readLine();
+            Authorization = br.readLine();
+            br.close();
+            isr.close();
+            new eventCheck(PASS, Authorization).run();
+            new hangoutCheck(PASS, Authorization).run();
             while (true) {
                 System.out.println("Waiting on port " + serverSocket.getLocalPort() + "...");
                 try {
                     Socket server = serverSocket.accept();
                     System.out.println("Just connected to " + server.getRemoteSocketAddress());
-                    JSONParser parser = new JSONParser();
                     DataInputStream in = new DataInputStream(server.getInputStream());
                     DataOutputStream out = new DataOutputStream(server.getOutputStream());
                     sleep(100);
@@ -1781,7 +1914,8 @@ public class Server {
                         Object parsed = parser.parse(in.readUTF());
                         JSONObject obj = (JSONObject) parsed;
                         System.out.println("TIMESTAMP " + currentDate + " " + obj.get("function"));
-                        new serverStart(obj, out).run();
+                        new serverStart(obj, out, appKey, PASS, Authorization).run();
+
                     }
                 } catch (SocketTimeoutException s) {
                     System.out.println("Socket timed out!");
