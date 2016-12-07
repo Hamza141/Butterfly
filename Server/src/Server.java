@@ -300,8 +300,8 @@ class serverStart implements Runnable {
         communityName += "_Calendar";
         try {
             sql = "INSERT INTO " + communityName + " (eventName, description, date, time, city, "
-                    + "state, address, zip, locationName, numAttendees, listAttendees) "
-                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "state, address, zip, locationName, numAttendees, notified, listAttendees) "
+                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, (String) obj.get("eventName"));
             ps.setString(2, (String) obj.get("description"));
@@ -320,7 +320,6 @@ class serverStart implements Runnable {
             e.printStackTrace();
         } finally {
             try {
-                rs.close();
                 ps.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -376,7 +375,7 @@ class serverStart implements Runnable {
         String googleID = (String) obj.get("googleID");
         String hangoutName = (String) obj.get("hangoutName");
         try {
-            sql = "SELECT * FROM " + communityName + " WHERE hangoutName = ?";
+            sql = "SELECT listAttendees FROM " + communityName + " WHERE hangoutName = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, hangoutName);
             System.out.println(ps);
@@ -486,7 +485,7 @@ class serverStart implements Runnable {
     private String communitySearch(String type, String value) {
         StringBuilder communities = new StringBuilder();
         try {
-            sql = "SELECT * FROM Communities WHERE " + type + " = ?";
+            sql = "SELECT name FROM Communities WHERE " + type + " = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, value);
             System.out.println(ps);
@@ -517,7 +516,7 @@ class serverStart implements Runnable {
         String googleID = (String) obj.get("googleID");
         String listCheckedIn, id;
         try {
-            sql = "SELECT * FROM eventsCheckIn WHERE (communityName = ? AND eventName = ?)";
+            sql = "SELECT idEventsCheckIns, listCheckedIn FROM eventsCheckIn WHERE (communityName = ? AND eventName = ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, communityName);
             ps.setString(2, eventName);
@@ -579,9 +578,9 @@ class serverStart implements Runnable {
                 + "idEvents INT(4) AUTO_INCREMENT NOT NULL PRIMARY KEY, eventName VARCHAR(255), "
                 + "description VARCHAR(255), date DATE, time TIME, city VARCHAR(255), "
                 + "state VARCHAR(255), address VARCHAR(255), zip VARCHAR(255), "
-                + "locationName VARCHAR(255), numAttendees INT(4), "
+                + "locationName VARCHAR(255), numAttendees INT(4), notified INT(1), "
                 + "listAttendees TEXT CHARACTER SET latin1 COLLATE latin1_general_cs, "
-                + "idCheckIn INT(4) FOREIGN KEY (idCheckIn) REFERENCES eventsCheckIn.ideventCheckIns)";
+                + "idCheckIn INT(4), FOREIGN KEY (idCheckIn) REFERENCES eventsCheckIn (ideventCheckIns))";
         System.out.println(newTable);
         try {
             ps = conn.prepareStatement(newTable);
@@ -776,7 +775,7 @@ class serverStart implements Runnable {
     private void getCommunities() {
         StringBuilder communities = new StringBuilder();
         try {
-            sql = "SELECT * FROM Communities";
+            sql = "SELECT name, private FROM Communities";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -811,12 +810,12 @@ class serverStart implements Runnable {
                 if (rs.getInt(1) > 0) {
                     System.out.println("Users in community " + Integer.toString(rs.getInt(1)));
                     out.writeUTF(Integer.toString(rs.getInt(1)));
-                    sql = "SELECT * FROM " + communityName;
+                    sql = "SELECT googleID FROM " + communityName;
                     ps = conn.prepareStatement(sql);
                     rs = ps.executeQuery();
                     JSONObject obj;
                     while (rs.next()) {
-                        sql = "SELECT * FROM Users WHERE googleID = ?";
+                        sql = "SELECT firstName, lastName FROM Users WHERE googleID = ?";
                         ps = conn.prepareStatement(sql);
                         ps.setString(1, rs.getString("googleID"));
                         ResultSet result = ps.executeQuery();
@@ -857,12 +856,12 @@ class serverStart implements Runnable {
                 if (rs.getInt(1) > 0) {
                     System.out.println("Users in community " + Integer.toString(rs.getInt(1)));
                     out.writeUTF(Integer.toString(rs.getInt(1)));
-                    sql = "SELECT * FROM " + communityName;
+                    sql = "SELECT googleID FROM " + communityName;
                     ps = conn.prepareStatement(sql);
                     rs = ps.executeQuery();
                     JSONObject obj;
                     while (rs.next()) {
-                        sql = "SELECT * FROM Users WHERE googleID = ?";
+                        sql = "SELECT firstName, lastName, googleID FROM Users WHERE googleID = ?";
                         ps = conn.prepareStatement(sql);
                         ps.setString(1, rs.getString("googleID"));
                         ResultSet result = ps.executeQuery();
@@ -979,13 +978,12 @@ class serverStart implements Runnable {
     private String getInstanceID(String googleID) {
         //function passed to genericNotification
         try {
-            sql = "SELECT * FROM Users WHERE googleID = ?";
+            sql = "SELECT instanceID FROM Users WHERE googleID = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, googleID);
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
-                System.out.println(rs.getString("googleID"));
                 return rs.getString("instanceID");
             }
         } catch (SQLException e) {
@@ -1092,7 +1090,7 @@ class serverStart implements Runnable {
                 ArrayList<String> ids = new ArrayList<>(Arrays.asList(list.split(", ")));
                 //out.writeUTF(Integer.toString(ids.size()));
                 for (String id : ids) {
-                    sql = "SELECT * FROM Users WHERE googleID = ?";
+                    sql = "SELECT firstName, lastName FROM Users WHERE googleID = ?";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, id);
                     System.out.println(ps);
@@ -1195,7 +1193,7 @@ class serverStart implements Runnable {
      */
     private void getUserName(String googleID) {
         try {
-            sql = "SELECT * FROM Users WHERE googleID = ?";
+            sql = "SELECT firstName, lastName FROM Users WHERE googleID = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, googleID);
             System.out.println(ps);
@@ -1440,7 +1438,7 @@ class serverStart implements Runnable {
         String googleID = (String) obj.get("googleID");
         String eventName = (String) obj.get("hangoutName");
         try {
-            sql = "SELECT * FROM " + communityName + " WHERE hangoutName = ?";
+            sql = "SELECT listAttendees FROM " + communityName + " WHERE hangoutName = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, eventName);
             rs = ps.executeQuery();
@@ -1453,7 +1451,7 @@ class serverStart implements Runnable {
                     if (attendee.contains(googleID)) {
                         System.out.println("found " + attendee);
                     } else {
-                        string.append(rs.getString("name"));
+                        string.append(attendee);
                         string.append(", ");
                     }
                 }
@@ -1546,7 +1544,7 @@ class serverStart implements Runnable {
                 System.out.println(ps);
                 ps.executeUpdate();
             }
-            sql = "SELECT * FROM Users";
+            sql = "SELECT googleID FROM Users";
             ps = conn.prepareStatement(sql);
             System.out.println(ps);
             rs = ps.executeQuery();
@@ -1645,20 +1643,22 @@ class serverStart implements Runnable {
         String googleID = (String) obj.get("googleID");
         String eventName = (String) obj.get("eventName");
         try {
-            sql = "SELECT * FROM " + communityName + " WHERE eventName = ?";
+            sql = "SELECT count(*) FROM " + communityName + " WHERE eventName = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, eventName);
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
-                sql = "UPDATE " + communityName + " SET listAttendees = "
-                        + "CONCAT(?, listAttendees) WHERE eventName = ?";
-                ps = conn.prepareStatement(sql);
-                googleID += ", ";
-                ps.setString(1, googleID);
-                ps.setString(2, eventName);
-                System.out.println(ps);
-                ps.executeUpdate();
+                if (rs.getInt(1) == 1) {
+                    sql = "UPDATE " + communityName + " SET listAttendees = "
+                            + "CONCAT(?, listAttendees) WHERE eventName = ?";
+                    ps = conn.prepareStatement(sql);
+                    googleID += ", ";
+                    ps.setString(1, googleID);
+                    ps.setString(2, eventName);
+                    System.out.println(ps);
+                    ps.executeUpdate();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1684,7 +1684,7 @@ class serverStart implements Runnable {
         String googleID = (String) obj.get("googleID");
         String eventName = (String) obj.get("eventName");
         try {
-            sql = "SELECT * FROM " + communityName + " WHERE eventName = ?";
+            sql = "SELECT listAttendees FROM " + communityName + " WHERE eventName = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, eventName);
             rs = ps.executeQuery();
@@ -1725,7 +1725,7 @@ class serverStart implements Runnable {
         String googleID = (String) obj.get("googleID");
         String eventName = (String) obj.get("eventName");
         try {
-            sql = "SELECT * FROM " + communityName + " WHERE eventName = ?";
+            sql = "SELECT listAttendees FROM " + communityName + " WHERE eventName = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, eventName);
             rs = ps.executeQuery();
@@ -1738,7 +1738,7 @@ class serverStart implements Runnable {
                     if (attendee.contains(googleID)) {
                         System.out.println("found " + attendee);
                     } else {
-                        string.append(rs.getString("name"));
+                        string.append(attendee);
                         string.append(", ");
                     }
                 }
@@ -1937,7 +1937,6 @@ class eventCheck implements Runnable {
                 if (rs.next()) {
                     ArrayList<String> communities = new ArrayList<>();
                     communities.add(rs.getString("name"));
-                    System.out.println(rs.getString("name"));
                     communities.forEach(this::timeCheckEvents);
                     communities.clear();
                 }
@@ -1947,7 +1946,8 @@ class eventCheck implements Runnable {
                 try {
                     rs.close();
                     ps.close();
-                } catch (SQLException e) {
+                    Thread.sleep(60000);
+                } catch (SQLException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -1967,38 +1967,48 @@ class eventCheck implements Runnable {
         String communityCalendar = communityReplaced;
         communityCalendar += "_Calendar";
         try {
-            sql = "SELECT * FROM " + communityCalendar;
+            sql = "SELECT idEvents, eventName, notified, date FROM " + communityCalendar;
             ps = conn.prepareStatement(sql);
+            System.out.println(ps);
             rs = ps.executeQuery();
             while (rs.next()) {
-                String eventDate = rs.getString("date");
-                ArrayList<String> dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
-                //ArrayList<String> timeSplit;
-                //timeSplit = new ArrayList<>(Arrays.asList(eventTime.split(":")));
-                Date date = new Date();
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(date);
-                int currYear = cal.get(Calendar.YEAR);
-                int currMonth = cal.get(Calendar.MONTH);
-                int currDay = cal.get(Calendar.DAY_OF_MONTH);
-                //int hour = cal.get(Calendar.HOUR_OF_DAY);
-                //int minute = cal.get(Calendar.MINUTE);
-                int eventYear = Integer.parseInt(dateSplit.get(0));
-                int eventMonth = Integer.parseInt(dateSplit.get(1));
-                if (eventMonth > 0) {
-                    eventMonth--;
-                }
-                int eventDay = Integer.parseInt(dateSplit.get(2));
-                if (currYear == eventYear && currMonth == eventMonth && eventDay - currDay < 1) {
-                    String topic = "/topics/";
-                    topic += communityReplaced;
-                    eventNotification(topic, "A Community event is upcoming", "Upcoming Event", communityName);
-                    sql = "INSERT INTO eventsCheckIn (communityName, eventName) VALUES(?, ?)";
+                if (rs.getInt("notified") == 0) {
+                    sql = "UPDATE " + communityCalendar + " SET notified = 1 WHERE idEvents = ?";
                     ps = conn.prepareStatement(sql);
-                    ps.setString(1, "communityName");
-                    ps.setString(2, rs.getString("eventName"));
+                    ps.setInt(1, rs.getInt("idEvents"));
                     System.out.println(ps);
                     ps.executeUpdate();
+                    String eventDate = rs.getString("date");
+                    ArrayList<String> dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
+                    //ArrayList<String> timeSplit;
+                    //timeSplit = new ArrayList<>(Arrays.asList(eventTime.split(":")));
+                    Date date = new Date();
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
+                    int currYear = cal.get(Calendar.YEAR);
+                    int currMonth = cal.get(Calendar.MONTH);
+                    int currDay = cal.get(Calendar.DAY_OF_MONTH);
+                    //int hour = cal.get(Calendar.HOUR_OF_DAY);
+                    //int minute = cal.get(Calendar.MINUTE);
+                    int eventYear = Integer.parseInt(dateSplit.get(0));
+                    int eventMonth = Integer.parseInt(dateSplit.get(1));
+                    if (eventMonth > 0) {
+                        eventMonth--;
+                    }
+                    int eventDay = Integer.parseInt(dateSplit.get(2));
+                    if (currYear == eventYear && currMonth == eventMonth && eventDay - currDay < 1) {
+                        String topic = "/topics/";
+                        topic += communityReplaced;
+                        eventNotification(topic, "A Community event is upcoming", "Upcoming Event", communityName);
+                        sql = "INSERT INTO eventsCheckIn (communityName, eventName, numCheckedIn, listCheckedIn) VALUES(?, ?, ?, ?)";
+                        ps = conn.prepareStatement(sql);
+                        ps.setString(1, "communityName");
+                        ps.setString(2, rs.getString("eventName"));
+                        ps.setInt(3, 0);
+                        ps.setString(4, "");
+                        System.out.println(ps);
+                        ps.executeUpdate();
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -2093,7 +2103,8 @@ class hangoutCheck implements Runnable {
                 try {
                     rs.close();
                     ps.close();
-                } catch (SQLException e) {
+                    Thread.sleep(60000);
+                } catch (SQLException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -2107,7 +2118,7 @@ class hangoutCheck implements Runnable {
     private void timeCheckHangouts(String communityHangout) {
         //TODO test
         try {
-            sql = "SELECT * FROM " + communityHangout;
+            sql = "SELECT date, endTime, idHangouts FROM " + communityHangout;
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -2202,8 +2213,8 @@ public class Server {
             Authorization = br.readLine();
             br.close();
             isr.close();
-            new eventCheck(PASS, Authorization).run();
-            new hangoutCheck(PASS, Authorization).run();
+            new Thread(new eventCheck(PASS, Authorization)).start();
+            new Thread(new hangoutCheck(PASS, Authorization)).start();
             while (true) {
                 System.out.println("Waiting on port " + serverSocket.getLocalPort() + "...");
                 try {
