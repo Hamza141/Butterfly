@@ -164,8 +164,20 @@ public class Client {
             out.writeUTF(obj2.toString());
             System.out.println("Server says " + in.readUTF());*/
 
-            //obj2.put("function", "getNeighborhoodEvents");
-            //out.writeUTF(obj2.toString());
+            client = new Socket(serverName, port);
+            System.out.println("Just connected to " + client.getRemoteSocketAddress());
+            outToServer = client.getOutputStream();
+            inFromServer = client.getInputStream();
+            out = new DataOutputStream(outToServer);
+            in = new DataInputStream(inFromServer);
+            obj = new JSONObject();
+            obj.put("function", "getNeighborhoodEvents");
+            out.writeUTF(obj.toString());
+            System.out.println("Server says " + in.readUTF() + "!");
+            System.out.println("Server says 2 " + in.readUTF() + "!");
+            System.out.println("Server says 3 " + in.readUTF() + "!");
+            System.out.println("Server says 4 " + in.readUTF() + "!");
+            System.out.println("Server says 5 " + in.readUTF() + "!");
 
             /*obj = new JSONObject();
             obj.put("function", "emailInvite");
@@ -222,16 +234,15 @@ public class Client {
             out.writeUTF(obj.toString());
             System.out.println("Server says " + in.readUTF());*/
 
-            client = new Socket(serverName, port);
+            /*client = new Socket(serverName, port);
             System.out.println("Just connected to " + client.getRemoteSocketAddress());
             outToServer = client.getOutputStream();
             out = new DataOutputStream(outToServer);
             obj = new JSONObject();
             obj.put("function", "wipe");
-            out.writeUTF(obj.toString());
+            out.writeUTF(obj.toString());*/
 
-            //System.out.println("Server says " + in.readUTF() + "!");
-            //System.out.println("Server says 2 " + in.readUTF());
+            //
             //System.out.println("Server says " + in.readUTF());
             client.close();
         } catch (IOException e) {
