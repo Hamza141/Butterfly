@@ -3,19 +3,21 @@
  * Created by Khanh Tran on 10/9/16.
  */
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,14 +31,17 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.Transaction;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import static java.lang.Thread.sleep;
 
+//TODO Message Comments
+
 @SuppressWarnings({"unchecked", "InfiniteLoopStatement"})
- class serverStart implements Runnable {
+class serverStart implements Runnable {
     static private String appKey, PASS, Authorization;
     private Connection conn;
     private DataOutputStream out;
@@ -45,7 +50,7 @@ import static java.lang.Thread.sleep;
     private ResultSet rs;
     private JSONObject obj;
 
-    serverStart(JSONObject pobj, DataOutputStream pout, String key, String pass, String auth) throws IOException {
+    serverStart(JSONObject pobj, DataOutputStream pout, String key, String pass, String auth) {
         obj = pobj;
         out = pout;
         appKey = key;
@@ -208,13 +213,19 @@ import static java.lang.Thread.sleep;
                     name = name.replaceAll("\\s", "_");
                     createCommunityBoardTable(name);
                     createCommunityEventsTable(name);
-                    //createCommunityEventsCheckInTable(name);
                     createCommunityHangoutsTable(name);
                     createCommunityUsersTable(name);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -271,6 +282,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -298,6 +316,13 @@ import static java.lang.Thread.sleep;
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -332,6 +357,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -359,6 +391,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -380,6 +419,12 @@ import static java.lang.Thread.sleep;
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         newBoardNotification((String) obj.get("communityName"), name, message);
     }
@@ -410,6 +455,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -445,6 +497,13 @@ import static java.lang.Thread.sleep;
             System.out.println(communities);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return "";
     }
@@ -477,6 +536,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -493,6 +559,12 @@ import static java.lang.Thread.sleep;
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -506,13 +578,20 @@ import static java.lang.Thread.sleep;
                 + "description VARCHAR(255), date DATE, time TIME, city VARCHAR(255), "
                 + "state VARCHAR(255), address VARCHAR(255), zip VARCHAR(255), "
                 + "locationName VARCHAR(255), numAttendees INT(4), "
-                + "listAttendees TEXT CHARACTER SET latin1 COLLATE latin1_general_cs)";
+                + "listAttendees TEXT CHARACTER SET latin1 COLLATE latin1_general_cs, "
+                + "idCheckIn INT(4) FOREIGN KEY (idCheckIn) REFERENCES eventsCheckIn.ideventCheckIns)";
         System.out.println(newTable);
         try {
             ps = conn.prepareStatement(newTable);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -530,6 +609,12 @@ import static java.lang.Thread.sleep;
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -545,6 +630,12 @@ import static java.lang.Thread.sleep;
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -560,6 +651,12 @@ import static java.lang.Thread.sleep;
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -639,6 +736,12 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -650,11 +753,11 @@ import static java.lang.Thread.sleep;
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-                        return new javax.mail.PasswordAuthentication("noreply.butterfly@gmail.com", password);
-                    }
-                });
+            new javax.mail.Authenticator() {
+                protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                    return new javax.mail.PasswordAuthentication("noreply.butterfly@gmail.com", password);
+                }
+            });
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("noreply.butterfly@gmail.com"));
@@ -675,7 +778,6 @@ import static java.lang.Thread.sleep;
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                System.out.println(rs.getString("name") + " " + rs.getInt("private"));
                 if (rs.getInt("private") == 0) {
                     communities.append(rs.getString("name"));
                     communities.append(", ");
@@ -685,6 +787,13 @@ import static java.lang.Thread.sleep;
             System.out.println(communities);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -721,6 +830,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -761,6 +877,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -804,12 +927,18 @@ import static java.lang.Thread.sleep;
                         out.writeUTF(obj.toString());
                     }
                 } else {
-                    System.out.println("else 0");
                     out.writeUTF("0");
                 }
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -830,6 +959,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return "0";
     }
@@ -852,6 +988,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return "";
     }
@@ -887,6 +1030,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -909,6 +1059,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -952,6 +1109,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -977,6 +1141,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1006,6 +1177,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1028,6 +1206,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1053,6 +1238,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1082,6 +1274,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1102,8 +1301,7 @@ import static java.lang.Thread.sleep;
         //data.put("body", message);
         data.put("title", "New ping in " + community + " by " + name);
         data.put("communityName", community);
-        community.replaceAll("\\s", "_");
-        parent.put("to", "/topics/" + community);
+        parent.put("to", "/topics/" + community.replaceAll("\\s", "_"));
         parent.put("notification", notification);
         parent.put("data", data);
         parent.put("priority", "high");
@@ -1129,7 +1327,7 @@ import static java.lang.Thread.sleep;
         data.put("body", message);
         data.put("title", "Community Invite");
         data.put("communityName", community);
-        community.replaceAll("\\s", "_");
+        //community.replaceAll("\\s", "_");
         parent.put("to", getInstanceID(googleID));
         parent.put("notification", notification);
         parent.put("data", data);
@@ -1218,6 +1416,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1259,6 +1464,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1346,6 +1558,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1359,6 +1578,7 @@ import static java.lang.Thread.sleep;
 
     private void removeCommunity(String communityName) {
         String name = communityName;
+        ResultSet result = null;
         try {
             sql = "DELETE FROM Communities WHERE name = ?";
             ps = conn.prepareStatement(sql);
@@ -1374,7 +1594,7 @@ import static java.lang.Thread.sleep;
                 sql = "SELECT communitiesList FROM Users WHERE googleID = ?";
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, rs.getString("googleID"));
-                ResultSet result = ps.executeQuery();
+                result = ps.executeQuery();
                 if (result.next()) {
                     ArrayList<String> communities = new ArrayList<>(
                             Arrays.asList(result.getString("communitiesList").split(", ")));
@@ -1401,6 +1621,14 @@ import static java.lang.Thread.sleep;
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                result.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1432,6 +1660,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1467,6 +1702,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1507,6 +1749,13 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1524,6 +1773,12 @@ import static java.lang.Thread.sleep;
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1568,6 +1823,12 @@ import static java.lang.Thread.sleep;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1596,6 +1857,13 @@ import static java.lang.Thread.sleep;
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1636,7 +1904,7 @@ import static java.lang.Thread.sleep;
     }*/
 }
 
-@SuppressWarnings("InfiniteLoopStatement")
+@SuppressWarnings({"unchecked", "InfiniteLoopStatement"})
 class eventCheck implements Runnable {
     static private String Authorization;
     private Connection conn;
@@ -1667,11 +1935,18 @@ class eventCheck implements Runnable {
                 if (rs.next()) {
                     ArrayList<String> communities = new ArrayList<>();
                     communities.add(rs.getString("name"));
-                    System.out.println(rs.getString("name"));
                     communities.forEach(this::timeCheckEvents);
+                    communities.clear();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    rs.close();
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1694,9 +1969,7 @@ class eventCheck implements Runnable {
             rs = ps.executeQuery();
             while (rs.next()) {
                 String eventDate = rs.getString("date");
-                //String eventTime = rs.getString("time");
-                ArrayList<String> dateSplit;
-                dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
+                ArrayList<String> dateSplit = new ArrayList<>(Arrays.asList(eventDate.split("-")));
                 //ArrayList<String> timeSplit;
                 //timeSplit = new ArrayList<>(Arrays.asList(eventTime.split(":")));
                 Date date = new Date();
@@ -1717,7 +1990,7 @@ class eventCheck implements Runnable {
                     String topic = "/topics/";
                     topic += communityReplaced;
                     eventNotification(topic, "A Community event is upcoming", "Upcoming Event", communityName);
-                    //TODO change table name sql = "INSERT INTO eventsCheckIn (communityName, eventName) VALUES(?, ?)";
+                    sql = "INSERT INTO eventsCheckIn (communityName, eventName) VALUES(?, ?)";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, "communityName");
                     ps.setString(2, rs.getString("eventName"));
@@ -1727,6 +2000,13 @@ class eventCheck implements Runnable {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
     private void eventNotification(String to, String message, String title, String community) {
@@ -1777,6 +2057,7 @@ class hangoutCheck implements Runnable {
     private String sql;
     private PreparedStatement ps;
     private ResultSet rs;
+
     hangoutCheck(String PASS, String auth) {
         Authorization = auth;
         try {
@@ -1788,24 +2069,34 @@ class hangoutCheck implements Runnable {
             e.printStackTrace();
         }
     }
+
     public void run() {
+        ArrayList<String> communities = new ArrayList<>();
         while (true) {
             try {
                 sql = "SELECT name FROM Communities";
                 ps = conn.prepareStatement(sql);
                 rs = ps.executeQuery();
                 if (rs.next()) {
-                    ArrayList<String> communities = new ArrayList<>();
                     String temp = rs.getString("name").replaceAll("\\s", "_");
                     temp += "_Hangouts";
                     communities.add(temp);
                     communities.forEach(this::timeCheckHangouts);
+                    communities.clear();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    rs.close();
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
+
     /*
         Function which loops through rows in the community hangouts table
         and removes the hangouts which have passed.
@@ -1850,8 +2141,16 @@ class hangoutCheck implements Runnable {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
+
     private void messageWrite(JSONObject parent) {
         System.out.println(parent.toString());
         try {
