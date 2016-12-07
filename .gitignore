@@ -41,4 +41,5 @@ captures/
 Client/app/src/main/AndroidManifest.xml
 Client/.idea/gradle.xml
 Server/.idea/workspace.xml
+Server/.idea
 Client/.idea/misc.xml

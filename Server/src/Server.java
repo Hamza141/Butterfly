@@ -17,7 +17,11 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -31,11 +35,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.database.Transaction;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import static java.lang.Thread.sleep;
 
 //TODO Message Comments
@@ -1935,6 +1937,7 @@ class eventCheck implements Runnable {
                 if (rs.next()) {
                     ArrayList<String> communities = new ArrayList<>();
                     communities.add(rs.getString("name"));
+                    System.out.println(rs.getString("name"));
                     communities.forEach(this::timeCheckEvents);
                     communities.clear();
                 }
