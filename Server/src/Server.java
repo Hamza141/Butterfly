@@ -1365,7 +1365,25 @@ class serverStart implements Runnable {
                     obj.put("date", rs.getString("date"));
                     obj.put("address", rs.getString("address"));
                     obj.put("locationName", rs.getString("locationName"));
-                    obj.put("listAttendees", rs.getString("listAttendees"));
+                    obj.put("listIds", rs.getString("listAttendees"));
+                    obj.put("minUsers", rs.getInt("minUsers"));
+                    obj.put("maxUsers", rs.getInt("maxUsers"));
+                    String list = rs.getString("listAttendees");
+                    ArrayList<String> ids = new ArrayList<>(Arrays.asList(list.split(", ")));
+                    StringBuilder names = new StringBuilder();
+                    for (String id : ids) {
+                        sql = "SELECT firstName, lastName FROM Users WHERE googleID = ?";
+                        ps = conn.prepareStatement(sql);
+                        ps.setString(1, id);
+                        rs = ps.executeQuery();
+                        if (rs.next()) {
+                            names.append(rs.getString("firstName"));
+                            names.append(" ");
+                            names.append(rs.getString("lastName"));
+                            names.append(", ");
+                        }
+                    }
+                    obj.put("listNames", names.toString());
                     out.writeUTF(obj.toString());
                     System.out.println(obj);
                 }
@@ -1904,7 +1922,6 @@ class serverStart implements Runnable {
             ps = conn.prepareStatement(sql);
             ps.setString(1, hangoutName);
             rs = ps.executeQuery();
-            //TODO mke check to see if user is in list
             if (rs.next()) {
                 String list = rs.getString("listAttendees");
                 ArrayList<String> attendees;
@@ -2041,7 +2058,7 @@ class serverStart implements Runnable {
      */
     private void removeCommunity(String communityName) {
         String name = communityName;
-        ResultSet result = null;
+        ResultSet result;
         try {
             sql = "DELETE FROM Communities WHERE name = ?";
             ps = conn.prepareStatement(sql);
@@ -2075,6 +2092,11 @@ class serverStart implements Runnable {
                     ps.setString(1, string.toString());
                     ps.setString(2, rs.getString("googleID"));
                     ps.executeUpdate();
+                    try {
+                        result.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             sql = "DROP TABLE " + communityName + "_Board, " + communityName + "_Calendar, "
@@ -2087,7 +2109,6 @@ class serverStart implements Runnable {
         } finally {
             try {
                 rs.close();
-                result.close();
                 ps.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -2537,14 +2558,12 @@ class eventCheck implements Runnable {
 
 @SuppressWarnings("InfiniteLoopStatement")
 class hangoutCheck implements Runnable {
-    static private String Authorization;
     private Connection conn;
     private String sql;
     private PreparedStatement ps;
     private ResultSet rs;
 
-    hangoutCheck(String PASS, String auth) {
-        Authorization = auth;
+    hangoutCheck(String PASS) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection("jdbc:mysql://localhost/Butterfly", "root", PASS);
@@ -2588,7 +2607,6 @@ class hangoutCheck implements Runnable {
         and removes the hangouts which have passed.
      */
     private void timeCheckHangouts(String communityHangout) {
-        //TODO if deleting and numUsers not reached do something
         try {
             sql = "SELECT date, endTime, idHangouts FROM " + communityHangout;
             ps = conn.prepareStatement(sql);
@@ -2662,7 +2680,7 @@ public class Server {
             br.close();
             isr.close();
             new Thread(new eventCheck(PASS, Authorization)).start();
-            new Thread(new hangoutCheck(PASS, Authorization)).start();
+            new Thread(new hangoutCheck(PASS)).start();
             while (true) {
                 System.out.println("Waiting on port " + serverSocket.getLocalPort() + "...");
                 try {
