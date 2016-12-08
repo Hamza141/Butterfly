@@ -130,4 +130,10 @@
         android:text="@string/discover"
         tools:ignore="RtlHardcoded" />
 
+    <Button
+        android:text="Crews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/crewsButton" />
+
 </android.support.design.widget.CoordinatorLayout>

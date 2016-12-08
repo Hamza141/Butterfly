@@ -28,13 +28,17 @@ import java.util.Calendar;
 public class BoardActivity extends AppCompatActivity {
 
     public static ArrayList<String> messages;
+    public static ArrayList<String> users;
+    public static Crew crew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         messages = new ArrayList<>();
+        users = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(crew.getCrewName());
         setSupportActionBar(toolbar);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -55,8 +59,10 @@ public class BoardActivity extends AppCompatActivity {
                         socket[0] = new Socket(MainActivity.ip, 3300);
                         outputStream[0] = socket[0].getOutputStream();
                         dataOutputStream[0] = new DataOutputStream(outputStream[0]);
-                        object.put("function", "getMessages");
+                        object.put("function", "getCrewMessages");
                         object.put("communityName", CalendarActivity.community.getName());
+                        object.put("idCrew", crew.getIdNumber());
+                        object.put("crewName", crew.getCrewName());
                         dataOutputStream[0].writeUTF(object.toString());
 
                         inputStream[0] = socket[0].getInputStream();

@@ -47,6 +47,7 @@ public class GroupActivity extends AppCompatActivity {
     //Join and Leave
     Button join;
     Button leave;
+    Button crews;
 
     public static ArrayList<String> messages;
 
@@ -62,6 +63,7 @@ public class GroupActivity extends AppCompatActivity {
 
         for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
             if (MainActivity.myCommunities.get(i).getName().equals(CalendarActivity.community.getName())) {
+                crews.setVisibility(View.VISIBLE);
                 leave.setVisibility(View.VISIBLE);
                 join.setVisibility(View.GONE);
                 break;
@@ -71,12 +73,15 @@ public class GroupActivity extends AppCompatActivity {
         if (join.getVisibility() == View.VISIBLE) {
             for (int i = 0; i < MainActivity.buffer.size(); i++) {
                 if (MainActivity.buffer.get(i).getName().equals(CalendarActivity.community.getName())) {
+                    crews.setVisibility(View.GONE);
                     leave.setVisibility(View.VISIBLE);
                     join.setVisibility(View.GONE);
                     break;
                 }
             }
         }
+
+        refreshMessages();
     }
 
     @Override
@@ -95,6 +100,7 @@ public class GroupActivity extends AppCompatActivity {
 
         join = (Button) findViewById(R.id.join);
         leave = (Button) findViewById(R.id.leave);
+        crews = (Button) findViewById(R.id.crewsButton);
 
 
         //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -319,6 +325,7 @@ public class GroupActivity extends AppCompatActivity {
                 //Change visibility of Join and Gone buttons
                 join.setVisibility(View.GONE);
                 leave.setVisibility(View.VISIBLE);
+                crews.setVisibility(View.VISIBLE);
             }
         });
 
@@ -331,6 +338,15 @@ public class GroupActivity extends AppCompatActivity {
                 //Change visibility of Join and Gone buttons
                 leave.setVisibility(View.GONE);
                 join.setVisibility(View.VISIBLE);
+                crews.setVisibility(View.GONE);
+            }
+        });
+
+        crews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GroupActivity.this, BoardActivity.class);
+                startActivity(intent);
             }
         });
 
