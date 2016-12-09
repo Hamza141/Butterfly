@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -171,6 +172,7 @@ public class CrewListActivity extends AppCompatActivity {
                                                 android.os.SystemClock.sleep(100);
 
                                                 crewID = dataInputStream.read();
+                                                Log.d("CREWID", String.valueOf(crewID));
 
                                                 socket.close();
                                                 outputStream.close();
@@ -185,7 +187,8 @@ public class CrewListActivity extends AppCompatActivity {
                                         }
                                     }).start();
 
-                                    android.os.SystemClock.sleep(700);
+                                    android.os.SystemClock.sleep(1000);
+                                    Log.d("CREWID2", String.valueOf(crewID));
 
                                     addButton(crewName, crewID);
                                     Crew crew = new Crew(crewName, crewID);

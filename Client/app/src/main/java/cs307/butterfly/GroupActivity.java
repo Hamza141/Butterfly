@@ -189,8 +189,10 @@ public class GroupActivity extends AppCompatActivity {
 
         if (!isPrivate) {
             notifyGroup.setVisibility(View.GONE);
+            hangoutsButton.setVisibility(View.VISIBLE);
         } else {
             hangoutsButton.setVisibility(View.GONE);
+            notifyGroup.setVisibility(View.VISIBLE);
         }
 
         ImageButton button2 = (ImageButton) findViewById(R.id.view_all);
