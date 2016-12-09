@@ -102,6 +102,9 @@ class serverStart implements Runnable {
             case "checkIn":
                 checkIn(obj);
                 break;
+            case "checkInCheck":
+                checkInCheck(obj);
+                break;
             case "deleteEvent":
                 deleteEvent(obj);
                 break;
@@ -113,6 +116,9 @@ class serverStart implements Runnable {
                 break;
             case "emailInvite":
                 emailInvite("user", (String) obj.get("to"));
+                break;
+            case "getCheckIns":
+                getCheckIns(obj);
                 break;
             case "getCommunities":
                 getCommunities();
@@ -187,6 +193,9 @@ class serverStart implements Runnable {
             case "removeCommunity":
                 removeCommunity((String) obj.get("communityName"));
                 break;
+            case "removeCheckIn":
+                removeCheckIn(obj);
+                break;
             case "rsvpEvent":
                 rsvpEvent(obj);
                 break;
@@ -206,7 +215,7 @@ class serverStart implements Runnable {
                 wipe();
                 break;
             default:
-                System.out.println("default " + obj.toString());
+                System.out.println("NO FUNCTION FOUND " + obj.toString());
         }
     }
 
@@ -706,6 +715,8 @@ class serverStart implements Runnable {
         return "";
     }
 
+
+
     /*
         Function which concatenates a user into the list of users who have checked into
         the event.
@@ -717,11 +728,13 @@ class serverStart implements Runnable {
         String googleID = (String) obj.get("googleID");
         String listCheckedIn;
         try {
-            sql = "SELECT idEventsCheckIns, listCheckedIn FROM eventsCheckIn "
+            sql = "SELECT ideventCheckIns, listCheckedIn FROM eventsCheckIn "
                     + "WHERE (communityName = ? AND eventName = ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, communityName);
             ps.setString(2, eventName);
+            System.out.println(ps);
+            rs = ps.executeQuery();
             if (rs.next()) {
                 listCheckedIn = rs.getString("listCheckedIn");
                 boolean found = false;
@@ -734,7 +747,7 @@ class serverStart implements Runnable {
                     }
                 }
                 if (!found) {
-                    int id = rs.getInt("idEventsCheckIns");
+                    int id = rs.getInt("ideventCheckIns");
                     listCheckedIn += googleID + ", ";
                     sql = "UPDATE eventsCheckIn SET numCheckedIn = numCheckedIn + 1, listCheckedIn = ? "
                             + "WHERE idEventCheckIns = ?";
@@ -1099,6 +1112,58 @@ class serverStart implements Runnable {
         }
     }
 
+    private void getCheckIns(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        String eventName = (String) obj.get("eventName");
+        try {
+            sql = "SELECT listCheckedIn FROM eventsCheckIn "
+                    + "WHERE (communityName = ? AND eventName = ?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, communityName);
+            ps.setString(2, eventName);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                StringBuilder namesList = new StringBuilder();
+                String listCheckedIn = rs.getString("listCheckedIn");
+                ArrayList<String> users;
+                users = new ArrayList<>(Arrays.asList(listCheckedIn.split(", ")));
+                for (String user : users) {
+                    sql = "SELECT firstName, lastName FROM Users WHERE googleID = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, user);
+                    System.out.println(ps);
+                    ResultSet result = ps.executeQuery();
+                    if (result.next()) {
+                        namesList.append(result.getString("firstName"));
+                        namesList.append(" ");
+                        namesList.append(result.getString("lastName"));
+                        namesList.append(", ");
+                    }
+                    try {
+                        result.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                out.writeUTF(namesList.toString());
+                System.out.println(namesList.toString());
+                sleep(10);
+                out.writeUTF(rs.getString("listCheckedIn"));
+                System.out.println(rs.getString("listCheckedIn"));
+            }
+        } catch (SQLException | IOException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /*
         Function which writes to client a string of communities in the Communities table
         which are not marked as private.
@@ -1226,6 +1291,48 @@ class serverStart implements Runnable {
         }
     }
 
+    private void getCrewMessages(JSONObject obj) {
+        //TODO test
+        String communityName = (String) obj.get("communityName");
+        String crewName = (String) obj.get("crewName");
+        long idCrew = (long) obj.get("idCrew");
+        System.out.println("id number " + idCrew);
+        communityName = communityName.replaceAll("\\s", "_") + "_" + crewName.replaceAll("\\s", "_");
+        communityName += "_" + idCrew + "_Board";
+        JSONObject returnObj;
+        try {
+            sql = "SELECT COUNT(*) FROM " + communityName;
+            ps = conn.prepareStatement(sql);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                out.writeUTF(Integer.toString(rs.getInt(1)));
+                sql = "SELECT * FROM " + communityName;
+                ps = conn.prepareStatement(sql);
+                System.out.println(ps);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    returnObj = new JSONObject();
+                    returnObj.put("pinned", rs.getString("pinned"));
+                    returnObj.put("name", rs.getString("name"));
+                    returnObj.put("date", rs.getString("date"));
+                    returnObj.put("message", rs.getString("message"));
+                    out.writeUTF(returnObj.toString());
+                    System.out.println(returnObj);
+                }
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void getCrewUsers(String communityName, long idCrew) {
         //TODO test
         communityName = communityName.replaceAll("\\s", "_");
@@ -1233,7 +1340,7 @@ class serverStart implements Runnable {
         try {
             sql = "SELECT numMembers, listMembers FROM " + communityName + " WHERE idCrew = ?";
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, toIntExact(idCrew));
+            ps.setLong(1, idCrew);
             System.out.println(ps);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -1445,47 +1552,6 @@ class serverStart implements Runnable {
         }
     }
 
-    private void getCrewMessages(JSONObject obj) {
-        //TODO test
-        String communityName = (String) obj.get("communityName");
-        String crewName = (String) obj.get("crewName");
-        int idCrew = toIntExact((long) obj.get("idCrew"));
-        communityName = communityName.replaceAll("\\s", "_") + "_" + crewName.replaceAll("\\s", "_");
-        communityName += "_" + idCrew + "_Board";
-        JSONObject returnObj;
-        try {
-            sql = "SELECT COUNT(*) FROM " + communityName;
-            ps = conn.prepareStatement(sql);
-            System.out.println(ps);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                out.writeUTF(Integer.toString(rs.getInt(1)));
-                sql = "SELECT * FROM " + communityName;
-                ps = conn.prepareStatement(sql);
-                System.out.println(ps);
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    returnObj = new JSONObject();
-                    returnObj.put("pinned", rs.getString("pinned"));
-                    returnObj.put("name", rs.getString("name"));
-                    returnObj.put("date", rs.getString("date"));
-                    returnObj.put("message", rs.getString("message"));
-                    out.writeUTF(returnObj.toString());
-                    System.out.println(returnObj);
-                }
-            }
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     /*
         Function which writes to client the number of messages stored in the community
         board table and then all rows in the table in JSON format.
@@ -1584,16 +1650,23 @@ class serverStart implements Runnable {
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, id);
                     System.out.println(ps);
-                    rs = ps.executeQuery();
-                    if (rs.next()) {
-                        namesList.append(rs.getString("firstName"));
+                    ResultSet result = ps.executeQuery();
+                    if (result.next()) {
+                        namesList.append(result.getString("firstName"));
                         namesList.append(" ");
-                        namesList.append(rs.getString("lastName"));
+                        namesList.append(result.getString("lastName"));
                         namesList.append(", ");
+                    }
+                    try {
+                        result.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
                 }
                 out.writeUTF(namesList.toString());
-                System.out.println("sent " + namesList);
+                System.out.println("sent " + namesList.toString() + "!");
+                out.writeUTF(list);
+                System.out.println("sent " + list + "!");
             } else {
                 out.writeUTF("");
             }
@@ -1696,11 +1769,13 @@ class serverStart implements Runnable {
             String list;
             if (rs.next()) {
                 list = rs.getString("communitiesList");
-                ArrayList<String> communities = new ArrayList<>(Arrays.asList(list.split(", ")));
-                out.writeUTF(Integer.toString(communities.size()));
-                for (String community : communities) {
-                    out.writeUTF(community);
-                    getEvents(community);
+                if (!list.equals("")) {
+                    ArrayList<String> communities = new ArrayList<>(Arrays.asList(list.split(", ")));
+                    out.writeUTF(Integer.toString(communities.size()));
+                    for (String community : communities) {
+                        out.writeUTF(community);
+                        getEvents(community);
+                    }
                 }
             } else {
                 out.writeUTF("");
@@ -2295,6 +2370,43 @@ class serverStart implements Runnable {
         }
     }
 
+    private void checkInCheck(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        String eventName = (String) obj.get("eventName");
+        String googleID = (String) obj.get("googleID");
+        try {
+            sql = "SELECT listCheckedIn FROM eventsCheckIn "
+                    + "WHERE (communityName = ? AND eventName = ?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, communityName);
+            ps.setString(2, eventName);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                String list = rs.getString("listCheckedIn");
+                ArrayList<String> attendees;
+                attendees = new ArrayList<>(Arrays.asList(list.split(", ")));
+                for (String attendee : attendees) {
+                    if (attendee.equals(googleID)) {
+                        out.writeUTF("1");
+                        System.out.println("found " + attendee);
+                        return;
+                    }
+                }
+                out.writeUTF("0");
+                System.out.println("0");
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     /*
         Function which selects from the community calendar table and checks
         whether the user has already rsvp'ed to the specified event. Returns
@@ -2332,6 +2444,51 @@ class serverStart implements Runnable {
             try {
                 rs.close();
                 ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void removeCheckIn(JSONObject obj) {
+        String communityName = (String) obj.get("communityName");
+        String eventName = (String) obj.get("eventName");
+        String googleID = (String) obj.get("googleID");
+        try {
+            sql = "SELECT listCheckedIn FROM eventsCheckIn "
+                    + "WHERE (communityName = ? AND eventName = ?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, communityName);
+            ps.setString(2, eventName);
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                String list = rs.getString("listCheckedIn");
+                ArrayList<String> attendees;
+                attendees = new ArrayList<>(Arrays.asList(list.split(", ")));
+                StringBuilder string = new StringBuilder();
+                for (String attendee : attendees) {
+                    if (attendee.equals(googleID)) {
+                        System.out.println("found " + attendee);
+                    } else {
+                        string.append(attendee);
+                        string.append(", ");
+                    }
+                }
+                sql = "UPDATE eventsCheckIn SET listAttendees = ? WHERE (communityName = ? AND eventName = ?)";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, string.toString());
+                ps.setString(2, communityName);
+                ps.setString(3, eventName);
+                System.out.println(ps);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+                rs.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -2476,7 +2633,6 @@ class serverStart implements Runnable {
                 ps = conn.prepareStatement(sql);
                 System.out.println(ps);
                 ResultSet result = ps.executeQuery();
-                String all = "";
                 while (result.next()) {
                     String crewName = communityName + "_"
                             + result.getString("crewName").replaceAll("\\s", "_") + "_"
@@ -2583,19 +2739,19 @@ class eventCheck implements Runnable {
                 ps = conn.prepareStatement(sql);
                 System.out.println(ps);
                 rs = ps.executeQuery();
-                if (rs.next()) {
-                    ArrayList<String> communities = new ArrayList<>();
+                ArrayList<String> communities = new ArrayList<>();
+                while (rs.next()) {
                     communities.add(rs.getString("name"));
-                    communities.forEach(this::timeCheckEvents);
-                    communities.clear();
                 }
+                communities.forEach(this::timeCheckEvents);
+                communities.clear();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
                 try {
                     rs.close();
                     ps.close();
-                    Thread.sleep(60000);
+                    Thread.sleep(30000);
                 } catch (SQLException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -2649,7 +2805,7 @@ class eventCheck implements Runnable {
                         sql = "INSERT INTO eventsCheckIn (communityName, eventName, numCheckedIn, "
                                 + "listCheckedIn) VALUES(?, ?, ?, ?)";
                         ps = conn.prepareStatement(sql);
-                        ps.setString(1, "communityName");
+                        ps.setString(1, communityName);
                         ps.setString(2, rs.getString("eventName"));
                         ps.setInt(3, 0);
                         ps.setString(4, "");

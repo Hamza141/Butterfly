@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 public class Client {
     public static void main(String[] args) {
         //String serverName = "128.211.225.79";
-        String serverName = "10.186.80.53";
+        String serverName = "10.186.95.228";
         int port = 3300;
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
