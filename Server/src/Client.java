@@ -13,8 +13,8 @@ import org.json.simple.JSONObject;
 @SuppressWarnings("unchecked")
 public class Client {
     public static void main(String[] args) {
-        String serverName = "128.211.225.79";
-        //String serverName = "128.10.120.226";
+        //String serverName = "128.211.225.79";
+        String serverName = "10.186.80.53";
         int port = 3300;
         try {
             System.out.println("Connecting to " + serverName + " on port " + port);
@@ -164,7 +164,7 @@ public class Client {
             out.writeUTF(obj2.toString());
             System.out.println("Server says " + in.readUTF());*/
 
-            client = new Socket(serverName, port);
+            /*client = new Socket(serverName, port);
             System.out.println("Just connected to " + client.getRemoteSocketAddress());
             outToServer = client.getOutputStream();
             inFromServer = client.getInputStream();
@@ -177,7 +177,7 @@ public class Client {
             System.out.println("Server says 2 " + in.readUTF() + "!");
             System.out.println("Server says 3 " + in.readUTF() + "!");
             System.out.println("Server says 4 " + in.readUTF() + "!");
-            System.out.println("Server says 5 " + in.readUTF() + "!");
+            System.out.println("Server says 5 " + in.readUTF() + "!");*/
 
             /*obj = new JSONObject();
             obj.put("function", "emailInvite");
@@ -234,13 +234,13 @@ public class Client {
             out.writeUTF(obj.toString());
             System.out.println("Server says " + in.readUTF());*/
 
-            /*client = new Socket(serverName, port);
+            client = new Socket(serverName, port);
             System.out.println("Just connected to " + client.getRemoteSocketAddress());
             outToServer = client.getOutputStream();
             out = new DataOutputStream(outToServer);
             obj = new JSONObject();
             obj.put("function", "wipe");
-            out.writeUTF(obj.toString());*/
+            out.writeUTF(obj.toString());
 
             //
             //System.out.println("Server says " + in.readUTF());
