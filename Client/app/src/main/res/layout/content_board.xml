@@ -13,6 +13,16 @@
     tools:context="cs307.butterfly.BoardActivity"
     tools:showIn="@layout/activity_board">
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/buddy"
+        android:id="@+id/crewUsers"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:minHeight="55dp"
+        android:minWidth="55dp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +30,9 @@
         android:layout_alignParentBottom="false"
         android:focusable="true"
         android:layout_above="@+id/editBoardPost"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="55dp"
+        android:elevation="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,22 +51,24 @@
         android:ems="10"
         android:paddingEnd="55dp"
         android:paddingStart="10dp"
-        android:background="#fff081"
+        android:background="#ffffff"
         android:hint="Write a new post"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:id="@+id/editBoardPost"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:elevation="5dp" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/send"
         android:id="@+id/sendButton"
-        android:backgroundTint="#fff081"
+        android:backgroundTint="#ffffff"
         android:backgroundTintMode="src_atop"
         android:layout_alignTop="@+id/editBoardPost"
         android:layout_alignEnd="@+id/editBoardPost"
-        android:layout_alignBottom="@+id/editBoardPost" />
+        android:layout_alignBottom="@+id/editBoardPost"
+        android:elevation="5dp" />
 
 </RelativeLayout>

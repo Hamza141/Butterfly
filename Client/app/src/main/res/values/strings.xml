@@ -46,4 +46,6 @@
     <string name="welcome_to_the_community_board">Welcome to the community board!</string>
     <string name="title_activity_user_list">UserListActivity</string>
     <string name="title_activity_crew_list">CrewListActivity</string>
+    <string name="title_activity_hangout_viewer">HangoutViewerActivity</string>
+    <string name="plusSign">+</string>
 </resources>

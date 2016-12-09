@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
@@ -33,6 +34,8 @@ public class CommunityListActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("All Communities");
         }
+
+        getHangouts();
 
         addGroup();
     }
@@ -129,5 +132,43 @@ public class CommunityListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public void getHangouts() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket = new Socket(MainActivity.ip, 3300);
+                    OutputStream outputStream = socket.getOutputStream();
+                    InputStream inputStream = socket.getInputStream();
+                    DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+                    DataInputStream dataInputStream = new DataInputStream(inputStream);
+
+                    JSONObject object = new JSONObject();
+                    object.put("function", "getUserHangouts");
+                    object.put("googleID", MainActivity.googleID);
+                    dataOutputStream.writeUTF(object.toString());
+
+                    String hangoutsString = dataInputStream.readUTF();
+                    String[] hangoutsArray = hangoutsString.split(", ");
+                    for (int i = 0; i < hangoutsArray.length; i++) {
+                        MainActivity.hangoutsJoined.add(hangoutsArray[i]);
+                    }
+
+                    socket.close();
+                    outputStream.close();
+                    dataOutputStream.close();
+                    inputStream.close();
+                    dataInputStream.close();
+
+                } catch (JSONException | IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
+        android.os.SystemClock.sleep(500);
     }
 }

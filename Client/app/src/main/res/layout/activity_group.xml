@@ -45,6 +45,15 @@
         </LinearLayout>
     </ScrollView>
 
+    <Button
+        android:text="Hangouts"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:id="@+id/hangoutsButton"
+        android:layout_gravity="bottom"
+        android:background="@android:color/holo_red_dark"
+        android:textAlignment="center" />
+
     <ImageButton
         android:id="@+id/tocalender"
         android:layout_width="105dp"

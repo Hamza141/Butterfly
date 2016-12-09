@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="75dp"
+        android:id="@+id/nestedScrollView">
+
+        <LinearLayout
+            android:id="@+id/linearfriend"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <ImageButton
+
+        android:layout_width="103dp"
+        android:layout_height="71dp"
+        android:id="@+id/check"
+        android:text="Alerts"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/check"
+        android:background="@android:color/holo_blue_dark"
+
+
+        app:layout_anchor="@+id/nestedScrollView"
+        app:layout_anchorGravity="bottom|right" />
+
+
+</android.support.design.widget.CoordinatorLayout>

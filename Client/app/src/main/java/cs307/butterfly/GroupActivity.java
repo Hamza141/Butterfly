@@ -41,9 +41,9 @@ public class GroupActivity extends AppCompatActivity {
     public static String theguy;
     public static ArrayList<String> userNames;
     public static ArrayList<String> googleIDs;
+    public static boolean isPrivate;
     Random randomno = new Random();
     Dialog dialog;
-    Button profile4, profile3, profile2, profile1, profile;
     //Join and Leave
     Button join;
     Button leave;
@@ -59,6 +59,7 @@ public class GroupActivity extends AppCompatActivity {
         //If the user is in the community already, only display the leave button and vice versa
         join.setVisibility(View.VISIBLE);
         leave.setVisibility(View.GONE);
+        crews.setVisibility(View.GONE);
 
 
         for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
@@ -73,7 +74,7 @@ public class GroupActivity extends AppCompatActivity {
         if (join.getVisibility() == View.VISIBLE) {
             for (int i = 0; i < MainActivity.buffer.size(); i++) {
                 if (MainActivity.buffer.get(i).getName().equals(CalendarActivity.community.getName())) {
-                    crews.setVisibility(View.GONE);
+                    crews.setVisibility(View.VISIBLE);
                     leave.setVisibility(View.VISIBLE);
                     join.setVisibility(View.GONE);
                     break;
@@ -90,6 +91,41 @@ public class GroupActivity extends AppCompatActivity {
 
         userNames = new ArrayList<>();
         googleIDs = new ArrayList<>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket = new Socket(MainActivity.ip, 3300);
+                    OutputStream outputStream = socket.getOutputStream();
+                    InputStream inputStream = socket.getInputStream();
+                    DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+                    DataInputStream dataInputStream = new DataInputStream(inputStream);
+
+                    JSONObject object = new JSONObject();
+                    object.put("function", "isPrivate");
+                    object.put("communityName", CalendarActivity.community.getName());
+                    dataOutputStream.writeUTF(object.toString());
+
+                    android.os.SystemClock.sleep(100);
+
+                    String privateCommunity = dataInputStream.readUTF();
+                    isPrivate = Boolean.parseBoolean(privateCommunity);
+
+                    socket.close();
+                    outputStream.close();
+                    dataOutputStream.close();
+                    inputStream.close();
+                    dataInputStream.close();
+
+                } catch (JSONException | IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
+        android.os.SystemClock.sleep(300);
 
         setContentView(R.layout.activity_group);
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -140,6 +176,22 @@ public class GroupActivity extends AppCompatActivity {
                 toast.show();
             }
         });
+
+        Button hangoutsButton = (Button) findViewById(R.id.hangoutsButton);
+
+        hangoutsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GroupActivity.this, HangoutViewerActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        if (!isPrivate) {
+            notifyGroup.setVisibility(View.GONE);
+        } else {
+            hangoutsButton.setVisibility(View.GONE);
+        }
 
         ImageButton button2 = (ImageButton) findViewById(R.id.view_all);
         button2.setOnClickListener(new View.OnClickListener() {
@@ -297,10 +349,12 @@ public class GroupActivity extends AppCompatActivity {
         //If the user is in the community already, only display the leave button and vice versa
         join.setVisibility(View.VISIBLE);
         leave.setVisibility(View.GONE);
+        crews.setVisibility(View.VISIBLE);
 
         for (int i = 0; i < MainActivity.myCommunities.size(); i++) {
             if (MainActivity.myCommunities.get(i).getName().equals(CalendarActivity.community.getName())) {
                 leave.setVisibility(View.VISIBLE);
+                crews.setVisibility(View.VISIBLE);
                 join.setVisibility(View.GONE);
                 break;
             }
@@ -310,6 +364,7 @@ public class GroupActivity extends AppCompatActivity {
             for (int i = 0; i < MainActivity.buffer.size(); i++) {
                 if (MainActivity.buffer.get(i).getName().equals(CalendarActivity.community.getName())) {
                     leave.setVisibility(View.VISIBLE);
+                    crews.setVisibility(View.VISIBLE);
                     join.setVisibility(View.GONE);
                     break;
                 }
@@ -345,7 +400,7 @@ public class GroupActivity extends AppCompatActivity {
         crews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(GroupActivity.this, BoardActivity.class);
+                Intent intent = new Intent(GroupActivity.this, CrewListActivity.class);
                 startActivity(intent);
             }
         });

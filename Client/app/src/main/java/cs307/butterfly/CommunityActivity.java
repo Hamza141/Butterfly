@@ -443,6 +443,8 @@ public class CommunityActivity extends AppCompatActivity {
                                 outputStream[0].close();
                                 socket[0].close();
 
+                                android.os.SystemClock.sleep(1000);
+
                                 //Connect to server again
                                 socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                                 outputStream[0] = socket[0].getOutputStream();
