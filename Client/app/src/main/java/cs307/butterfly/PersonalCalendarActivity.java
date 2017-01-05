@@ -50,7 +50,7 @@ public class PersonalCalendarActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        socket[0] = new Socket(MainActivity.ip, 3300);
+                        socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                         outputStream[0] = socket[0].getOutputStream();
                         dataOutputStream[0] = new DataOutputStream(outputStream[0]);
                         object.put("function", "getUserCommunityEvents");

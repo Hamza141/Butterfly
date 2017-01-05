@@ -93,6 +93,7 @@ public class CommunityActivity extends AppCompatActivity {
             MainActivity.googleID = contents[0];
         }
 
+        /*
         //Get user name from server
         if (MainActivity.server) {
             new Thread(new Runnable() {
@@ -108,7 +109,7 @@ public class CommunityActivity extends AppCompatActivity {
                         JSONObject object = new JSONObject();
 
                         //Connect to server
-                        socket = new Socket(MainActivity.ip, 3300);
+                        socket = new Socket(MainActivity.ip, MainActivity.port);
                         outputStream = socket.getOutputStream();
                         dataOutputStream = new DataOutputStream(outputStream);
 
@@ -137,6 +138,19 @@ public class CommunityActivity extends AppCompatActivity {
                     }
                 }
             }).start();
+        }
+        */
+        try {
+            JSONObject object = new JSONObject();
+            object.put("function", "getUserName");
+            object.put("googleID", MainActivity.googleID);
+            //new ConnectSend().execute(object);
+            String names [] = MainActivity.connectionSendReceiveStrings(object);
+            if (names != null) {
+                MainActivity.fullName = names[0];
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         setContentView(R.layout.activity_community);
@@ -222,9 +236,12 @@ public class CommunityActivity extends AppCompatActivity {
             }
         }
 
+
         //Check with server to see which communities is the user a part of
         if (MainActivity.server) {
             final String[] name = new String[2];
+
+            /*
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -239,7 +256,7 @@ public class CommunityActivity extends AppCompatActivity {
                         JSONObject object2 = new JSONObject();
 
                         //Connect to server
-                        socket = new Socket(MainActivity.ip, 3300);
+                        socket = new Socket(MainActivity.ip, MainActivity.port);
                         outputStream = socket.getOutputStream();
                         dataOutputStream = new DataOutputStream(outputStream);
 
@@ -294,6 +311,32 @@ public class CommunityActivity extends AppCompatActivity {
             }).start();
 
             android.os.SystemClock.sleep(500);
+            */
+            try {
+                JSONObject object = new JSONObject();
+                object.put("function", "getUserCommunities");
+                object.put("googleID", MainActivity.googleID);
+                //new ConnectReceiveStrings().execute(object);
+                String test [] =  MainActivity.connectionSendReceiveStrings(object);
+
+                //if (MainActivity.completed && !MainActivity.inProgress) {
+                 if (test != null) {
+                    name[0] = test[0];
+
+                    JSONObject object2 = new JSONObject();
+                    object2.put("function", "getUserModerator");
+                    object2.put("googleID", MainActivity.googleID);
+                    //new ConnectReceiveStrings().execute(object2);
+                    String test2 [] = MainActivity.connectionSendReceiveStrings(object2);
+                    //if (MainActivity.completed && !MainActivity.inProgress) {
+                     if (test2 != null) {
+                        name[1] = test2[0];
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             if (name[0] != null) {
                 String[] names = name[0].split(", ");
                 MainActivity.myCommunities.clear();
@@ -428,7 +471,7 @@ public class CommunityActivity extends AppCompatActivity {
                         public void run() {
                             try {
                                 //Connect to server
-                                socket[0] = new Socket(MainActivity.ip, 3300);
+                                socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                                 outputStream[0] = socket[0].getOutputStream();
                                 dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
@@ -451,7 +494,7 @@ public class CommunityActivity extends AppCompatActivity {
                                 dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
                                 //Add user to community as moderator
-                                object2.put("function", "addCommunityUser");
+                                object2.put("function", " ommunityUser");
                                 object2.put("communityName", text);
                                 object2.put("isLeader", "1");
                                 object2.put("googleID", MainActivity.googleID);

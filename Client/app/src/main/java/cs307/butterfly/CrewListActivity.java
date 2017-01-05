@@ -65,7 +65,7 @@ public class CrewListActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            Socket socket = new Socket(MainActivity.ip, 3300);
+                            Socket socket = new Socket(MainActivity.ip, MainActivity.port);
                             OutputStream outputStream = socket.getOutputStream();
                             InputStream inputStream = socket.getInputStream();
                             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
@@ -156,7 +156,7 @@ public class CrewListActivity extends AppCompatActivity {
                                         @Override
                                         public void run() {
                                             try {
-                                                Socket socket = new Socket(MainActivity.ip, 3300);
+                                                Socket socket = new Socket(MainActivity.ip, MainActivity.port);
                                                 OutputStream outputStream = socket.getOutputStream();
                                                 InputStream inputStream = socket.getInputStream();
                                                 DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
@@ -226,7 +226,7 @@ public class CrewListActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        Socket socket = new Socket(MainActivity.ip, 3300);
+                        Socket socket = new Socket(MainActivity.ip, MainActivity.port);
                         OutputStream outputStream = socket.getOutputStream();
                         InputStream inputStream = socket.getInputStream();
                         DataOutputStream dataOutputStream = new DataOutputStream(outputStream);

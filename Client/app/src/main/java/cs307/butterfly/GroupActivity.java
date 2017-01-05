@@ -96,7 +96,7 @@ public class GroupActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Socket socket = new Socket(MainActivity.ip, 3300);
+                    Socket socket = new Socket(MainActivity.ip, MainActivity.port);
                     OutputStream outputStream = socket.getOutputStream();
                     InputStream inputStream = socket.getInputStream();
                     DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
@@ -223,7 +223,7 @@ public class GroupActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            Socket socket = new Socket(MainActivity.ip, 3300);
+                            Socket socket = new Socket(MainActivity.ip, MainActivity.port);
                             OutputStream outputStream = socket.getOutputStream();
                             InputStream inputStream = socket.getInputStream();
                             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
@@ -284,7 +284,7 @@ public class GroupActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                socket[0] = new Socket(MainActivity.ip, 3300);
+                                socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                                 outputStream[0] = socket[0].getOutputStream();
                                 dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
@@ -424,7 +424,7 @@ public class GroupActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        socket[0] = new Socket(MainActivity.ip, 3300);
+                        socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                         outputStream[0] = socket[0].getOutputStream();
                         dataOutputStream[0] = new DataOutputStream(outputStream[0]);
                         object.put("function", "getMessages");
@@ -488,7 +488,7 @@ public class GroupActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 try {
-                                    socket[0] = new Socket(MainActivity.ip, 3300);
+                                    socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                                     outputStream[0] = socket[0].getOutputStream();
                                     dataOutputStream[0] = new DataOutputStream(outputStream[0]);
 
@@ -725,7 +725,7 @@ public class GroupActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        socket[0] = new Socket(MainActivity.ip, 3300);
+                        socket[0] = new Socket(MainActivity.ip, MainActivity.port);
                         outputStream[0] = socket[0].getOutputStream();
                         dataOutputStream[0] = new DataOutputStream(outputStream[0]);
                         object.put("function", "getMessages");
@@ -756,7 +756,7 @@ public class GroupActivity extends AppCompatActivity {
                 }
             }).start();
 
-            android.os.SystemClock.sleep(300);
+            android.os.SystemClock.sleep(500);
 
         }
 

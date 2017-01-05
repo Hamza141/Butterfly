@@ -57,7 +57,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Socket socket = new Socket(MainActivity.ip, 3300);
+                    Socket socket = new Socket(MainActivity.ip, MainActivity.port);
                     OutputStream outputStream = socket.getOutputStream();
                     DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
 
